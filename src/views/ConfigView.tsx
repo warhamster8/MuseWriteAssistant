@@ -148,7 +148,7 @@ export const ConfigView: React.FC = React.memo(() => {
   };
 
   return (
-    <div className="h-full flex flex-col p-10 space-y-10 max-w-5xl mx-auto overflow-y-auto scrollbar-hide animate-in fade-in duration-700">
+    <div className="h-full flex flex-col px-10 pt-10 pb-24 space-y-10 max-w-5xl mx-auto overflow-y-auto scrollbar-hide animate-in fade-in duration-700">
       <div className="flex items-center gap-6 bg-white/[0.02] p-8 rounded-[40px] border border-white/5">
         <div className="p-4 bg-[#5be9b1]/10 rounded-2xl border border-[#5be9b1]/20">
           <Settings className="w-8 h-8 text-[#5be9b1]" />
