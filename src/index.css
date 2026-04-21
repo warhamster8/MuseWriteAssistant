@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-serif: 'EB Garamond', serif;
+  --font-display: 'Outfit', sans-serif;
+  --font-sans: 'Outfit', 'Inter', sans-serif;
+  
+  --primary-mint: #5be9b1;
+  --primary-mint-hover: #4ade80;
+  
+  --bg-deep: #0b0e11;
+  --bg-surface: #13161a;
+  --bg-card: #1a1e23;
+  
+  --emerald-950: #022c22;
+  --emerald-900: #064e3b;
+  --emerald-500: #10b981;
+  --emerald-400: #34d399;
+  
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+}
+
+@layer base {
+  body {
+    @apply bg-[#0b0e11] text-slate-200 font-sans antialiased selection:bg-[#5be9b1]/30 selection:text-[#5be9b1] overflow-hidden h-full;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-slate-50 tracking-tighter;
+  }
+}
+
+/* Scrollbar Premium Concept */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/5 rounded-full hover:bg-[#5be9b1]/20 transition-all;
+}
+
+/* Glassmorphism V2: Inkwell Edition */
+.glass {
+  @apply bg-white/[0.03] backdrop-blur-3xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
+}
+
+.glass-emerald {
+  @apply bg-[#5be9b1]/[0.02] backdrop-blur-3xl border border-[#5be9b1]/20 shadow-[0_8px_32px_0_rgba(16,185,129,0.1)];
+}
+
+.glass-dark {
+  @apply bg-black/40 backdrop-blur-3xl border border-white/5 shadow-2xl;
+}
+
+/* Shadow System: Multi-layered for realistic depth */
+.shadow-premium {
+  @apply shadow-2xl;
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5), 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+}
+
+.shadow-soft {
+  box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.6);
+}
+
+.shadow-glow-mint {
+  box-shadow: 0 0 40px -10px rgba(91, 233, 177, 0.2);
+}
+
+/* TipTap Editor Styling: Immersion Focused */
+.ProseMirror {
+    @apply outline-none min-h-[500px] text-xl leading-relaxed text-slate-200 font-serif max-w-4xl mx-auto py-20;
+}
+
+.ProseMirror p {
+    @apply mb-1;
+}
+
+.ProseMirror h1 {
+    @apply text-6xl font-display font-black mb-12 mt-16 text-slate-50 tracking-tighter;
+}
+
+.ProseMirror h2 {
+    @apply text-3xl font-display font-black mb-8 mt-12 text-slate-100/90 tracking-tight;
+}
+
+.ProseMirror blockquote {
+    @apply border-l-4 border-[#5be9b1]/40 pl-10 my-12 italic text-slate-400 font-serif text-2xl leading-loose bg-white/[0.01] py-8 rounded-r-3xl;
+}
+
+/* Utility Animations */
+.hover-float {
+  @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-[#5be9b1]/30;
+}
+
+.logo-blend {
+    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 30px rgba(91, 233, 177, 0.3));
+}
+
+.logo-glow {
+    background: radial-gradient(circle at center, rgba(91, 233, 177, 0.15) 0%, rgba(91, 233, 177, 0.05) 50%, transparent 80%);
+}
+
+/* Suggestion Highlighting */
+.suggestion-highlight-pulse {
+  background-color: rgba(91, 233, 177, 0.15);
+  border-bottom: 2px solid rgba(91, 233, 177, 0.6);
+  border-radius: 4px;
+  animation: emerald-glow-pulse 2s infinite ease-in-out;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.suggestion-highlight-pulse:hover {
+  background-color: rgba(91, 233, 177, 0.25);
+  border-bottom-color: rgba(91, 233, 177, 1);
+}
+
+@keyframes emerald-glow-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(91, 233, 177, 0); }
+  50% { box-shadow: 0 0 15px 2px rgba(91, 233, 177, 0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(91, 233, 177, 0); }
+}
