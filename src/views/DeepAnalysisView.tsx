@@ -8,9 +8,7 @@ import {
   Zap, 
   MessageSquare,
   Sparkles,
-  AlertCircle,
-  RefreshCw,
-  X
+  RefreshCw
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useNarrative } from '../hooks/useNarrative';
