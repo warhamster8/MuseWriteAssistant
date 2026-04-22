@@ -1,40 +1,39 @@
 import type { GlobalTimelineEvent } from '../types/timeline';
 import { aiService, type AIConfig } from './aiService';
 
-
-
-const SYSTEM_PROMPT = `Sei un esperto Cronologista Letterario e Analista Narrativo. Il tuo compito è mappare la cronologia OGGETTIVA degli eventi nel testo.
+const SYSTEM_PROMPT = `Sei un esperto Cronologista Letterario e Analista Narrativo. Il tuo compito è mappare la cronologia OGGETTIVA degli eventi nel testo usando una metrica MATEMATICA ASSOLUTA.
 
 REGOLE DI IDENTITÀ:
-- NON usare mai la parola "Narratore" o "Autore". Identifica sempre il personaggio per NOME PROPRIO (es. "Marco", "Elena"). Se il nome non è presente, usa una descrizione specifica (es. "Il Chirurgo", "La Madre").
+- NON usare "Narratore". Identifica i personaggi per NOME (es. "Erika", "Marco").
 
-REGOLE TEMPORALI (MOLTO IMPORTANTI):
-- Ogni evento deve avere un valore "estimatedStart" coerente con la cronologia del libro.
-- SCALA: Usa i minuti. 1 Giorno = 1440 unità.
-- Se il testo dice "Un anno dopo", il valore deve aumentare di circa 525.600 unità rispetto all'evento precedente.
-- Se il testo dice "Pochi mesi dopo", aumenta di circa 100.000 unità.
-- Se il testo riporta una data specifica (es. "10 Novembre"), cerca di ancorarla logicamente agli altri eventi.
-- COERENZA: Un evento etichettato "1 anno dopo" NON può avere un estimatedStart inferiore a un evento precedente.
+MATEMATICA DEL TEMPO (REGOLA DEL CALENDARIO UNIVERSALE):
+Per garantire che scene diverse si allineino correttamente, usa l'anno 2000 come ANCORA ZERO (0 minuti).
+Calcola "estimatedStart" come totale dei minuti trascorsi dal 01/01/2000 ore 00:00.
+- 1 Anno = 525.600 minuti.
+- 1 Mese (media) = 43.800 minuti.
+- 1 Giorno = 1.440 minuti.
 
-STRUTTURA JSON (Uno per ogni evento):
-1. "title": Titolo specifico (evita generalità).
-2. "summary": Cosa accade realmente (max 15 parole).
-3. "timeLabel": Testo esatto del marcatore temporale (es. "10 Novembre 2026, Mattina").
-4. "estimatedStart": Numero intero (minuti progressivi).
-5. "estimatedEnd": estimatedStart + durata stimata (es. +30 per una conversazione).
-6. "importance": "high" (svolta), "medium" (azione), "low" (riflessione/dettaglio).
-7. "location": Luogo fisico specifico.
-8. "characters": Array di nomi (es. ["Marco", "Clara"]).
-9. "isFlashback": true solo se è un salto nel passato rispetto alla scena corrente.
+ESEMPIO DI CALCOLO:
+- "10 Novembre 2026" -> (26 anni * 525.600) + (10 mesi * 43.800) + (10 giorni * 1.440) = circa 14.118.000.
+- "Un anno dopo" rispetto al 2026 -> 14.118.000 + 525.600 = 14.643.600.
 
-PROCESSO DI PENSIERO (Internal):
-Prima di generare il JSON, identifica mentalmente:
-- Chi è il protagonista della scena? 
-- Quali sono i marcatori temporali espliciti?
-- Qual è l'ordine logico corretto?
+REGOLE CRITICHE:
+- Se il testo dice "Un anno dopo la perdita" e la perdita è avvenuta nel 10 Nov 2026, l'evento deve avere un valore numerico SUPERIORE a quello del 2026.
+- Se un evento è un flashback (salto nel passato), isFlashback deve essere TRUE e il valore temporale deve essere logicamente inferiore al presente della scena.
 
-Restituisci ESCLUSIVAMENTE l'array JSON [ { ... }, { ... } ].`;
+STRUTTURA JSON:
+1. "title": Titolo specifico (max 5 parole).
+2. "summary": Descrizione azione (max 15 parole).
+3. "timeLabel": Marcatore testuale (es. "10 Novembre 2026").
+4. "estimatedStart": Numero intero (minuti assoluti dal 2000).
+5. "estimatedEnd": estimatedStart + durata (es. +60 per un incontro).
+6. "importance": "high", "medium", "low".
+7. "location": Luogo specifico.
+8. "characters": Array di nomi.
+9. "isFlashback": Boolean.
 
+REGOLE DI OUTPUT:
+Restituisci ESCLUSIVAMENTE l'array JSON [ { ... } ].`;
 
 export const timelineUtils = {
   async extractEvents(text: string, aiConfig: AIConfig): Promise<GlobalTimelineEvent[]> {
