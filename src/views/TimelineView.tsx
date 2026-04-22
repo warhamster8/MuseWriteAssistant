@@ -56,8 +56,17 @@ export const TimelineView: React.FC = () => {
         if (hasLegacyEvents) return true; 
         
         const currentText = cleanHtml(s.content || '').trim();
-        return currentText !== (s.last_analyzed_content || '').trim();
+        const hasText = currentText.length > 0;
+        
+        // Verifichiamo se questa scena (attiva) ha già degli eventi nella timeline
+        const hasEventsInTimeline = timelineEvents.some(e => e.sceneId === s.id);
+
+        // Analizziamo se:
+        // A. Il testo è cambiato
+        // B. La scena è attiva ma non ha eventi (es. appena re-inclusa o nuova)
+        return (currentText !== (s.last_analyzed_content || '').trim()) || (!hasEventsInTimeline && hasText);
       });
+
 
       if (scenesToAnalyze.length === 0 && !hasExcludedScenesToRemove && !hasLegacyEvents) {
         addToast("Nessuna modifica rilevata nel manoscritto dall'ultima analisi.", "info");
