@@ -61,15 +61,6 @@ export const Sidebar: React.FC = React.memo(() => {
             alt="Muse Logo" 
             className="w-full h-full object-contain logo-blend transition-all duration-1000 group-hover:scale-110 group-hover:rotate-3" 
           />
-          
-          {/* Theme Toggle Button */}
-          <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="absolute top-0 right-0 p-1.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-full text-[var(--accent)] shadow-xl hover:scale-110 transition-all opacity-0 group-hover:opacity-100"
-            title="Sostituisci Ambente"
-          >
-            {theme === 'dark' ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-          </button>
         </div>
       </div>
 
@@ -117,7 +108,25 @@ export const Sidebar: React.FC = React.memo(() => {
         ))}
       </nav>
 
-      <div className="pt-6 border-t border-white/5">
+      <div className="pt-6 border-t border-white/5 space-y-3">
+        <button
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="w-full h-12 flex items-center justify-center gap-3 bg-white/5 hover:bg-[var(--accent-soft)] text-[var(--text-secondary)] hover:text-[var(--accent)] rounded-2xl transition-all duration-500 text-[10px] font-black uppercase tracking-widest group border border-[var(--border-subtle)] hover:border-[var(--accent)]/30"
+          title={theme === 'dark' ? 'Passa al tema chiaro' : 'Passa al tema scuro'}
+        >
+          {theme === 'dark' ? (
+            <>
+              <Sun className="w-4 h-4 transition-transform group-hover:rotate-12" />
+              <span className="hidden xl:inline">Parchment Mode</span>
+            </>
+          ) : (
+            <>
+              <Moon className="w-4 h-4 transition-transform group-hover:-rotate-12" />
+              <span className="hidden xl:inline">Inkwell Mode</span>
+            </>
+          )}
+        </button>
+
         <button 
           onClick={handleLogout}
           className="w-full h-12 flex items-center justify-center gap-3 bg-red-500/5 hover:bg-red-500/10 text-red-400/50 hover:text-red-400 rounded-2xl transition-all duration-500 text-[10px] font-black uppercase tracking-widest group border border-transparent hover:border-red-500/20"
