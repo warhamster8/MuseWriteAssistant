@@ -508,21 +508,23 @@ Rispondi in italiano. Sii concreto e originale.`;
       </div>
 
 
-              <div className="flex bg-[var(--bg-card)]/50 p-1 rounded-full border border-[var(--border-subtle)] backdrop-blur-xl">
+          <div className="px-6 py-2">
+            <div className="grid grid-cols-3 gap-1.5 bg-[var(--bg-card)]/50 p-1.5 rounded-[24px] border border-[var(--border-subtle)] backdrop-blur-xl">
              {(['revision', 'grammar', 'braindump', 'transformer', 'lexicon'] as SidekickTab[]).map((tab) => (
                <button
                  key={tab}
                  onClick={() => setActiveTab(tab)}
-                 className={cn(
-                   "flex-1 py-2 px-3 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300",
-                   activeTab === tab 
-                     ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-lg scale-105" 
-                     : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-white/5"
-                 )}
+                  className={cn(
+                    "py-2 px-1 rounded-[18px] text-[8px] font-black uppercase tracking-widest transition-all duration-300 text-center",
+                    activeTab === tab 
+                      ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-lg scale-105" 
+                      : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-white/5"
+                  )}
                >
                  {tab === 'transformer' ? 'Stile' : tab}
                </button>
              ))}
+            </div>
           </div>
 
       <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide bg-black/20">
@@ -570,16 +572,25 @@ Rispondi in italiano. Sii concreto e originale.`;
                   <div className="p-2.5 bg-[var(--accent)]/10 rounded-xl">
                     <BookOpen className="w-4 h-4 text-[var(--accent)] shrink-0" />
                   </div>
-                  <button 
-                    onClick={() => setGlobalTab('config')}
-                    className="flex flex-col text-left group"
-                  >
-                    <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-tighter">Motore Attivo</span>
-                    <div className="flex items-center gap-1">
-                        <span className="text-[11px] text-[var(--text-secondary)] font-medium group-hover:text-[var(--accent)] transition-colors">{aiConfig.provider === 'groq' ? 'Llama 3.3 70B' : 'DeepSeek V3'}</span>
-                        <ChevronRight className="w-3 h-3 text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-all group-hover:translate-x-1" />
+                  <div className="flex flex-col text-left">
+                    <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-tighter mb-1">Motore Attivo</span>
+                    <div className="flex items-center gap-2">
+                      <select 
+                        value={aiConfig.provider}
+                        onChange={(e) => {
+                          const provider = e.target.value as any;
+                          const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-flash-latest' : 'deepseek-chat');
+                          useStore.getState().setAIConfig({ provider, model });
+                        }}
+                        className="bg-transparent text-[11px] text-[var(--text-secondary)] font-medium hover:text-[var(--accent)] transition-colors outline-none cursor-pointer border-none p-0 appearance-none"
+                      >
+                        <option value="groq" className="bg-[#1a1a1a]">Groq (Llama 3.3)</option>
+                        <option value="deepseek" className="bg-[#1a1a1a]">DeepSeek V3</option>
+                        <option value="gemini" className="bg-[#1a1a1a]">Gemini 3 Flash</option>
+                      </select>
+                      <ChevronRight className="w-3 h-3 text-[var(--text-muted)] opacity-50" />
                     </div>
-                  </button>
+                  </div>
                 </div>
                 <button 
                   onClick={handleConvertQuotes}
