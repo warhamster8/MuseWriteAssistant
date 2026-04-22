@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStore } from '../store/useStore';
 import { supabase } from '../lib/supabase';
-import { Settings, Cpu, Zap, ShieldCheck, Activity, Loader2, CheckCircle } from 'lucide-react';
+import { Settings, Cpu, Zap, ShieldCheck, Activity, Loader2, CheckCircle, Sun, Moon } from 'lucide-react';
 import { useToast } from '../components/Toast';
 import { deepseekService } from '../lib/deepseek';
 import { geminiService } from '../lib/gemini';
@@ -17,6 +17,8 @@ export const ConfigView: React.FC = React.memo(() => {
   const setAIConfig = useStore(s => s.setAIConfig);
   const authorName = useStore(s => s.authorName);
   const setAuthorName = useStore(s => s.setAuthorName);
+  const theme = useStore(s => s.theme);
+  const setTheme = useStore(s => s.setTheme);
   const { addToast } = useToast();
   const [testResult, setTestResult] = React.useState<any>(null);
   const [testGeminiResult, setTestGeminiResult] = React.useState<any>(null);
@@ -200,9 +202,45 @@ export const ConfigView: React.FC = React.memo(() => {
               <Activity className={cn("w-5 h-5", aiConfig.provider === 'gemini' ? "text-[#5be9b1]" : "text-slate-600")} />
               {aiConfig.provider === 'gemini' && <span className="text-[8px] font-black uppercase bg-[#5be9b1] text-black px-2 py-0.5 rounded">Active</span>}
             </div>
-            <h3 className="text-lg font-bold text-white uppercase tracking-tight">Gemini 1.5 Flash</h3>
+            <h3 className="text-lg font-bold text-white uppercase tracking-tight">Gemini 3 Flash</h3>
             <p className="text-[10px] text-slate-500 mt-2 font-medium uppercase tracking-widest">Context window enorme.</p>
           </button>
+        </div>
+
+        {/* APPEARANCE SECTION */}
+        <div className="bg-white/[0.02] p-10 rounded-[48px] border border-white/5 space-y-10">
+          <div className="flex items-center gap-4">
+            <Sun className="w-5 h-5 text-[#5be9b1]" />
+            <h3 className="text-xl font-bold text-white uppercase tracking-tight italic">Ambiente & Atmosfera</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <button
+              onClick={() => setTheme('dark')}
+              className={cn(
+                "p-8 rounded-[32px] border text-left transition-all group relative overflow-hidden",
+                theme === 'dark' ? "bg-[#5be9b1]/10 border-[#5be9b1]/30 shadow-lg" : "bg-white/[0.02] border-white/5 opacity-60 hover:opacity-100"
+              )}
+            >
+              <Moon className={cn("w-6 h-6 mb-4", theme === 'dark' ? "text-[#5be9b1]" : "text-slate-600")} />
+              <div className="text-lg font-bold text-white uppercase tracking-tight">Inkwell Mode</div>
+              <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest">Interfaccia scura per la massima concentrazione.</p>
+              {theme === 'dark' && <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#5be9b1] shadow-[0_0_10px_rgba(91,233,177,0.5)]" />}
+            </button>
+
+            <button
+              onClick={() => setTheme('light')}
+              className={cn(
+                "p-8 rounded-[32px] border text-left transition-all group relative overflow-hidden",
+                theme === 'light' ? "bg-[#5be9b1]/10 border-[#5be9b1]/30 shadow-lg" : "bg-white/[0.02] border-white/5 opacity-60 hover:opacity-100"
+              )}
+            >
+              <Sun className={cn("w-6 h-6 mb-4", theme === 'light' ? "text-[#5be9b1]" : "text-slate-600")} />
+              <div className="text-lg font-bold text-white uppercase tracking-tight">Parchment Mode</div>
+              <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest">Interfaccia chiara rilassante effetto carta.</p>
+              {theme === 'light' && <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#5be9b1] shadow-[0_0_10px_rgba(91,233,177,0.5)]" />}
+            </button>
+          </div>
         </div>
 
         {/* SECURITY & DIAGNOSTICS */}

@@ -52,13 +52,39 @@ export const DeepAnalysisView: React.FC = () => {
     setExpandedChapters(next);
   };
 
+  const [appliedSuggestions, setAppliedSuggestions] = useState<string[]>([]);
+  const [rejectedSuggestions, setRejectedSuggestions] = useState<string[]>([]);
+  const setCurrentSceneContent = useStore(s => s.setCurrentSceneContent);
+  const { updateSceneContent } = useNarrative();
+
+  const handleReject = (original: string) => {
+    setRejectedSuggestions(prev => [...prev, original]);
+  };
+
+  const applySuggestion = async (originalText: string, suggestion: string) => {
+    if (!selectedScene || !selectedScene.content) return;
+    
+    const content = selectedScene.content;
+    const cleanOriginalText = originalText.replace(/^(\.\.\.|…)+/, '').replace(/(\.\.\.|…)+$/, '').trim();
+    
+    if (content.includes(cleanOriginalText)) {
+      const newContent = content.replace(cleanOriginalText, suggestion);
+      setCurrentSceneContent(newContent);
+      await updateSceneContent(selectedScene.id, newContent);
+      setAppliedSuggestions(prev => [...prev, originalText]);
+      addToast('Modifica applicata al manoscritto', 'success');
+    } else {
+      addToast('Impossibile allineare il suggerimento nel testo', 'error');
+    }
+  };
+
   const handleProviderChange = (provider: 'groq' | 'deepseek' | 'gemini') => {
     if (provider === 'deepseek' && !aiConfig.deepseekKey) {
       addToast("DeepSeek key non trovata. Configurala in Project & AI", 'error');
       return;
     }
     setAIConfig({ provider });
-    addToast(`Motore: ${provider === 'groq' ? 'Groq' : 'DeepSeek'}`, 'success');
+    addToast(`Motore: ${provider.toUpperCase()}`, 'success');
   };
 
   const runAnalysis = async (customQuery?: string) => {
@@ -69,13 +95,23 @@ export const DeepAnalysisView: React.FC = () => {
 
     setIsAnalyzing(true);
     setAnalysis('');
+    setAppliedSuggestions([]);
+    setRejectedSuggestions([]);
     
-    let prompt = customQuery || "Analizza questa scena in profondità.";
+    let prompt = customQuery || "Esegui un'analisi critica e suggerisci miglioramenti concreti.";
     
-    const systemPrompt = `Sei un esperto analista letterario. Analizzerai la scena fornita per fornire un'analisi di contesto approfondita. 
-    ${instructions ? `Segui queste istruzioni specifiche dell'utente: "${instructions}"` : ''}
-    Usa un tono professionale, acuto e costruttivo. 
-    Formatta l'output in modo strutturato.`;
+    const systemPrompt = `Sei un editor letterario di altissimo livello. 
+Il tuo compito è analizzare il testo e proporre miglioramenti CONCRETI e APPLICABILI.
+
+FORMATO SUGGERIMENTI (Obbligatorio per modifiche al testo):
+❌ Frase originale esatta
+✅ Nuova versione suggerita
+🏷️ Categoria (Stile, Ritmo, Dialogo, ecc.)
+💡 Spiegazione del perché il cambiamento è necessario
+
+Oltre ai suggerimenti diretti (❌/✅), fornisci analisi critiche generali usando i titoli ##.
+${instructions ? `Istruzioni specifiche dell'utente: "${instructions}"` : ''}
+Sii acuto, onesto e punta all'eccellenza narrativa.`;
 
     let textToAnalyze = getPlainTextForAI(selectedScene.content || '');
     if (textToAnalyze.length > 25000) textToAnalyze = textToAnalyze.substring(0, 25000);
@@ -262,7 +298,15 @@ export const DeepAnalysisView: React.FC = () => {
               {analysis ? (
                 <div className="space-y-8 max-w-4xl mx-auto">
                    <div className="p-8 bg-[var(--accent-soft)] border border-[var(--accent)]/10 rounded-[32px] shadow-inner animate-in slide-in-from-bottom-4">
-                      <StructuredOutput text={analysis} isAnalyzing={isAnalyzing} />
+                       <StructuredOutput 
+                        text={analysis} 
+                        isAnalyzing={isAnalyzing} 
+                        onApply={applySuggestion}
+                        onReject={handleReject}
+                        appliedSuggestions={appliedSuggestions}
+                        rejectedSuggestions={rejectedSuggestions}
+                        fullView={true}
+                       />
                    </div>
                 </div>
               ) : (
