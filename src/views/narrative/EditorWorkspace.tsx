@@ -26,7 +26,6 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
   const setNavigatorOpen = useStore(s => s.setNavigatorOpen);
   const isZenMode = useStore(s => s.isZenMode);
   const setZenMode = useStore(s => s.setZenMode);
-  const theme = useStore(s => s.theme);
 
   return (
     <div className="flex-1 min-w-0 flex flex-col bg-[var(--bg-surface)] relative overflow-hidden animate-in fade-in duration-500">

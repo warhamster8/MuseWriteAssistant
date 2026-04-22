@@ -15,6 +15,7 @@ import { useToast } from '../components/Toast';
 import { cn } from '../lib/utils';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import { GripVertical } from 'lucide-react';
+import { useStore } from '../store/useStore';
 
 export const NotesView: React.FC = () => {
   const { notes, addNote, updateNote, deleteNote, reorderNotes, loading } = useNotes();

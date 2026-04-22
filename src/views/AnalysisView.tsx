@@ -56,7 +56,6 @@ export const AnalysisView: React.FC = React.memo(() => {
   const chapters = useStore(s => s.chapters);
   const { characters } = useCharacters();
   const [activeAnalysisTab, setActiveAnalysisTab] = React.useState<'overview' | 'chronology'>('overview');
-  const theme = useStore(s => s.theme);
 
   // ─── Data Aggregation ──────────────────────────────────────────────────────
   const stats = useMemo(() => {
