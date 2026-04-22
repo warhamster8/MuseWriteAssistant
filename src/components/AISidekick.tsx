@@ -37,7 +37,7 @@ export const AISidekick: React.FC = React.memo(() => {
   const setSceneAnalysis = useStore(s => s.setSceneAnalysis);
   const activeSelection = useStore(s => s.activeSelection);
   const aiConfig = useStore(s => s.aiConfig);
-  const setGlobalTab = useStore(s => s.setActiveTab);
+
   const setSidekickOpen = useStore(s => s.setSidekickOpen);
   
   const { updateSceneContent } = useNarrative();
