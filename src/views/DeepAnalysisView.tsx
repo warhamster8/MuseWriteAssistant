@@ -140,7 +140,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
     <div className="flex h-full gap-4 relative animate-in fade-in duration-700">
       {/* Colonna Sinistra: Selettore Scene */}
       <div className="w-80 flex-shrink-0 glass rounded-[40px] flex flex-col border border-[var(--border-subtle)] overflow-hidden shadow-2xl">
-        <div className="p-8 border-b border-[var(--border-subtle)] bg-white/[0.01]">
+        <div className="p-8 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/10">
           <div className="flex items-center gap-4 mb-2">
             <div className="p-2.5 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/20">
               <ScanSearch className="w-6 h-6 text-[var(--accent)]" />
@@ -159,7 +159,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
                 onClick={() => toggleChapter(chapter.id)}
                 className={cn(
                   "flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all border",
-                  expandedChapters.has(chapter.id) ? "bg-white/5 border-[var(--border-subtle)]" : "border-transparent hover:bg-white/[0.02]"
+                  expandedChapters.has(chapter.id) ? "bg-[var(--accent-soft)] border-[var(--border-subtle)]" : "border-transparent hover:bg-[var(--bg-surface)]/20"
                 )}
               >
                 {expandedChapters.has(chapter.id) ? <ChevronDown className="w-3.5 h-3.5 text-[var(--accent)]" /> : <ChevronRight className="w-3.5 h-3.5 text-[var(--text-secondary)]" />}
@@ -168,7 +168,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
               </div>
 
               {expandedChapters.has(chapter.id) && (
-                <div className="pl-6 space-y-1 border-l border-white/5 ml-4">
+                <div className="pl-6 space-y-1 border-l border-[var(--border-subtle)] ml-4">
                   {chapter.scenes?.map(scene => (
                     <div 
                       key={scene.id}
@@ -177,7 +177,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
                         "flex items-center gap-3 p-2.5 rounded-xl cursor-pointer transition-all border",
                         selectedSceneId === scene.id 
                           ? "bg-[var(--accent)] text-[var(--bg-deep)] border-transparent shadow-lg shadow-[var(--accent-soft)]" 
-                          : "text-[var(--text-secondary)] hover:bg-white/5 border-transparent"
+                          : "text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] border-transparent"
                       )}
                     >
                       <FileText className="w-3.5 h-3.5 opacity-50" />
@@ -193,7 +193,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
 
       {/* Colonna Destra: Analizzatore IA */}
       <div className="flex-1 glass rounded-[40px] flex flex-col border border-[var(--border-subtle)] overflow-hidden shadow-2xl relative">
-        <div className="p-8 border-b border-[var(--border-subtle)] flex items-center justify-between bg-white/[0.01]">
+        <div className="p-8 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/10">
           <div className="flex items-center gap-6">
             <div className="flex flex-col">
               <h2 className="text-2xl font-black tracking-tighter text-[var(--text-bright)] uppercase italic">Deep Analysis</h2>
@@ -215,7 +215,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
                   "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
                   aiConfig.provider === 'groq' 
                     ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-lg shadow-[var(--accent-soft)]" 
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-white/5"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-[var(--accent-soft)]"
                 )}
               >
                 <Zap className="w-3 h-3" />
@@ -227,7 +227,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
                   "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
                   aiConfig.provider === 'deepseek' 
                     ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-lg shadow-[var(--accent-soft)]" 
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-white/5"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-[var(--accent-soft)]"
                 )}
               >
                 <Cpu className="w-3 h-3" />
@@ -239,7 +239,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
                   "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
                   aiConfig.provider === 'gemini' 
                     ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-lg shadow-[var(--accent-soft)]" 
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-white/5"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-[var(--accent-soft)]"
                 )}
               >
                 <Activity className="w-3 h-3" />
@@ -247,7 +247,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
               </button>
             </div>
 
-            <div className="w-[1px] h-8 bg-white/5" />
+            <div className="w-[1px] h-8 bg-[var(--accent-soft)]" />
 
             <div className="flex items-center gap-4">
               {isAnalyzing && (
@@ -271,7 +271,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
         <div className="flex-1 overflow-y-auto p-12 space-y-10 scrollbar-hide">
           {!selectedScene ? (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-6 opacity-30">
-               <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center border border-[var(--border-subtle)]">
+               <div className="w-24 h-24 rounded-full bg-[var(--accent-soft)] flex items-center justify-center border border-[var(--border-subtle)]">
                   <ScanSearch className="w-10 h-10 text-[var(--text-bright)]" />
                </div>
                <div>
@@ -288,7 +288,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
                    <span className="text-[10px] font-black uppercase tracking-[0.3em]">Istruzioni Specifiche per l'Indagine</span>
                 </div>
                 <textarea 
-                  className="w-full h-24 bg-black/10 border border-[var(--border-subtle)] rounded-[28px] p-6 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/30 focus:bg-white/[0.04] transition-all resize-none shadow-inner placeholder:text-[var(--text-muted)]"
+                  className="w-full h-24 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-[28px] p-6 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/30 focus:bg-white/[0.04] transition-all resize-none shadow-inner placeholder:text-[var(--text-muted)]"
                   placeholder="Es: Focalizzati sulla tensione tra i due protagonisti, o analizza se il finale è coerente con la premessa..."
                   value={instructions}
                   onChange={(e) => setInstructions(e.target.value)}
@@ -313,14 +313,14 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-6 opacity-40 py-20">
                   {isAnalyzing ? (
                     <>
-                      <div className="w-16 h-16 rounded-full border-2 border-[#5be9b1]/20 border-t-[#5be9b1] animate-spin mb-4" />
-                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5be9b1] animate-pulse">Sincronizzazione Modulo IA...</p>
-                      <p className="text-[9px] text-slate-600 uppercase tracking-widest">L'elaborazione profonda può richiedere alcuni secondi</p>
+                      <div className="w-16 h-16 rounded-full border-2 border-[var(--accent)]/20 border-t-[var(--accent)] animate-spin mb-4" />
+                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)] animate-pulse">Sincronizzazione Modulo IA...</p>
+                      <p className="text-[9px] text-[var(--text-muted)] uppercase tracking-widest">L'elaborazione profonda può richiedere alcuni secondi</p>
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-12 h-12 text-[#5be9b1] animate-pulse" />
-                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">Avvia il modulo di scansione per approfondire questo segmento</p>
+                      <Sparkles className="w-12 h-12 text-[var(--accent)] animate-pulse" />
+                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--text-secondary)]">Avvia il modulo di scansione per approfondire questo segmento</p>
                     </>
                   )}
                 </div>
@@ -329,7 +329,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
           )}
         </div>
 
-        <div className="p-8 border-t border-[var(--border-subtle)] bg-black/20 backdrop-blur-xl">
+        <div className="p-8 border-t border-[var(--border-subtle)] bg-[var(--bg-deep)] backdrop-blur-xl">
            <div className="max-w-4xl mx-auto relative group">
               <input 
                 type="text"
@@ -352,7 +352,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
                   }
                 }}
                 disabled={!selectedScene || !query.trim() || isAnalyzing}
-                className="absolute right-4 top-1/2 -translate-y-1/2 px-6 py-3 bg-white/5 hover:bg-[var(--accent-soft)] text-[var(--text-secondary)] hover:text-[var(--accent)] rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all border border-transparent hover:border-[var(--accent)]/30 disabled:opacity-0"
+                className="absolute right-4 top-1/2 -translate-y-1/2 px-6 py-3 bg-[var(--accent-soft)] hover:bg-[var(--accent-soft)] text-[var(--text-secondary)] hover:text-[var(--accent)] rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all border border-transparent hover:border-[var(--accent)]/30 disabled:opacity-0"
               >
                 Invia Indagine
               </button>

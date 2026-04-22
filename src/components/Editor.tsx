@@ -59,6 +59,7 @@ const CustomShortcuts = Extension.create({
 export const Editor: React.FC<{ initialContent: string; onChange: (content: string) => void }> = React.memo(({ initialContent, onChange }) => {
   const isExternallyUpdating = React.useRef(false);
   const setActiveSelection = useStore(s => s.setActiveSelection);
+  const theme = useStore(s => s.theme);
   const [showDropCapMenu, setShowDropCapMenu] = React.useState(false);
   const dropCapRef = React.useRef<HTMLDivElement>(null);
 
@@ -176,96 +177,96 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
         <div className="flex items-center gap-1 px-1">
           <button
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive('bold') ? 'bg-[var(--accent)] text-[var(--bg-deep)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive('bold') ? 'bg-[var(--accent)] text-[var(--bg-deep)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Grassetto"
           >
             <Bold className="w-4 h-4" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive('italic') ? 'bg-[var(--accent)] text-[var(--bg-deep)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive('italic') ? 'bg-[var(--accent)] text-[var(--bg-deep)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Corsivo"
           >
             <Italic className="w-4 h-4" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive('underline') ? 'bg-[var(--accent)] text-[var(--bg-deep)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive('underline') ? 'bg-[var(--accent)] text-[var(--bg-deep)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Sottolineato"
           >
             <UnderlineIcon className="w-4 h-4" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive('strike') ? 'bg-[var(--accent)] text-[var(--bg-deep)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive('strike') ? 'bg-[var(--accent)] text-[var(--bg-deep)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Barrato"
           >
             <Strikethrough className="w-4 h-4" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleHighlight().run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive('highlight') ? 'bg-[var(--accent)]/20 text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive('highlight') ? 'bg-[var(--accent)]/20 text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Evidenziatore"
           >
             <Highlighter className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="w-px h-6 bg-white/10 mx-1" />
+        <div className="w-px h-6 bg-[var(--accent-soft)] mx-1" />
 
         {/* Headings */}
         <div className="flex items-center gap-1 px-1">
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive('heading', { level: 1 }) ? 'bg-white/10 text-[var(--accent)] shadow-glow-mint' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive('heading', { level: 1 }) ? 'bg-[var(--accent-soft)] text-[var(--accent)] shadow-glow-mint' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Titolo 1"
           >
             <Heading1 className="w-4 h-4" />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive('heading', { level: 2 }) ? 'bg-white/10 text-[var(--accent)] shadow-glow-mint' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive('heading', { level: 2 }) ? 'bg-[var(--accent-soft)] text-[var(--accent)] shadow-glow-mint' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Titolo 2"
           >
             <Heading2 className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="w-px h-6 bg-white/10 mx-1" />
+        <div className="w-px h-6 bg-[var(--accent-soft)] mx-1" />
 
         {/* Alignment */}
         <div className="flex items-center gap-1 px-1">
           <button
             onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive({ textAlign: 'left' }) ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive({ textAlign: 'left' }) ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Allinea a sinistra"
           >
             <AlignLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive({ textAlign: 'center' }) ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive({ textAlign: 'center' }) ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Allinea al centro"
           >
             <AlignCenter className="w-4 h-4" />
           </button>
           <button
             onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive({ textAlign: 'right' }) ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive({ textAlign: 'right' }) ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Allinea a destra"
           >
             <AlignRight className="w-4 h-4" />
           </button>
           <button
             onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive({ textAlign: 'justify' }) ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive({ textAlign: 'justify' }) ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
             title="Giustificato"
           >
             <AlignJustify className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="w-px h-6 bg-white/10 mx-1" />
+        <div className="w-px h-6 bg-[var(--accent-soft)] mx-1" />
 
         {/* Drop Cap Special */}
         <div className="relative" ref={dropCapRef}>
@@ -275,7 +276,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
               "p-2 rounded-lg transition-all",
               editor.getAttributes('paragraph').dropCap !== 'none' || showDropCapMenu
                 ? 'text-[var(--accent)] bg-[var(--accent-soft)]' 
-                : 'text-[var(--text-secondary)] hover:bg-white/5'
+                : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]'
             )}
             title="Capolettera"
           >
@@ -293,7 +294,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                   "px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
                   editor.getAttributes('paragraph').dropCap === 'classic' 
                     ? 'bg-[var(--accent)] text-[var(--bg-deep)]' 
-                    : 'text-[var(--text-secondary)] hover:bg-white/5 hover:text-[var(--text-bright)]'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-bright)]'
                 )}
               >
                 Classico
@@ -307,12 +308,12 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                   "px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
                   editor.getAttributes('paragraph').dropCap === 'modern' 
                     ? 'bg-[var(--accent)] text-[var(--bg-deep)]' 
-                    : 'text-[var(--text-secondary)] hover:bg-white/5 hover:text-[var(--text-bright)]'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-bright)]'
                 )}
               >
                 Moderno
               </button>
-              <div className="w-[1px] h-4 bg-white/10 mx-1" />
+              <div className="w-[1px] h-4 bg-[var(--accent-soft)] mx-1" />
               <button
                 onClick={() => {
                   editor.chain().focus().updateAttributes('paragraph', { dropCap: 'none' }).run();
@@ -331,7 +332,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
         <div className="ml-2 flex items-center gap-1">
           <button
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={cn("p-2 rounded-lg transition-all", editor.isActive('bulletList') ? 'bg-white/10 text-[var(--text-bright)]' : 'text-[var(--text-secondary)] hover:bg-white/5')}
+            className={cn("p-2 rounded-lg transition-all", editor.isActive('bulletList') ? 'bg-[var(--accent-soft)] text-[var(--text-bright)]' : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]')}
           >
             <List className="w-4 h-4" />
           </button>

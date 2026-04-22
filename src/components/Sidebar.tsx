@@ -69,7 +69,7 @@ export const Sidebar: React.FC = React.memo(() => {
           onClick={() => setCurrentProject(null)}
           className="w-full text-left group"
         >
-          <div className="glass-emerald rounded-[32px] p-5 border border-[var(--border-subtle)] group-hover:border-[var(--accent)]/40 transition-all hover:translate-x-1 shadow-lg">
+          <div className="bg-[var(--accent-soft)] rounded-[32px] p-5 border border-[var(--border-subtle)] group-hover:border-[var(--accent)]/40 transition-all hover:translate-x-1 shadow-lg">
             <div className="flex items-center gap-2 text-[9px] text-[var(--text-secondary)] uppercase font-black mb-1.5 tracking-[0.3em]">
               <Library className="w-3.5 h-3.5 text-[var(--accent)]" />
               <span className="hidden xl:inline">Project Nexus</span>
@@ -94,13 +94,13 @@ export const Sidebar: React.FC = React.memo(() => {
               "w-full flex items-center space-x-3 px-5 py-3 rounded-[24px] transition-all duration-500 group relative overflow-hidden",
               activeTab === item.id 
                 ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-[0_15px_30px_-5px_rgba(var(--accent),0.3)] scale-105" 
-                : "text-[var(--text-secondary)] hover:bg-white/5 hover:text-[var(--text-bright)]"
+                : "text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-bright)]"
             )}
 
           >
 
             {activeTab === item.id && (
-              <div className="absolute inset-0 bg-white/10 animate-pulse" />
+              <div className="absolute inset-0 bg-[var(--accent-soft)] animate-pulse" />
             )}
             <item.icon className={cn("w-4 h-4 transition-all duration-500 z-10 flex-shrink-0", activeTab === item.id ? "text-[var(--bg-deep)] scale-110" : "group-hover:text-[var(--accent)]")} />
             <span className="text-[11px] font-black uppercase tracking-widest z-10 hidden xl:inline truncate">{item.label}</span>
@@ -108,10 +108,10 @@ export const Sidebar: React.FC = React.memo(() => {
         ))}
       </nav>
 
-      <div className="pt-6 border-t border-white/5 space-y-3">
+      <div className="pt-6 border-t border-[var(--border-subtle)] space-y-3">
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="w-full h-12 flex items-center justify-center gap-3 bg-white/5 hover:bg-[var(--accent-soft)] text-[var(--text-secondary)] hover:text-[var(--accent)] rounded-2xl transition-all duration-500 text-[10px] font-black uppercase tracking-widest group border border-[var(--border-subtle)] hover:border-[var(--accent)]/30"
+          className="w-full h-12 flex items-center justify-center gap-3 bg-[var(--bg-surface)]/20 hover:bg-[var(--accent-soft)] text-[var(--text-secondary)] hover:text-[var(--accent)] rounded-2xl transition-all duration-500 text-[10px] font-black uppercase tracking-widest group border border-[var(--border-subtle)] hover:border-[var(--accent)]/30"
           title={theme === 'dark' ? 'Passa al tema chiaro' : 'Passa al tema scuro'}
         >
           {theme === 'dark' ? (

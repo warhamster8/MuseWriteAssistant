@@ -13,9 +13,9 @@
   --bg-card: #1a1e23;
   --bg-sidebar: #090c0f;
   
-  --accent: #5be9b1;
+  --accent: var(--accent);
   --accent-hover: #4ade80;
-  --accent-soft: rgba(91, 233, 177, 0.1);
+  --accent-soft: rgba(45, 106, 79, 0.1);
   
   --text-bright: #f8fafc;
   --text-primary: #cbd5e1;
@@ -113,7 +113,7 @@
 }
 
 .shadow-glow-mint {
-  box-shadow: 0 0 40px -10px rgba(91, 233, 177, 0.2);
+  box-shadow: 0 0 40px -10px rgba(45, 106, 79, 0.2);
 }
 
 /* TipTap Editor Styling: Immersion Focused */
@@ -146,21 +146,21 @@
 
 /* Utility Animations */
 .hover-float {
-  @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-[#5be9b1]/30;
+  @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-[var(--accent)]/30;
 }
 
 .logo-blend {
-    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 30px rgba(91, 233, 177, 0.3));
+    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 30px rgba(45, 106, 79, 0.3));
 }
 
 .logo-glow {
-    background: radial-gradient(circle at center, rgba(91, 233, 177, 0.15) 0%, rgba(91, 233, 177, 0.05) 50%, transparent 80%);
+    background: radial-gradient(circle at center, rgba(45, 106, 79, 0.15) 0%, rgba(45, 106, 79, 0.05) 50%, transparent 80%);
 }
 
 /* Suggestion Highlighting */
 .suggestion-highlight-pulse {
-  background-color: rgba(91, 233, 177, 0.15);
-  border-bottom: 2px solid rgba(91, 233, 177, 0.6);
+  background-color: rgba(45, 106, 79, 0.15);
+  border-bottom: 2px solid rgba(45, 106, 79, 0.6);
   border-radius: 4px;
   animation: emerald-glow-pulse 2s infinite ease-in-out;
   cursor: pointer;
@@ -168,12 +168,12 @@
 }
 
 .suggestion-highlight-pulse:hover {
-  background-color: rgba(91, 233, 177, 0.25);
-  border-bottom-color: rgba(91, 233, 177, 1);
+  background-color: rgba(45, 106, 79, 0.25);
+  border-bottom-color: rgba(45, 106, 79, 1);
 }
 
 @keyframes emerald-glow-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(91, 233, 177, 0); }
-  50% { box-shadow: 0 0 15px 2px rgba(91, 233, 177, 0.2); }
-  100% { box-shadow: 0 0 0 0 rgba(91, 233, 177, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); }
+  50% { box-shadow: 0 0 15px 2px rgba(45, 106, 79, 0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); }
 }

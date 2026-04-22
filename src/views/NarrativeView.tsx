@@ -134,7 +134,7 @@ export const NarrativeView: React.FC = React.memo(() => {
   };
 
   return (
-    <div className="flex h-full overflow-hidden animate-in fade-in duration-700 bg-black/20">
+    <div className="flex h-full overflow-hidden animate-in fade-in duration-700 bg-[var(--bg-deep)]">
       {/* Mattoncino: Navigazione */}
       <AnimatePresence>
         {isNavigatorOpen && !isZenMode && (
