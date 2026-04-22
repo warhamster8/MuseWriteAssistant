@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  GitCommit, 
-  AlertTriangle, 
   RefreshCw, 
   Clock, 
   Zap,
-  Info,
   ChevronRight,
   Calendar
 } from 'lucide-react';

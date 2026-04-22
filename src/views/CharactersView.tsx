@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Plus, User, Users, FileText, Brain, TrendingUp, MessageSquare, Camera, Trash2, Crown, Sword, ShieldAlert, Sparkles } from 'lucide-react';
+import { Plus, User, Users, FileText, Brain, TrendingUp, MessageSquare, Camera, Trash2, Crown, Sword } from 'lucide-react';
 import { useCharacters } from '../hooks/useCharacters';
 import { cn } from '../lib/utils';
 import { groqService } from '../lib/groq';

@@ -3,14 +3,11 @@ import {
   ScanSearch, 
   ChevronDown, 
   ChevronRight, 
-  FileText, 
   Folder, 
   Zap, 
   MessageSquare,
-  Sparkles,
   RefreshCw,
-  Cpu,
-  Activity
+  Cpu
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useNarrative } from '../hooks/useNarrative';
