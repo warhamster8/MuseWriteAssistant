@@ -479,27 +479,27 @@ Rispondi in italiano. Sii concreto e originale.`;
   const currentLastPhrase = activeSceneId ? lastAnalyzedPhrase[`${activeSceneId}-${activeTab}`] : null;
 
   return (
-    <div className="w-72 xl:w-80 h-full glass-dark rounded-[40px] flex-shrink-0 flex flex-col shadow-[0_0_50px_rgba(0,0,0,0.5)] z-20 transition-all duration-500 overflow-hidden relative border-white/10">
-      <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/[0.01]">
+    <div className="w-72 xl:w-80 h-full glass rounded-[40px] flex-shrink-0 flex flex-col shadow-premium z-20 transition-all duration-500 overflow-hidden relative border-[var(--border-subtle)]">
+      <div className="p-8 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/30">
         <div className="flex items-center space-x-4">
-          <div className="p-2.5 bg-[#5be9b1]/10 rounded-2xl border border-[#5be9b1]/20">
-             <Sparkles className="w-6 h-6 text-[#5be9b1]" />
+          <div className="p-2.5 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/20 shadow-glow-mint">
+             <Sparkles className="w-6 h-6 text-[var(--accent)]" />
           </div>
           <div>
-            <h2 className="text-lg font-black tracking-tight text-white leading-tight">AI Companion</h2>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-700">Analisi In Tempo Reale</p>
+            <h2 className="text-lg font-black tracking-tight text-[var(--text-bright)] leading-tight">AI Companion</h2>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)]">Analisi In Tempo Reale</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           {isAnalyzing && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#5be9b1]/5 border border-[#5be9b1]/20 animate-pulse">
-              <RefreshCw className="w-3 h-3 animate-spin text-[#5be9b1]" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--accent-soft)] border border-[var(--accent)]/20 animate-pulse">
+              <RefreshCw className="w-3 h-3 animate-spin text-[var(--accent)]" />
             </div>
           )}
           
           <button 
             onClick={() => setSidekickOpen(false)}
-            className="p-2.5 text-slate-700 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
+            className="p-2.5 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
             title="Chiudi Companion"
           >
             <X className="w-5 h-5" />
@@ -527,7 +527,7 @@ Rispondi in italiano. Sii concreto e originale.`;
             </div>
           </div>
 
-      <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide bg-black/20">
+      <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide bg-[var(--bg-deep)]/30">
         {activeTab === 'revision' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">

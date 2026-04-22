@@ -29,23 +29,23 @@
 
 [data-theme='light'] {
   /* Semantic Variables - LIGHT (Parchment) */
-  --bg-deep: #FCFAF7;
+  --bg-deep: #F8F5F2;
   --bg-surface: #FFFFFF;
-  --bg-card: #fdfdfd;
-  --bg-sidebar: #F5F2EE;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-sidebar: #EFEDE9;
   
   --accent: #2D6A4F;
   --accent-hover: #1B4332;
-  --accent-soft: rgba(45, 106, 79, 0.1);
+  --accent-soft: rgba(45, 106, 79, 0.08);
   
   --text-bright: #1A202C;
   --text-primary: #2D3748;
-  --text-secondary: #718096;
+  --text-secondary: #4A5568;
   --text-muted: #A0AEC0;
   
-  --border-subtle: rgba(0, 0, 0, 0.08);
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-blur: 20px;
+  --border-subtle: rgba(45, 106, 79, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.5);
+  --glass-blur: 25px;
 }
 
 @layer base {
