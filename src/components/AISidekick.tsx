@@ -595,7 +595,7 @@ Rispondi in italiano. Sii concreto e originale.`;
                       >
                         <option value="groq" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Groq (Llama 3.3)</option>
                         <option value="deepseek" className="bg-[var(--bg-card)] text-[var(--text-primary)]">DeepSeek V3</option>
-                        <option value="gemini" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Gemini 3 Flash</option>
+                        <option value="gemini" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Gemini 1.5 Flash</option>
                       </select>
                       <ChevronRight className="w-3 h-3 text-[var(--text-muted)] opacity-50" />
                     </div>

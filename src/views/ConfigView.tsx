@@ -202,7 +202,7 @@ export const ConfigView: React.FC = React.memo(() => {
               <Activity className={cn("w-5 h-5", aiConfig.provider === 'gemini' ? "text-[#5be9b1]" : "text-slate-600")} />
               {aiConfig.provider === 'gemini' && <span className="text-[8px] font-black uppercase bg-[#5be9b1] text-black px-2 py-0.5 rounded">Active</span>}
             </div>
-            <h3 className="text-lg font-bold text-white uppercase tracking-tight">Gemini 3 Flash</h3>
+            <h3 className="text-lg font-bold text-white uppercase tracking-tight">Gemini 1.5 Flash</h3>
             <p className="text-[10px] text-slate-500 mt-2 font-medium uppercase tracking-widest">Context window enorme.</p>
           </button>
         </div>
