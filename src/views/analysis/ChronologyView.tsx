@@ -3,12 +3,15 @@ import { useStore } from '../../store/useStore';
 import { useTimeline } from '../../hooks/useTimeline';
 import { GanttSceneRow } from '../../components/analysis/GanttSceneRow';
 import { Calendar, RefreshCw, Zap } from 'lucide-react';
-import type { TimelineEvent } from '../../types/narrative';
+import type { SceneTimelineEvent } from '../../types/timeline';
+
+
 
 export const ChronologyView: React.FC = () => {
   const { chapters } = useStore();
   const { generateTimeline, isGenerating } = useTimeline();
-  const [selectedEvent, setSelectedEvent] = React.useState<TimelineEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = React.useState<SceneTimelineEvent | null>(null);
+
 
   const allScenes = React.useMemo(() => 
     chapters.flatMap(c => c.scenes || [])

@@ -1,19 +1,7 @@
-import { groqService } from './groq';
+import type { GlobalTimelineEvent } from '../types/timeline';
+import { aiService, type AIConfig } from './aiService';
 
-export interface TimelineEvent {
-  id: string;
-  title: string;
-  summary: string;
-  timeLabel: string;
-  estimatedStart: number; 
-  estimatedEnd: number;
-  importance: 'low' | 'medium' | 'high';
-  location?: string;
-  characters?: string[];
-  isFlashback?: boolean;
-  isConflict?: boolean;
-  conflictingWith?: string[]; 
-}
+
 
 const SYSTEM_PROMPT = `Sei un esperto cronologista letterario. Il tuo compito è analizzare il testo fornito ed estrarre la sequenza temporale degli eventi.
 
@@ -34,25 +22,30 @@ REGOLE CRITICHE:
 - Restituisci ESCLUSIVAMENTE un array JSON.`;
 
 export const timelineUtils = {
-  async extractEvents(text: string): Promise<TimelineEvent[]> {
-    const messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: `Analizza questo testo ed estrai la timeline in formato JSON:\n\n${text}` }
-    ];
-
+  async extractEvents(text: string, aiConfig: AIConfig): Promise<GlobalTimelineEvent[]> {
     try {
-      const response = await groqService.getChatCompletion(messages, 'llama-3.3-70b-versatile', 0.1);
-      const content = response.choices[0]?.message?.content || '[]';
-      
-      const jsonStart = content.indexOf('[');
-      const jsonEnd = content.lastIndexOf(']') + 1;
-      
-      if (jsonStart === -1 || jsonEnd === 0) {
-        throw new Error('Nessun JSON valido trovato nella risposta AI');
+      let fullResponse = '';
+      await aiService.streamChat(
+        aiConfig,
+        [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: `Analizza questo testo ed estrai la timeline in formato JSON:\n\n${text}` }
+        ],
+        (chunk) => {
+          fullResponse += chunk;
+        }
+      );
+
+      const jsonMatch = fullResponse.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) {
+         throw new Error('Nessun JSON valido trovato nella risposta AI');
       }
 
-      const jsonStr = content.substring(jsonStart, jsonEnd);
-      const events = JSON.parse(jsonStr);
+      const events = JSON.parse(jsonMatch[0]);
+      
+      if (!Array.isArray(events)) {
+        throw new Error('La risposta AI non è un array di eventi');
+      }
       
       return events.map((e: any, i: number) => ({
         ...e,
@@ -60,11 +53,12 @@ export const timelineUtils = {
       }));
     } catch (err) {
       console.error('[TIMELINE] Errore estrazione:', err);
-      return [];
+      throw err;
     }
   },
 
-  detectOverlaps(events: TimelineEvent[]): Record<string, string[]> {
+  detectOverlaps(events: GlobalTimelineEvent[]): Record<string, string[]> {
+
     const conflictMap: Record<string, string[]> = {};
     const sorted = [...events].sort((a, b) => a.estimatedStart - b.estimatedStart);
 

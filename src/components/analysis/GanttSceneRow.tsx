@@ -1,11 +1,13 @@
-import type { TimelineEvent } from '../../types/narrative';
+import type { SceneTimelineEvent } from '../../types/timeline';
+
+
 import { cn } from '../../lib/utils';
 import { Clock } from 'lucide-react';
 
 interface GanttSceneRowProps {
   sceneTitle: string;
-  events: TimelineEvent[];
-  onEventClick?: (event: TimelineEvent) => void;
+  events: SceneTimelineEvent[];
+  onEventClick?: (event: SceneTimelineEvent) => void;
 }
 
 export const GanttSceneRow: React.FC<GanttSceneRowProps> = ({ sceneTitle, events, onEventClick }) => {

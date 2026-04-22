@@ -2,7 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Chapter } from '../types/narrative';
 import type { AIConfig } from '../lib/aiService';
-import type { TimelineEvent } from '../lib/timelineUtils';
+import type { GlobalTimelineEvent } from '../types/timeline';
+
+
 
 export type ViewTab = 'narrative' | 'characters' | 'world' | 'notes' | 'analysis' | 'config' | 'timeline';
 
@@ -35,7 +37,7 @@ interface AppState {
   isSidekickOpen: boolean;
   isNavigatorOpen: boolean;
   isZenMode: boolean;
-  timelineEvents: TimelineEvent[];
+  timelineEvents: GlobalTimelineEvent[];
   
   activeSelection: string | null;
   highlightedText: string | null;
@@ -63,7 +65,7 @@ interface AppState {
   setSidekickOpen: (open: boolean) => void;
   setNavigatorOpen: (open: boolean) => void;
   setZenMode: (enabled: boolean) => void;
-  setTimelineEvents: (events: TimelineEvent[]) => void;
+  setTimelineEvents: (events: GlobalTimelineEvent[]) => void;
 }
 
 export const useStore = create<AppState>()(

@@ -10,31 +10,39 @@ import {
   Calendar
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { timelineUtils, type TimelineEvent } from '../lib/timelineUtils';
+import { timelineUtils } from '../lib/timelineUtils';
+import type { GlobalTimelineEvent } from '../types/timeline';
+
+import { useToast } from '../components/Toast';
 import { cleanHtml } from '../lib/analysisUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
+
 
 export const TimelineView: React.FC = () => {
   const chapters = useStore(s => s.chapters);
   const timelineEvents = useStore(s => s.timelineEvents);
   const setTimelineEvents = useStore(s => s.setTimelineEvents);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const aiConfig = useStore(s => s.aiConfig);
+  const { addToast } = useToast();
+
 
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     try {
-      // Uniamo tutto il testo dei capitoli per l'analisi
-      const allText = chapters.map(c => 
-        c.scenes?.map(s => cleanHtml(s.content)).join('\n')
-      ).join('\n\n');
+      // Uniamo tutto il testo dei capitoli per l'analisi in modo sicuro
+      const allText = chapters
+        .map(c => (c.scenes || []).map(s => cleanHtml(s.content || '')).join('\n'))
+        .filter(text => text.trim().length > 0)
+        .join('\n\n');
 
       if (!allText.trim()) {
-        alert("Scrivi qualcosa nel manoscritto prima di analizzare la timeline.");
+        addToast("Scrivi qualcosa nel manoscritto prima di analizzare la timeline.", "info");
         return;
       }
 
-      const events = await timelineUtils.extractEvents(allText);
+      const events = await timelineUtils.extractEvents(allText, aiConfig);
       const conflictMap = timelineUtils.detectOverlaps(events);
       
       const eventsWithConflicts = events.map(e => ({
@@ -46,18 +54,21 @@ export const TimelineView: React.FC = () => {
       // Ordiniamo per tempo stimato
       const sortedEvents = eventsWithConflicts.sort((a, b) => a.estimatedStart - b.estimatedStart);
       setTimelineEvents(sortedEvents);
-    } catch (err) {
+      addToast("Timeline sincronizzata con successo.", "success");
+    } catch (err: any) {
       console.error(err);
+      addToast(err.message || "Errore durante l'analisi della timeline.", "error");
     } finally {
       setIsAnalyzing(false);
     }
   };
 
+
   const hasEvents = timelineEvents.length > 0;
 
   return (
-    <div className="flex flex-col h-full space-y-8 animate-in fade-in duration-700 max-w-7xl mx-auto selection:bg-[#5be9b1]/30">
-      <header className="flex items-center justify-between bg-[#23282f] p-8 rounded-[32px] border border-white/5 relative overflow-hidden">
+    <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-700 max-w-7xl mx-auto selection:bg-[#5be9b1]/30">
+      <header className="flex items-center justify-between bg-[#23282f] p-6 rounded-[32px] border border-white/5 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#5be9b1]/5 blur-[100px] -mr-32 -mt-32 pointer-events-none" />
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -89,7 +100,7 @@ export const TimelineView: React.FC = () => {
 
       <div className="flex-1 min-h-0 relative">
         {!hasEvents ? (
-          <div className="h-full bg-[#171b1f] rounded-[40px] border border-white/5 p-10 flex flex-col items-center justify-center text-slate-500">
+          <div className="h-full bg-[#171b1f] rounded-[40px] border border-white/5 p-8 flex flex-col items-center justify-center text-slate-500">
             <div className="relative mb-8">
                <div className="absolute inset-0 bg-[#5be9b1]/20 blur-3xl rounded-full animate-pulse" />
                <GitCommit className="w-20 h-20 text-[#5be9b1] relative z-10 opacity-40" />
@@ -187,10 +198,11 @@ export const TimelineView: React.FC = () => {
 };
 
 const TimelineNode: React.FC<{ 
-  event: TimelineEvent, 
+  event: GlobalTimelineEvent, 
   index: number,
   conflictTitles?: string[]
 }> = ({ event, index, conflictTitles }) => {
+
   const importanceStyles = {
     high: "border-t-4 border-t-[#5be9b1] h-[340px]",
     medium: "border-t-4 border-t-slate-500/20 h-[300px]",

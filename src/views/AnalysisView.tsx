@@ -34,7 +34,7 @@ interface MetricCardProps {
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({ title, value, icon: Icon, trend }) => (
-  <div className="bg-[#23282f] p-8 rounded-[32px] border border-white/5 hover:border-[#5be9b1]/20 transition-all group relative overflow-hidden">
+  <div className="bg-[#23282f] p-6 rounded-[32px] border border-white/5 hover:border-[#5be9b1]/20 transition-all group relative overflow-hidden">
     <div className="absolute top-0 right-0 w-24 h-24 bg-[#5be9b1]/5 blur-3xl -mr-12 -mt-12 group-hover:bg-[#5be9b1]/10 transition-all" />
     <div className="flex items-center justify-between mb-6">
       <div className="p-3 bg-[#13161a] rounded-[18px] text-[#5be9b1] border border-white/10 group-hover:scale-110 transition-transform">
@@ -118,8 +118,8 @@ export const AnalysisView: React.FC = React.memo(() => {
   }
 
   return (
-    <div className="flex flex-col h-full space-y-8 animate-in fade-in duration-700 max-w-7xl mx-auto">
-      <header className="flex items-center justify-between bg-[#23282f] p-8 rounded-[32px] border border-white/5">
+    <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-700 max-w-7xl mx-auto">
+      <header className="flex items-center justify-between bg-[#23282f] p-6 rounded-[32px] border border-white/5">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Activity className="w-4 h-4 text-[#5be9b1]" />
@@ -156,7 +156,7 @@ export const AnalysisView: React.FC = React.memo(() => {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto pr-2 space-y-8 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto pr-2 space-y-6 scrollbar-hide">
         {activeAnalysisTab === 'chronology' ? (
           <ChronologyView />
         ) : (

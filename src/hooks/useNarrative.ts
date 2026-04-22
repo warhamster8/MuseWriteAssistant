@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { storage } from '../lib/storage';
 import { useStore } from '../store/useStore';
-import type { Chapter, Scene, TimelineEvent } from '../types/narrative';
+import type { Chapter, Scene } from '../types/narrative';
+import type { SceneTimelineEvent } from '../types/timeline';
+
+
+
 
 export function useNarrative() {
   const { currentProject, isLocalMode, chapters, setChapters } = useStore();
@@ -218,7 +222,7 @@ export function useNarrative() {
     }
   };
 
-  const updateTimelineEvents = async (sceneId: string, events: TimelineEvent[]) => {
+  const updateTimelineEvents = async (sceneId: string, events: SceneTimelineEvent[]) => {
     const updatedChapters = chapters.map(chapter => ({
       ...chapter,
       scenes: chapter.scenes?.map(scene => 

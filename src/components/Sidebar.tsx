@@ -44,11 +44,11 @@ export const Sidebar: React.FC = React.memo(() => {
   };
 
   return (
-    <div className="w-20 xl:w-64 h-full glass-dark rounded-[40px] flex flex-col p-4 xl:p-6 z-30 shadow-2xl relative overflow-hidden transition-all duration-500">
+    <div className="w-20 xl:w-64 h-full glass-dark rounded-[40px] flex flex-col p-4 xl:p-5 z-30 shadow-2xl relative overflow-y-auto scrollbar-hide transition-all duration-500">
       {/* Sidebar background decorative glow */}
       <div className="absolute top-0 left-0 w-full h-32 bg-[#5be9b1]/5 blur-[60px] pointer-events-none" />
 
-      <div className="relative flex flex-col items-center mb-8 xl:mb-10 pt-2">
+      <div className="relative flex flex-col items-center mb-6 xl:mb-8 pt-2">
         <div className="w-12 xl:w-48 aspect-square flex items-center justify-center logo-glow overflow-hidden group">
           <img 
             src="/logo.png" 
@@ -58,7 +58,7 @@ export const Sidebar: React.FC = React.memo(() => {
         </div>
       </div>
 
-      <div className="mb-10">
+      <div className="mb-6 xl:mb-8">
         <button 
           onClick={() => setCurrentProject(null)}
           className="w-full text-left group"
@@ -85,12 +85,14 @@ export const Sidebar: React.FC = React.memo(() => {
             key={item.id}
             onClick={() => setActiveTab(item.id)}
             className={cn(
-              "w-full flex items-center space-x-4 px-6 py-4 rounded-[24px] transition-all duration-500 group relative overflow-hidden",
+              "w-full flex items-center space-x-3 px-5 py-3 rounded-[24px] transition-all duration-500 group relative overflow-hidden",
               activeTab === item.id 
                 ? "bg-[#5be9b1] text-[#0b0e11] shadow-[0_15px_30px_-5px_rgba(91,233,177,0.3)] scale-105" 
                 : "text-slate-500 hover:bg-white/5 hover:text-slate-200"
             )}
+
           >
+
             {activeTab === item.id && (
               <div className="absolute inset-0 bg-white/10 animate-pulse" />
             )}

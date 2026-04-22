@@ -3,7 +3,9 @@ import { useStore } from '../store/useStore';
 import { useNarrative } from './useNarrative';
 import { aiService } from '../lib/aiService';
 import { getPlainTextForAI } from '../lib/narrativeUtils';
-import type { TimelineEvent } from '../types/narrative';
+import type { SceneTimelineEvent } from '../types/timeline';
+
+
 
 export function useTimeline() {
   const { aiConfig } = useStore();
@@ -59,9 +61,10 @@ LINGUA: Italiano.`;
       // Extract JSON from response (in case AI adds markdown blocks)
       const jsonMatch = fullResponse.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
-         const events: TimelineEvent[] = JSON.parse(jsonMatch[0]);
+         const events: SceneTimelineEvent[] = JSON.parse(jsonMatch[0]);
          await updateTimelineEvents(sceneId, events);
          return events;
+
       } else {
         throw new Error('Formato risposta non valido');
       }
