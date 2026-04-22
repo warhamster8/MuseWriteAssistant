@@ -21,7 +21,6 @@ import {
   AlignJustify,
   Highlighter,
   Type,
-  Baseline,
   Sparkles
 } from 'lucide-react';
 
@@ -264,7 +263,6 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
           
           <button
             onClick={() => {
-              const current = editor.getAttributes('paragraph').dropCap;
               editor.chain().focus().updateAttributes('paragraph', { dropCap: 'classic' }).run();
             }}
             className={cn(

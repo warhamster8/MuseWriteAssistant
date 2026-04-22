@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Sparkles, Maximized2 } from 'lucide-react';
+import { X, Sparkles, Maximize2 } from 'lucide-react';
 import { StructuredOutput } from './StructuredOutput';
 
 interface DeepAnalysisModalProps {
