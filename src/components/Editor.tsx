@@ -284,45 +284,65 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
           </button>
 
           {showDropCapMenu && (
-            <div className="absolute top-full left-0 mt-2 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl p-2 shadow-2xl backdrop-blur-xl z-50 flex items-center gap-1 animate-in fade-in zoom-in-95 duration-200">
+            <div className="absolute top-full left-0 mt-2 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl p-3 shadow-2xl backdrop-blur-xl z-50 space-y-3 animate-in fade-in zoom-in-95 duration-200 min-w-[180px]">
+              <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)] px-1">Stile Capolettera</div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    editor.chain().focus().updateAttributes('paragraph', { dropCap: 'classic' }).run();
+                    setShowDropCapMenu(false);
+                  }}
+                  className={cn(
+                    "flex-1 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                    editor.getAttributes('paragraph').dropCap === 'classic' 
+                      ? 'bg-[var(--accent)] text-[var(--bg-deep)]' 
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-bright)] border border-transparent hover:border-[var(--accent)]/10'
+                  )}
+                >
+                  Classico
+                </button>
+                <button
+                  onClick={() => {
+                    editor.chain().focus().updateAttributes('paragraph', { dropCap: 'modern' }).run();
+                    setShowDropCapMenu(false);
+                  }}
+                  className={cn(
+                    "flex-1 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                    editor.getAttributes('paragraph').dropCap === 'modern' 
+                      ? 'bg-[var(--accent)] text-[var(--bg-deep)]' 
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-bright)] border border-transparent hover:border-[var(--accent)]/10'
+                  )}
+                >
+                  Moderno
+                </button>
+              </div>
+              
+              <div className="h-[1px] bg-[var(--border-subtle)] mx-1" />
+              
               <button
                 onClick={() => {
-                  editor.chain().focus().updateAttributes('paragraph', { dropCap: 'classic' }).run();
+                  // Comanda per applicare al PRIMO paragrafo del documento
+                  editor.chain()
+                    .focus()
+                    .setNodeSelection(0)
+                    .updateAttributes('paragraph', { dropCap: 'classic' })
+                    .run();
                   setShowDropCapMenu(false);
                 }}
-                className={cn(
-                  "px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                  editor.getAttributes('paragraph').dropCap === 'classic' 
-                    ? 'bg-[var(--accent)] text-[var(--bg-deep)]' 
-                    : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-bright)]'
-                )}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest text-[var(--accent)] hover:bg-[var(--accent-soft)] transition-all"
               >
-                Classico
+                <span>Applica all'inizio scena</span>
+                <Sparkles className="w-3 h-3" />
               </button>
-              <button
-                onClick={() => {
-                  editor.chain().focus().updateAttributes('paragraph', { dropCap: 'modern' }).run();
-                  setShowDropCapMenu(false);
-                }}
-                className={cn(
-                  "px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                  editor.getAttributes('paragraph').dropCap === 'modern' 
-                    ? 'bg-[var(--accent)] text-[var(--bg-deep)]' 
-                    : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-bright)]'
-                )}
-              >
-                Moderno
-              </button>
-              <div className="w-[1px] h-4 bg-[var(--accent-soft)] mx-1" />
+
               <button
                 onClick={() => {
                   editor.chain().focus().updateAttributes('paragraph', { dropCap: 'none' }).run();
                   setShowDropCapMenu(false);
                 }}
-                className="p-1 px-3 text-[var(--text-muted)] hover:text-red-400 text-[10px] uppercase font-black tracking-widest"
-                title="Rimuovi"
+                className="w-full text-center py-1.5 text-[var(--text-muted)] hover:text-red-400 text-[9px] uppercase font-black tracking-widest transition-colors"
               >
-                Reset
+                Rimuovi Formattazione
               </button>
             </div>
           )}

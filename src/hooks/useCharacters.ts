@@ -14,6 +14,7 @@ export type Character = {
   avatar_url?: string;
   avatar_pos_x?: number;
   avatar_pos_y?: number;
+  role?: 'protagonist' | 'antagonist' | 'secondary' | 'other';
 };
 
 export function useCharacters() {
@@ -57,7 +58,8 @@ export function useCharacters() {
         relations: '', 
         avatar_url: '',
         avatar_pos_x: 50,
-        avatar_pos_y: 50
+        avatar_pos_y: 50,
+        role: 'secondary'
       });
       fetchCharacters();
     } else {
@@ -70,7 +72,8 @@ export function useCharacters() {
         relations: '', 
         avatar_url: '',
         avatar_pos_x: 50,
-        avatar_pos_y: 50
+        avatar_pos_y: 50,
+        role: 'secondary'
       }]);
       if (error) {
         console.error('Error adding character:', error);

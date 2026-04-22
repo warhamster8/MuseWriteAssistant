@@ -194,3 +194,27 @@
   50% { box-shadow: 0 0 15px 2px rgba(45, 106, 79, 0.2); }
   100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); }
 }
+
+/* Drop Caps Styles */
+.ProseMirror p[data-drop-cap="classic"]::first-letter {
+    float: left;
+    font-size: 5rem;
+    line-height: 0.8;
+    margin-top: 0.15em;
+    margin-right: 0.1em;
+    font-family: var(--font-serif);
+    color: var(--text-bright);
+    font-weight: 400;
+}
+
+.ProseMirror p[data-drop-cap="modern"]::first-letter {
+    float: left;
+    font-size: 4.5rem;
+    line-height: 0.7;
+    margin-top: 0.18em;
+    margin-right: 0.15em;
+    font-family: var(--font-display);
+    color: var(--accent);
+    font-weight: 900;
+    text-transform: uppercase;
+}

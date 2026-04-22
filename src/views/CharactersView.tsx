@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Plus, User, Users, FileText, Brain, TrendingUp, MessageSquare, Camera, Trash2 } from 'lucide-react';
+import { Plus, User, Users, FileText, Brain, TrendingUp, MessageSquare, Camera, Trash2, Crown, Sword, ShieldAlert, Sparkles } from 'lucide-react';
 import { useCharacters } from '../hooks/useCharacters';
 import { cn } from '../lib/utils';
 import { groqService } from '../lib/groq';
@@ -184,10 +184,12 @@ export const CharactersView: React.FC = () => {
                 <div className="flex items-center gap-2 mt-2">
                   <div className={cn("w-1.5 h-1.5 rounded-full", char.bio ? "bg-[var(--accent)]/40" : "bg-[var(--text-muted)]")} />
                   <p className="text-[9px] text-[var(--text-muted)] uppercase tracking-widest font-black opacity-60 truncate">
-                      {char.bio ? 'Profile Locked' : 'Undefined'}
+                      {char.role === 'protagonist' ? 'Protagonista' : char.role === 'antagonist' ? 'Antagonista' : char.role === 'secondary' ? 'Secondario' : 'Indefinito'}
                   </p>
                 </div>
               </div>
+              {char.role === 'protagonist' && <Crown className="w-3.5 h-3.5 text-[var(--accent)] opacity-60 absolute top-4 right-4" />}
+              {char.role === 'antagonist' && <Sword className="w-3.5 h-3.5 text-red-400 opacity-60 absolute top-4 right-4" />}
             </div>
           ))}
         </div>
@@ -301,9 +303,27 @@ export const CharactersView: React.FC = () => {
                   ) : (
                     <>
                       <div className="flex items-center gap-5 mb-6">
-                        <span className="px-6 py-2 bg-[var(--bg-surface)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[var(--border-subtle)] shadow-inner">
-                          Protagonist Signature
-                        </span>
+                        <div className="flex bg-[var(--bg-deep)]/40 p-1.5 rounded-[22px] border border-[var(--border-subtle)] shadow-inner">
+                          {[
+                            { id: 'protagonist', label: 'Protagonista', icon: Crown, color: 'text-[var(--accent)]' },
+                            { id: 'antagonist', label: 'Antagonista', icon: Sword, color: 'text-red-400' },
+                            { id: 'secondary', label: 'Secondario', icon: Users, color: 'text-[var(--text-secondary)]' }
+                          ].map(role => (
+                            <button
+                              key={role.id}
+                              onClick={() => updateCharacter(selectedChar.id, { role: role.id as any })}
+                              className={cn(
+                                "flex items-center gap-2 px-4 py-2 rounded-[16px] text-[9px] font-black uppercase tracking-widest transition-all",
+                                selectedChar.role === role.id 
+                                  ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-lg" 
+                                  : "text-[var(--text-muted)] hover:text-[var(--text-bright)] hover:bg-white/5"
+                              )}
+                            >
+                              <role.icon className={cn("w-3.5 h-3.5", selectedChar.role === role.id ? "text-[var(--bg-deep)]" : role.color)} />
+                              <span className="hidden lg:inline">{role.label}</span>
+                            </button>
+                          ))}
+                        </div>
                         {selectedChar.avatar_url && (
                           <button 
                             onClick={() => updateCharacter(selectedChar.id, { avatar_url: '' })}
