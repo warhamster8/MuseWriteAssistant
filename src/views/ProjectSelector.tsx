@@ -93,7 +93,6 @@ export const ProjectSelector: React.FC = () => {
   };
 
   return (
-  return (
     <div className="min-h-screen bg-[var(--bg-deep)] flex items-center justify-center p-8 selection:bg-[var(--accent)]/30 overflow-y-auto scrollbar-hide">
       <div className="max-w-6xl w-full space-y-12 py-12 animate-in fade-in zoom-in duration-1000">
         
@@ -159,10 +158,6 @@ export const ProjectSelector: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
-    </div>
-  );
-};
       </div>
     </div>
   );

@@ -69,11 +69,6 @@ export const WorldView: React.FC = () => {
       {/* Settings List */}
       <div className="w-80 flex flex-col gap-6">
         {/* Category Tabs */}
-  return (
-    <div className="flex h-full gap-6 overflow-hidden animate-in fade-in duration-700">
-      {/* Settings List */}
-      <div className="w-80 flex flex-col gap-6">
-        {/* Category Tabs */}
         <div className="flex p-1.5 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-[22px] shadow-inner">
           <button
             onClick={() => setActiveCategory('location')}

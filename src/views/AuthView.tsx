@@ -60,7 +60,6 @@ export const AuthView: React.FC<AuthViewProps> = ({ onBack }) => {
   };
 
   return (
-  return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--bg-deep)] p-4 selection:bg-[var(--accent)]/30">
       <div className="glass p-8 md:p-12 rounded-[40px] border border-[var(--border-subtle)] max-w-md w-full relative overflow-y-auto max-h-[95vh] shadow-2xl scrollbar-hide">
         <div className="absolute top-0 left-0 w-full h-1.5 bg-[var(--accent)]" />
@@ -142,10 +141,6 @@ export const AuthView: React.FC<AuthViewProps> = ({ onBack }) => {
             Sorgente Protetta <a href="https://github.com/warhamster8/Muse" className="text-[var(--accent)]/50 hover:text-[var(--accent)] ml-1">v4.0.0-emerald</a>
           </p>
         </div>
-      </div>
-    </div>
-  );
-};
       </div>
     </div>
   );
