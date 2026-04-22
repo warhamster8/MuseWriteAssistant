@@ -304,8 +304,8 @@ export const AISidekick: React.FC = React.memo(() => {
       }
     }
 
-    if (textToAnalyze.length > 4000) {
-      textToAnalyze = textToAnalyze.substring(0, 4000);
+    if (textToAnalyze.length > 30000) {
+      textToAnalyze = textToAnalyze.substring(0, 30000);
     }
 
     let fullResponse = '';
@@ -387,7 +387,7 @@ LINGUA: Italiano.`;
     setAppliedSuggestions([]);
     let textToAnalyze = activeSelection || plainText;
     const isSelection = !!activeSelection;
-    if (textToAnalyze.length > 4000) textToAnalyze = textToAnalyze.substring(0, 4000);
+    if (textToAnalyze.length > 30000) textToAnalyze = textToAnalyze.substring(0, 30000);
 
     try {
       const systemPrompt = `Sei un correttore bozze professionista.
@@ -626,6 +626,20 @@ LINGUA: Italiano. Sii critico e preciso.`;
         </div>
       </div>
 
+      {/* Pulsante Espansione Globale - Visibile quando c'è un'analisi */}
+      {analysis && !isAnalyzing && (
+        <div className="px-8 pb-4 animate-in slide-in-from-top-2">
+           <button 
+              onClick={() => setIsDeepModalOpen(true)}
+              className="w-full py-3 bg-[#5be9b1]/10 hover:bg-[#5be9b1]/20 text-[#5be9b1] rounded-2xl transition-all border border-[#5be9b1]/20 shadow-lg active:scale-95 flex items-center justify-center gap-3 group"
+              title="Apri Vista Grande"
+            >
+              <Maximize2 className="w-4 h-4" />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Espandi Visuale Per Leggere Meglio</span>
+            </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-6 gap-1 p-3 bg-white/[0.01] border-b border-white/10">
         {tabs.map(tab => (
           <button
@@ -680,16 +694,6 @@ LINGUA: Italiano. Sii critico e preciso.`;
                     className="p-2.5 text-slate-700 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
                   >
                     <RefreshCw className="w-4 h-4" />
-                  </button>
-                )}
-                {analysis && !isAnalyzing && (
-                  <button 
-                    onClick={() => setIsDeepModalOpen(true)}
-                    className="p-2.5 text-[#5be9b1] hover:bg-[#5be9b1]/10 rounded-xl transition-all border border-[#5be9b1]/20 shadow-lg active:scale-95 group flex items-center gap-2"
-                    title="Espandi Visuale"
-                  >
-                    <Maximize2 className="w-3.5 h-3.5" />
-                    <span className="text-[8px] font-black uppercase tracking-widest hidden group-hover:block">Espandi</span>
                   </button>
                 )}
                 <button onClick={runDraftRevision} disabled={isAnalyzing || (activeSelection ? activeSelection.length < 1 : plainText.length < 10)} className={cn(
@@ -759,16 +763,6 @@ LINGUA: Italiano. Sii critico e preciso.`;
                 )}
               </div>
               <div className="flex items-center gap-2">
-                {analysis && !isAnalyzing && (
-                  <button 
-                    onClick={() => setIsDeepModalOpen(true)}
-                    className="p-2.5 text-[#5be9b1] hover:bg-[#5be9b1]/10 rounded-xl transition-all border border-[#5be9b1]/20 shadow-lg active:scale-95 group flex items-center gap-2"
-                    title="Espandi Visuale"
-                  >
-                    <Maximize2 className="w-3.5 h-3.5" />
-                    <span className="text-[8px] font-black uppercase tracking-widest hidden group-hover:block transition-all">Espandi</span>
-                  </button>
-                )}
                 <button 
                   onClick={runGrammarAnalysis}
                   disabled={isAnalyzing || !plainText}
@@ -795,6 +789,33 @@ LINGUA: Italiano. Sii critico e preciso.`;
               </div>
             ) : (
               !isAnalyzing && <div className="flex flex-col items-center justify-center h-48 text-slate-800 space-y-4 bg-white/[0.01] rounded-[32px] border border-dashed border-white/5"><CheckCircle className="w-10 h-10 opacity-20" /><p className="text-[10px] font-bold border-t border-white/5 pt-4 uppercase tracking-[0.2em]">Nessuna anomalia tecnica rilevata</p></div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'braindump' && (
+          <div className="space-y-6">
+            <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-slate-700 uppercase tracking-[0.2em] mb-4">Sviluppo Intuizioni</span>
+                <textarea 
+                    className="w-full h-48 bg-[#171b1f] border border-white/5 rounded-[24px] p-6 text-xs text-slate-300 focus:outline-none focus:border-[#5be9b1]/30 focus:bg-[#1a1f24] transition-all resize-none shadow-inner placeholder:text-slate-800" 
+                    placeholder="Incolla qui pensieri sparsi, frammenti di dialogo o concetti vaghi..." 
+                    value={braindumpInput} 
+                    onChange={(e) => setBraindumpInput(e.target.value)} 
+                />
+            </div>
+            <button 
+                onClick={runBraindump} 
+                disabled={isAnalyzing || !braindumpInput.trim()} 
+                className="w-full py-4 bg-[#5be9b1] hover:bg-[#4ade80] text-[#0b0e11] disabled:opacity-50 rounded-[20px] text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-2xl shadow-[#5be9b1]/10 active:scale-95"
+            >
+                <Zap className="w-4 h-4" />
+                Espandi Concetti
+            </button>
+            {analysis && (
+                <div className="bg-[#5be9b1]/5 p-6 rounded-[32px] border border-[#5be9b1]/10 animate-in slide-in-from-bottom-2 max-h-[40vh] overflow-y-auto custom-scrollbar shadow-inner">
+                    <StructuredOutput text={analysis} isAnalyzing={isAnalyzing} />
+                </div>
             )}
           </div>
         )}
@@ -858,16 +879,6 @@ LINGUA: Italiano. Sii critico e preciso.`;
                 <span className="text-[8px] text-slate-600 font-bold uppercase tracking-widest mt-1">Scansione Globale Scena</span>
               </div>
               <div className="flex items-center gap-2">
-                {analysis && !isAnalyzing && (
-                  <button 
-                    onClick={() => setIsDeepModalOpen(true)}
-                    className="p-2.5 text-[#5be9b1] hover:bg-[#5be9b1]/10 rounded-xl transition-all border border-[#5be9b1]/20 shadow-lg active:scale-95 group flex items-center gap-2"
-                    title="Espandi Visuale"
-                  >
-                    <Maximize2 className="w-3.5 h-3.5" />
-                    <span className="text-[8px] font-black uppercase tracking-widest hidden group-hover:block transition-all">Espandi</span>
-                  </button>
-                )}
                 <button 
                   onClick={runIntegrityCheck}
                   disabled={isAnalyzing || !plainText}
