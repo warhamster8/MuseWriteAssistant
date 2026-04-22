@@ -55,7 +55,7 @@ export const Sidebar: React.FC = React.memo(() => {
       <div className="absolute top-0 left-0 w-full h-32 bg-[var(--accent)]/5 blur-[60px] pointer-events-none" />
 
       <div className="relative flex flex-col items-center mb-6 xl:mb-8 pt-2">
-        <div className="w-12 xl:w-48 aspect-square flex items-center justify-center logo-glow overflow-hidden group relative">
+        <div className="w-12 xl:w-48 aspect-square flex items-center justify-center logo-glow overflow-hidden group relative bg-[var(--bg-surface)] rounded-[24px] xl:rounded-[32px] p-2 border border-[var(--border-subtle)] shadow-inner transition-all hover:border-[var(--accent)]/20">
           <img 
             src="/logo.png" 
             alt="Muse Logo" 

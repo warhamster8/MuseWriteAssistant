@@ -4,16 +4,18 @@ import { AISidekick } from './components/AISidekick';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useStore } from './store/useStore';
 import { supabase } from './lib/supabase';
-const NarrativeView = React.lazy(() => import('./views/NarrativeView').then(m => ({ default: m.NarrativeView })));
-const CharactersView = React.lazy(() => import('./views/CharactersView').then(m => ({ default: m.CharactersView })));
-const NotesView = React.lazy(() => import('./views/NotesView').then(m => ({ default: m.NotesView })));
-const WorldView = React.lazy(() => import('./views/WorldView').then(m => ({ default: m.WorldView })));
-const AnalysisView = React.lazy(() => import('./views/AnalysisView').then(m => ({ default: m.AnalysisView })));
-const ConfigView = React.lazy(() => import('./views/ConfigView').then(m => ({ default: m.ConfigView })));
-const AuthView = React.lazy(() => import('./views/AuthView').then(m => ({ default: m.AuthView })));
-const ProjectSelector = React.lazy(() => import('./views/ProjectSelector').then(m => ({ default: m.ProjectSelector })));
-const TimelineView = React.lazy(() => import('./views/TimelineView').then(m => ({ default: m.TimelineView })));
-const DeepAnalysisView = React.lazy(() => import('./views/DeepAnalysisView').then(m => ({ default: m.DeepAnalysisView })));
+import { lazyRetry } from './lib/lazyRetry';
+
+const NarrativeView = lazyRetry(() => import('./views/NarrativeView').then(m => ({ default: m.NarrativeView })), 'NarrativeView');
+const CharactersView = lazyRetry(() => import('./views/CharactersView').then(m => ({ default: m.CharactersView })), 'CharactersView');
+const NotesView = lazyRetry(() => import('./views/NotesView').then(m => ({ default: m.NotesView })), 'NotesView');
+const WorldView = lazyRetry(() => import('./views/WorldView').then(m => ({ default: m.WorldView })), 'WorldView');
+const AnalysisView = lazyRetry(() => import('./views/AnalysisView').then(m => ({ default: m.AnalysisView })), 'AnalysisView');
+const ConfigView = lazyRetry(() => import('./views/ConfigView').then(m => ({ default: m.ConfigView })), 'ConfigView');
+const AuthView = lazyRetry(() => import('./views/AuthView').then(m => ({ default: m.AuthView })), 'AuthView');
+const ProjectSelector = lazyRetry(() => import('./views/ProjectSelector').then(m => ({ default: m.ProjectSelector })), 'ProjectSelector');
+const TimelineView = lazyRetry(() => import('./views/TimelineView').then(m => ({ default: m.TimelineView })), 'TimelineView');
+const DeepAnalysisView = lazyRetry(() => import('./views/DeepAnalysisView').then(m => ({ default: m.DeepAnalysisView })), 'DeepAnalysisView');
 import { AlertCircle, Cloud } from 'lucide-react';
 import { ToastContainer } from './components/Toast';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -119,7 +121,7 @@ function App() {
           <div className="absolute -top-32 -right-32 w-80 h-80 bg-[var(--accent)]/10 blur-[140px] rounded-full" />
           <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-[var(--accent)]/10 blur-[140px] rounded-full" />
           
-          <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-[32px] bg-[var(--bg-surface)] flex items-center justify-center p-6 mb-6 logo-glow border border-[var(--border-subtle)] shadow-inner">
+          <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-[48px] bg-[var(--bg-surface)] flex items-center justify-center p-6 mb-6 logo-glow border border-[var(--border-subtle)] shadow-inner">
             <img src="/logo.png" alt="Project Muse Logo" className="w-full h-full object-contain logo-blend" />
           </div>
           <div>

@@ -100,8 +100,10 @@ export const ProjectSelector: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 bg-[var(--bg-surface)] p-10 rounded-[48px] border border-[var(--border-subtle)] shadow-2xl">
           <div className="flex items-center gap-8">
             <div className="relative group">
-                <div className="absolute -inset-4 bg-[var(--accent)]/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <img src="/logo.png" alt="Muse Logo" className="relative w-24 h-24 object-contain transition-transform duration-700 group-hover:scale-110 logo-blend" />
+                <div className="absolute -inset-4 bg-[var(--accent)]/20 rounded-[32px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="relative w-24 h-24 bg-[var(--bg-deep)] rounded-[24px] flex items-center justify-center p-3 border border-[var(--border-subtle)] shadow-inner">
+                  <img src="/logo.png" alt="Muse Logo" className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 logo-blend" />
+                </div>
             </div>
             <div>
               <h1 className="text-5xl font-medium font-display tracking-tighter text-[var(--text-bright)]">Archivio Opere</h1>
