@@ -35,11 +35,11 @@ export const geminiService = {
 
     const body: any = {
       contents: history,
-      generationConfig: {
+      generation_config: {
         temperature,
-        maxOutputTokens: 4096,
+        max_output_tokens: 4096,
       },
-      safetySettings: [
+      safety_settings: [
         { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
         { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
         { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
@@ -48,7 +48,7 @@ export const geminiService = {
     };
 
     if (systemInstructionText) {
-      body.systemInstruction = {
+      body.system_instruction = {
         parts: [{ text: systemInstructionText }]
       };
     }
@@ -60,7 +60,7 @@ export const geminiService = {
     headers.delete('Authorization');
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:streamGenerateContent?alt=sse&key=${apiKey.trim()}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey.trim()}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(body),
@@ -135,7 +135,7 @@ export const geminiService = {
     headers.delete('Authorization'); // Prevents any phantom Bearer tokens from triggering 401
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey.trim()}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey.trim()}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({
