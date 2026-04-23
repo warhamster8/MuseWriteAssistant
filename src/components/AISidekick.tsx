@@ -588,7 +588,7 @@ Rispondi in italiano. Sii concreto e originale.`;
                         value={aiConfig.provider}
                         onChange={(e) => {
                           const provider = e.target.value as any;
-                          const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-1.5-flash' : 'deepseek-chat');
+                          const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-flash-latest' : 'deepseek-chat');
                           useStore.getState().setAIConfig({ provider, model });
                         }}
                         className="bg-transparent text-[11px] text-[var(--text-secondary)] font-medium hover:text-[var(--accent)] transition-colors outline-none cursor-pointer border-none p-0 appearance-none"

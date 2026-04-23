@@ -127,7 +127,12 @@ export const ConfigView: React.FC = React.memo(() => {
   const handleProviderChange = async (provider: 'groq' | 'deepseek' | 'gemini') => {
     if (!user) return;
     
-    const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-1.5-flash' : 'deepseek-chat');
+    if (provider === 'gemini' && !aiConfig.geminiKey) {
+      addToast("Configura prima la chiave Gemini", 'error');
+      return;
+    }
+
+    const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-flash-latest' : 'deepseek-chat');
     const updatedConfig = { ...aiConfig, provider, model };
     setAIConfig({ provider, model });
     

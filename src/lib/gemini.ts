@@ -17,7 +17,7 @@ export const geminiService = {
     apiKey: string,
     messages: any[],
     onChunk: (text: string) => void,
-    model = 'gemini-1.5-flash',
+    model = 'gemini-flash-latest',
     temperature = 0.7,
     signal?: AbortSignal
   ) {
@@ -127,7 +127,7 @@ export const geminiService = {
   /**
    * Verifica la connettività con l'endpoint Google.
    */
-  async testConnection(apiKey: string, model = 'gemini-1.5-flash') {
+  async testConnection(apiKey: string, model = 'gemini-flash-latest') {
     if (!apiKey || apiKey.length < 10) {
       return { ok: false, status: 0, error: 'Formato chiave non valido' };
     }
