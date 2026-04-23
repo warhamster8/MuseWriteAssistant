@@ -25,6 +25,8 @@ export const NarrativeView: React.FC = React.memo(() => {
     reorderChapters,
     renameChapter,
     renameScene,
+    deleteChapter,
+    deleteScene,
     updateSceneMetadata
   } = useNarrative();
 
