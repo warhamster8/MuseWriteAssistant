@@ -89,7 +89,8 @@ export const DeepAnalysisView: React.FC = () => {
       addToast("DeepSeek key non trovata. Configurala in Project & AI", 'error');
       return;
     }
-    setAIConfig({ provider });
+    const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-1.5-flash' : 'deepseek-chat');
+    setAIConfig({ provider, model });
     addToast(`Motore: ${provider.toUpperCase()}`, 'success');
   };
 

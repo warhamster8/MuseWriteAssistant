@@ -17,6 +17,7 @@ export const geminiService = {
     apiKey: string,
     messages: any[],
     onChunk: (text: string) => void,
+    model = 'gemini-1.5-flash',
     temperature = 0.7,
     signal?: AbortSignal
   ) {
@@ -59,7 +60,7 @@ export const geminiService = {
     headers.delete('Authorization');
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key=${apiKey.trim()}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:streamGenerateContent?alt=sse&key=${apiKey.trim()}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(body),
@@ -124,7 +125,7 @@ export const geminiService = {
   /**
    * Verifica la connettività con l'endpoint Google.
    */
-  async testConnection(apiKey: string) {
+  async testConnection(apiKey: string, model = 'gemini-1.5-flash') {
     if (!apiKey || apiKey.length < 10) {
       return { ok: false, status: 0, error: 'Formato chiave non valido' };
     }
@@ -134,7 +135,7 @@ export const geminiService = {
     headers.delete('Authorization'); // Prevents any phantom Bearer tokens from triggering 401
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey.trim()}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({

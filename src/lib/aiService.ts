@@ -60,6 +60,7 @@ export const aiService = {
           config.geminiKey,
           messages,
           onChunk,
+          config.model,
           options?.temperature,
           options?.signal
         );

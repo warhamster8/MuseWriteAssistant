@@ -127,9 +127,9 @@ export const ConfigView: React.FC = React.memo(() => {
   const handleProviderChange = async (provider: 'groq' | 'deepseek' | 'gemini') => {
     if (!user) return;
     
-    // Use immediate updates to avoid stale state from aiConfig
-    const updatedConfig = { ...aiConfig, provider };
-    setAIConfig({ provider });
+    const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-1.5-flash' : 'deepseek-chat');
+    const updatedConfig = { ...aiConfig, provider, model };
+    setAIConfig({ provider, model });
     
     try {
       await supabase.from('user_profiles').update({ ai_settings: updatedConfig }).eq('user_id', user.id);
