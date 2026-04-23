@@ -27,7 +27,7 @@ export const DeepAnalysisModal: React.FC<DeepAnalysisModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 md:p-12 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
-      <div className="w-full max-w-5xl h-full flex flex-col glass-dark border border-white/10 rounded-[40px] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300">
+      <div className="w-full max-w-5xl h-full flex flex-col glass-dark border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300">
         
         {/* Header */}
         <div className="px-10 py-8 border-b border-white/10 bg-white/[0.02] flex items-center justify-between">

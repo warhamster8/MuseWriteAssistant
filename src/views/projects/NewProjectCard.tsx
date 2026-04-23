@@ -28,7 +28,7 @@ export const NewProjectCard: React.FC<NewProjectCardProps> = ({ onCreate }) => {
   return (
     <div 
       className={cn(
-        "group relative min-h-[320px] rounded-[64px] border-2 border-dashed transition-all duration-700 p-12 flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden shadow-sm hover:shadow-2xl",
+        "group relative min-h-[320px] rounded-3xl border-2 border-dashed transition-all duration-700 p-12 flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden shadow-sm hover:shadow-2xl",
         isCreating 
           ? "border-[var(--accent)]/50 bg-[var(--accent-soft)]" 
           : "border-[var(--border-subtle)] bg-[var(--bg-surface)]/10 hover:bg-[var(--bg-surface)]/30 hover:border-[var(--accent)]/20"
@@ -69,7 +69,7 @@ export const NewProjectCard: React.FC<NewProjectCardProps> = ({ onCreate }) => {
         </form>
       ) : (
         <>
-          <div className="p-8 bg-[var(--bg-surface)]/5 rounded-[40px] border border-[var(--border-subtle)] group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--accent-soft)] transition-all duration-500 shadow-inner group-hover:scale-110">
+          <div className="p-8 bg-[var(--bg-surface)]/5 rounded-3xl border border-[var(--border-subtle)] group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--accent-soft)] transition-all duration-500 shadow-inner group-hover:scale-110">
             <Plus className="w-10 h-10 text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors" />
           </div>
           <div className="mt-8 space-y-2">

@@ -210,7 +210,7 @@ export const CharactersView: React.FC = () => {
       </div>
 
       {/* Detail Area */}
-      <div className="flex-1 min-w-0 glass rounded-[64px] border border-[var(--border-subtle)] flex flex-col overflow-hidden shadow-2xl relative">
+      <div className="flex-1 min-w-0 glass rounded-3xl border border-[var(--border-subtle)] flex flex-col overflow-hidden shadow-2xl relative">
         {selectedChar ? (
           <div className="flex flex-col h-full bg-[var(--bg-surface)]/20">
             <div className="p-16 border-b border-[var(--border-subtle)] relative overflow-hidden group/header">
@@ -274,7 +274,7 @@ export const CharactersView: React.FC = () => {
                 {/* Name & Actions */}
                 <div className="flex-1 flex flex-col items-center md:items-start pb-4 min-w-0">
                   {isAdjusting ? (
-                    <div className="w-full max-w-sm space-y-6 mb-10 p-8 glass-emerald rounded-[40px] border border-[var(--accent)]/30 backdrop-blur-3xl animate-in slide-in-from-bottom-8 duration-700">
+                    <div className="w-full max-w-sm space-y-6 mb-10 p-8 glass-emerald rounded-3xl border border-[var(--accent)]/30 backdrop-blur-3xl animate-in slide-in-from-bottom-8 duration-700">
                       <div className="space-y-4">
                         <div className="flex justify-between text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.4em]">
                           <span>Horizon</span>
@@ -403,7 +403,7 @@ export const CharactersView: React.FC = () => {
                   <h4 className="text-[11px] font-black uppercase tracking-[0.4em]">Historical Context & Roots</h4>
                 </div>
                 <textarea 
-                  className="w-full h-48 glass border border-[var(--border-subtle)] rounded-[40px] p-10 text-base text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/20 focus:bg-[var(--bg-surface)]/30 transition-all placeholder:text-[var(--text-muted)] leading-relaxed scrollbar-hide shadow-inner"
+                  className="w-full h-48 glass border border-[var(--border-subtle)] rounded-3xl p-10 text-base text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/20 focus:bg-[var(--bg-surface)]/30 transition-all placeholder:text-[var(--text-muted)] leading-relaxed scrollbar-hide shadow-inner"
                   placeholder="Elaborate on origins, past traumas and core secrets..."
                   value={localBio}
                   onChange={(e) => setLocalBio(e.target.value)}
@@ -416,7 +416,7 @@ export const CharactersView: React.FC = () => {
                   <h4 className="text-[11px] font-black uppercase tracking-[0.4em]">Psychological Core & Conflict</h4>
                 </div>
                 <textarea 
-                  className="w-full h-48 glass border border-[var(--border-subtle)] rounded-[40px] p-10 text-base text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/20 focus:bg-[var(--bg-surface)]/30 transition-all placeholder:text-[var(--text-muted)] leading-relaxed scrollbar-hide shadow-inner"
+                  className="w-full h-48 glass border border-[var(--border-subtle)] rounded-3xl p-10 text-base text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/20 focus:bg-[var(--bg-surface)]/30 transition-all placeholder:text-[var(--text-muted)] leading-relaxed scrollbar-hide shadow-inner"
                   placeholder="What is the character's engine? Their deepest fears and fatal flaws?"
                   value={localPsychology}
                   onChange={(e) => setLocalPsychology(e.target.value)}
@@ -429,7 +429,7 @@ export const CharactersView: React.FC = () => {
                   <h4 className="text-[11px] font-black uppercase tracking-[0.4em]">Evolutionary Arc</h4>
                 </div>
                 <textarea 
-                  className="w-full h-48 glass border border-[var(--border-subtle)] rounded-[40px] p-10 text-base text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/20 focus:bg-[var(--bg-surface)]/30 transition-all placeholder:text-[var(--text-muted)] leading-relaxed scrollbar-hide shadow-inner"
+                  className="w-full h-48 glass border border-[var(--border-subtle)] rounded-3xl p-10 text-base text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/20 focus:bg-[var(--bg-surface)]/30 transition-all placeholder:text-[var(--text-muted)] leading-relaxed scrollbar-hide shadow-inner"
                   placeholder="How does the character transform from the first draft to the finale?"
                   value={localEvolution}
                   onChange={(e) => setLocalEvolution(e.target.value)}

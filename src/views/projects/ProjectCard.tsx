@@ -21,7 +21,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <div 
       onClick={onSelect}
-      className="group relative min-h-[320px] rounded-[64px] glass border border-[var(--border-subtle)] hover:border-[var(--accent)]/30 p-12 flex flex-col justify-between cursor-pointer transition-all duration-700 hover:-translate-y-4 shadow-2xl overflow-hidden"
+      className="group relative min-h-[320px] rounded-3xl glass border border-[var(--border-subtle)] hover:border-[var(--accent)]/30 p-12 flex flex-col justify-between cursor-pointer transition-all duration-700 hover:-translate-y-4 shadow-2xl overflow-hidden"
     >
       {/* Background Decorative Gradient */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-[var(--accent)]/5 blur-[80px] rounded-full group-hover:bg-[var(--accent)]/10 transition-all duration-700" />

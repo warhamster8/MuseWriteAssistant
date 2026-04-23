@@ -152,7 +152,7 @@ export const WorldView: React.FC = () => {
       </div>
 
       {/* Detail Area */}
-      <div className="flex-1 min-w-0 bg-[var(--bg-surface)] rounded-[40px] border border-[var(--border-subtle)] flex flex-col overflow-hidden shadow-sm">
+      <div className="flex-1 min-w-0 bg-[var(--bg-surface)] rounded-3xl border border-[var(--border-subtle)] flex flex-col overflow-hidden shadow-sm">
         {selectedSetting ? (
           <div className="flex flex-col h-full">
             <div className="p-10 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/10 flex items-center justify-between group/detail">
@@ -201,7 +201,7 @@ export const WorldView: React.FC = () => {
                   </h4>
                 </div>
                 <textarea 
-                  className="w-full h-96 bg-[var(--bg-deep)]/20 border border-[var(--border-subtle)] rounded-[40px] p-10 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/30 focus:bg-[var(--bg-surface)]/40 transition-all placeholder:text-[var(--text-muted)] leading-relaxed scrollbar-hide"
+                  className="w-full h-96 bg-[var(--bg-deep)]/20 border border-[var(--border-subtle)] rounded-3xl p-10 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/30 focus:bg-[var(--bg-surface)]/40 transition-all placeholder:text-[var(--text-muted)] leading-relaxed scrollbar-hide"
                   placeholder={activeCategory === 'location' 
                     ? "Quali profumi pervadono l'aria? Qual è la temperatura? Quali architetture dominano la vista?" 
                     : "Qual è la storia di questo oggetto? Possiede peculiarità uniche? A chi appartiene attualmente?"
@@ -214,7 +214,7 @@ export const WorldView: React.FC = () => {
           </div>
         ) : (
           <div className="h-full flex flex-col items-center justify-center text-[var(--text-muted)] space-y-8 animate-in fade-in duration-1000">
-            <div className="w-32 h-32 rounded-[40px] border border-[var(--border-subtle)] flex items-center justify-center opacity-10 bg-[var(--bg-surface)]/10">
+            <div className="w-32 h-32 rounded-3xl border border-[var(--border-subtle)] flex items-center justify-center opacity-10 bg-[var(--bg-surface)]/10">
               {activeCategory === 'location' ? <Map className="w-14 h-14" /> : <Package className="w-14 h-14" />}
             </div>
             <div className="text-center">

@@ -205,7 +205,7 @@ export const TimelineView: React.FC = () => {
 
       <div className="flex-1 min-h-0 relative">
         {!hasEvents ? (
-          <div className="h-full bg-[var(--bg-surface)] rounded-[40px] border border-[var(--border-subtle)] p-8 flex flex-col items-center justify-center text-[var(--text-muted)]">
+          <div className="h-full bg-[var(--bg-surface)] rounded-3xl border border-[var(--border-subtle)] p-8 flex flex-col items-center justify-center text-[var(--text-muted)]">
             <div className="relative mb-8">
                <div className="absolute inset-0 bg-[var(--accent)]/20 blur-3xl rounded-full animate-pulse" />
                <GitCommit className="w-20 h-20 text-[var(--accent)] relative z-10 opacity-40" />

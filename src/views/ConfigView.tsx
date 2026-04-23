@@ -164,7 +164,7 @@ export const ConfigView: React.FC = React.memo(() => {
       <div className="max-w-5xl mx-auto space-y-10">
         
         {/* HEADER */}
-        <div className="flex items-center gap-6 bg-[var(--bg-card)] p-8 rounded-[40px] border border-[var(--border-subtle)]">
+        <div className="flex items-center gap-6 bg-[var(--bg-card)] p-8 rounded-3xl border border-[var(--border-subtle)]">
           <div className="p-4 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/20">
             <Settings className="w-8 h-8 text-[var(--accent)]" />
           </div>

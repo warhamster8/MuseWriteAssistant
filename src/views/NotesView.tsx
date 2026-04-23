@@ -58,7 +58,7 @@ export const NotesView: React.FC = () => {
   return (
     <div className="h-full flex flex-col space-y-10 overflow-hidden animate-in fade-in duration-1000 bg-[var(--bg-deep)]">
       {/* Header & Search */}
-      <div className="flex items-center justify-between gap-8 glass p-8 rounded-[40px] border border-[var(--border-subtle)] shadow-2xl relative overflow-hidden">
+      <div className="flex items-center justify-between gap-8 glass p-8 rounded-3xl border border-[var(--border-subtle)] shadow-2xl relative overflow-hidden">
         {/* Background Accent */}
         <div className="absolute top-0 right-0 w-64 h-full bg-[var(--accent)]/5 blur-[60px] pointer-events-none" />
         

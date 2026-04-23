@@ -107,7 +107,7 @@ export const AnalysisView: React.FC = React.memo(() => {
 
   if (chapters.length === 0) {
     return (
-      <div className="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] space-y-6 bg-[var(--bg-deep)] rounded-[40px] border border-[var(--border-subtle)]">
+      <div className="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] space-y-6 bg-[var(--bg-deep)] rounded-3xl border border-[var(--border-subtle)]">
         <Activity className="w-16 h-16 opacity-10" />
         <div className="text-center">
             <h3 className="text-lg font-black text-[var(--text-muted)]">Nessun dato disponibile</h3>
@@ -171,7 +171,7 @@ export const AnalysisView: React.FC = React.memo(() => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Chapter Balance Chart */}
-              <div className="lg:col-span-2 bg-[var(--bg-card)] backdrop-blur-md p-10 rounded-[40px] border border-[var(--border-subtle)] shadow-sm">
+              <div className="lg:col-span-2 bg-[var(--bg-card)] backdrop-blur-md p-10 rounded-3xl border border-[var(--border-subtle)] shadow-sm">
                 <div className="flex items-center justify-between mb-10">
                   <div>
                     <h2 className="text-xl font-black flex items-center gap-3 text-[var(--text-bright)]">
@@ -209,7 +209,7 @@ export const AnalysisView: React.FC = React.memo(() => {
               </div>
 
               {/* Character Mentions */}
-              <div className="bg-[var(--bg-surface)] p-10 rounded-[40px] border border-[var(--border-subtle)] shadow-sm flex flex-col">
+              <div className="bg-[var(--bg-surface)] p-10 rounded-3xl border border-[var(--border-subtle)] shadow-sm flex flex-col">
                 <h2 className="text-xl font-bold mb-10 text-[var(--text-bright)]">Focus Protagonisti</h2>
                 <div className="flex-1 min-h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
@@ -244,7 +244,7 @@ export const AnalysisView: React.FC = React.memo(() => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
               {/* Narrative Pacing Area Chart */}
-              <div className="bg-[var(--bg-surface)] p-10 rounded-[40px] border border-[var(--border-subtle)] shadow-sm">
+              <div className="bg-[var(--bg-surface)] p-10 rounded-3xl border border-[var(--border-subtle)] shadow-sm">
                 <div className="flex items-center justify-between mb-10">
                   <div>
                     <h2 className="text-xl font-bold text-[var(--text-bright)]">Ritmo Narrativo</h2>
@@ -277,7 +277,7 @@ export const AnalysisView: React.FC = React.memo(() => {
 
               {/* Lexical Lab */}
               <div className="flex flex-col gap-6">
-                 <div className="bg-[var(--bg-surface)] p-10 rounded-[40px] border border-[var(--border-subtle)] shadow-sm flex-1">
+                 <div className="bg-[var(--bg-surface)] p-10 rounded-3xl border border-[var(--border-subtle)] shadow-sm flex-1">
                     <h2 className="text-xl font-bold mb-8 text-[var(--text-bright)]">Analisi del Lessico</h2>
                     <div className="space-y-6">
                       {stats.topWords.map((item, idx) => (
@@ -302,7 +302,7 @@ export const AnalysisView: React.FC = React.memo(() => {
                  
                   <div 
                     onClick={() => setActiveAnalysisTab('chronology')}
-                    className="bg-[var(--accent)] p-10 rounded-[40px] flex items-center gap-6 group hover:shadow-2xl transition-all cursor-pointer"
+                    className="bg-[var(--accent)] p-10 rounded-3xl flex items-center gap-6 group hover:shadow-2xl transition-all cursor-pointer"
                   >
                     <div className="p-4 bg-[var(--bg-deep)]/20 rounded-[24px] backdrop-blur-md">
                        <Zap className="w-8 h-8 text-[var(--bg-deep)]" />

@@ -61,7 +61,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--bg-deep)] p-4 selection:bg-[var(--accent)]/30">
-      <div className="glass p-8 md:p-12 rounded-[40px] border border-[var(--border-subtle)] max-w-md w-full relative overflow-y-auto max-h-[95vh] shadow-2xl scrollbar-hide">
+      <div className="glass p-8 md:p-12 rounded-3xl border border-[var(--border-subtle)] max-w-md w-full relative overflow-y-auto max-h-[95vh] shadow-2xl scrollbar-hide">
         <div className="absolute top-0 left-0 w-full h-1.5 bg-[var(--accent)]" />
         
         <button 

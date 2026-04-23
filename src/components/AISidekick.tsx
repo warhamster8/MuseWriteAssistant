@@ -470,7 +470,7 @@ Rispondi in italiano. Sii concreto e originale.`;
   const currentLastPhrase = activeSceneId ? lastAnalyzedPhrase[`${activeSceneId}-${activeTab}`] : null;
 
   return (
-    <div className="w-full md:w-72 xl:w-80 h-full glass rounded-none md:rounded-[40px] flex-shrink-0 flex flex-col shadow-premium z-20 transition-all duration-500 overflow-hidden relative border-[var(--border-subtle)]">
+    <div className="w-full md:w-72 xl:w-80 h-full glass rounded-none md:rounded-3xl flex-shrink-0 flex flex-col shadow-premium z-20 transition-all duration-500 overflow-hidden relative border-[var(--border-subtle)]">
       <div className="p-8 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/30">
         <div className="flex items-center space-x-4">
           <div className="p-2.5 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/20 shadow-glow-mint">

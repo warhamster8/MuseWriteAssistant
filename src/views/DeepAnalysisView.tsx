@@ -146,7 +146,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
   return (
     <div className="flex h-full gap-4 relative animate-in fade-in duration-700">
       {/* Colonna Sinistra: Selettore Scene */}
-      <div className="w-80 flex-shrink-0 glass rounded-[40px] flex flex-col border border-[var(--border-subtle)] overflow-hidden shadow-2xl">
+      <div className="w-80 flex-shrink-0 glass rounded-3xl flex flex-col border border-[var(--border-subtle)] overflow-hidden shadow-2xl">
         <div className="p-8 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/10">
           <div className="flex items-center gap-4 mb-2">
             <div className="p-2.5 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/20">
@@ -199,7 +199,7 @@ Sii acuto, onesto e punta all'eccellenza narrativa.`;
       </div>
 
       {/* Colonna Destra: Analizzatore IA */}
-      <div className="flex-1 glass rounded-[40px] flex flex-col border border-[var(--border-subtle)] overflow-hidden shadow-2xl relative">
+      <div className="flex-1 glass rounded-3xl flex flex-col border border-[var(--border-subtle)] overflow-hidden shadow-2xl relative">
         <div className="p-8 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/10">
           <div className="flex items-center gap-6">
             <div className="flex flex-col">

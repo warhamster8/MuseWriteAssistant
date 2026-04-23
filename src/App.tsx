@@ -41,7 +41,7 @@ function App() {
   if (!isConfigured) {
     return (
       <div className="h-screen flex items-center justify-center bg-[var(--bg-deep)] p-10 font-sans selection:bg-[var(--accent-soft)]">
-        <div className="bg-[var(--bg-card)] p-12 rounded-[40px] border border-red-500/20 max-w-xl text-center space-y-8 shadow-2xl relative overflow-hidden">
+        <div className="bg-[var(--bg-card)] p-12 rounded-3xl border border-red-500/20 max-w-xl text-center space-y-8 shadow-2xl relative overflow-hidden">
            <div className="absolute top-0 left-0 w-full h-1 bg-red-500/30" />
            <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto border border-red-500/20">
               <AlertCircle className="w-10 h-10 text-red-500" />
@@ -158,7 +158,7 @@ function App() {
   if (!user && !showAuth) {
     return (
       <div className="h-screen flex items-center justify-center bg-[var(--bg-deep)] p-4 selection:bg-[var(--accent-soft)]">
-        <div className="bg-[var(--bg-card)]/90 backdrop-blur-3xl p-8 md:p-12 rounded-[40px] border border-[var(--border-subtle)] max-w-lg w-full text-center space-y-8 relative overflow-y-auto max-h-[95vh] shadow-premium scrollbar-hide">
+        <div className="bg-[var(--bg-card)]/90 backdrop-blur-3xl p-8 md:p-12 rounded-3xl border border-[var(--border-subtle)] max-w-lg w-full text-center space-y-8 relative overflow-y-auto max-h-[95vh] shadow-premium scrollbar-hide">
           <div className="absolute -top-32 -right-32 w-80 h-80 bg-[var(--accent)]/10 blur-[140px] rounded-full" />
           <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-[var(--accent)]/10 blur-[140px] rounded-full" />
           

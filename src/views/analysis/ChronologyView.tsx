@@ -41,7 +41,7 @@ export const ChronologyView: React.FC = () => {
       </div>
 
       {allScenes.length === 0 ? (
-        <div className="py-20 flex flex-col items-center justify-center bg-white/[0.01] rounded-[40px] border border-dashed border-white/5">
+        <div className="py-20 flex flex-col items-center justify-center bg-white/[0.01] rounded-3xl border border-dashed border-white/5">
           <Calendar className="w-12 h-12 text-slate-800 mb-6" />
           <p className="text-sm text-slate-600 font-black uppercase tracking-widest">Nessuna scena trovata</p>
         </div>
@@ -93,7 +93,7 @@ export const ChronologyView: React.FC = () => {
       {/* Event Detail Modal (Simplistic Overlay) */}
       {selectedEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-           <div className="bg-[#171b1f] w-full max-w-xl rounded-[40px] border border-white/10 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+           <div className="bg-[#171b1f] w-full max-w-xl rounded-3xl border border-white/10 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
               <div className="p-10 border-b border-white/5 bg-white/[0.01] flex items-center justify-between">
                 <div>
                   <span className="px-3 py-1 bg-[#5be9b1]/10 text-[#5be9b1] text-[9px] font-black uppercase tracking-widest rounded-full border border-[#5be9b1]/20">
