@@ -159,6 +159,8 @@ export const NarrativeView: React.FC = React.memo(() => {
               onReorder={handleReorder}
               onRenameChapter={renameChapter}
               onRenameScene={renameScene}
+              onDeleteChapter={deleteChapter}
+              onDeleteScene={deleteScene}
               onToggleSceneExclusion={(id, exclude) => updateSceneMetadata(id, { exclude_from_timeline: exclude })}
               onExport={handleExport}
               isExporting={isExporting}

@@ -1,12 +1,12 @@
 import React from 'react';
-import { Plus, Map, Info, Home, Landmark, Package, Sword, Sparkles, Compass } from 'lucide-react';
+import { Plus, Map, Info, Home, Landmark, Package, Sword, Sparkles, Compass, Trash2 } from 'lucide-react';
 import { useWorld } from '../hooks/useWorld';
 import { cn } from '../lib/utils';
 import { CreationModal } from '../components/CreationModal';
 import { useToast } from '../components/Toast';
 
 export const WorldView: React.FC = () => {
-  const { settings, addSetting, updateSetting } = useWorld();
+  const { settings, addSetting, updateSetting, deleteSetting } = useWorld();
   const { addToast } = useToast();
   const [activeCategory, setActiveCategory] = React.useState<'location' | 'object'>('location');
   const [selectedSettingId, setSelectedSettingId] = React.useState<string | null>(null);
@@ -179,6 +179,16 @@ export const WorldView: React.FC = () => {
                     <option value="Primary">{activeCategory === 'location' ? 'Nucleo Primario' : 'Leggendario / Unico'}</option>
                     <option value="Secondary">{activeCategory === 'location' ? 'Settore Secondario' : 'Comune / Reperibile'}</option>
                   </select>
+                  <button 
+                      onClick={() => {
+                        deleteSetting(selectedSetting.id);
+                        setSelectedSettingId(null);
+                      }}
+                      className="text-[var(--text-muted)] hover:text-red-400 p-3 transition-all bg-[var(--bg-deep)] rounded-xl border border-[var(--border-subtle)] shadow-lg"
+                      title={activeCategory === 'location' ? "Elimina Luogo" : "Elimina Oggetto"}
+                    >
+                      <Trash2 className="w-5 h-5" />
+                  </button>
               </div>
             </div>
 

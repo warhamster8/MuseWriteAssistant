@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, ChevronDown, ChevronRight, FileText, Folder, GripVertical, Library, FileDown, Eye, EyeOff, X } from 'lucide-react';
+import { Plus, ChevronDown, ChevronRight, FileText, Folder, GripVertical, Library, FileDown, Eye, EyeOff, X, Trash2 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
@@ -17,6 +17,8 @@ interface ManuscriptNavigatorProps {
   onReorder: (result: DropResult) => void;
   onRenameChapter: (id: string, title: string) => void;
   onRenameScene: (id: string, title: string) => void;
+  onDeleteChapter: (id: string) => void;
+  onDeleteScene: (id: string) => void;
   onToggleSceneExclusion: (id: string, exclude: boolean) => void;
   onExport: () => void;
   isExporting: boolean;
@@ -40,6 +42,8 @@ export const ManuscriptNavigator: React.FC<ManuscriptNavigatorProps> = ({
   onReorder,
   onRenameChapter,
   onRenameScene,
+  onDeleteChapter,
+  onDeleteScene,
   onToggleSceneExclusion,
   onExport,
   isExporting
@@ -171,6 +175,16 @@ export const ManuscriptNavigator: React.FC<ManuscriptNavigatorProps> = ({
                               {chapter.title}
                             </span>
                           )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteChapter(chapter.id);
+                            }}
+                            className="p-1 px-2 text-[var(--text-muted)] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-red-500/10"
+                            title="Elimina Capitolo"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
                           <Plus 
                             onClick={(e) => {
                               e.stopPropagation();
@@ -244,27 +258,40 @@ export const ManuscriptNavigator: React.FC<ManuscriptNavigatorProps> = ({
                                           </span>
                                         )}
                                         
-                                        <button
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            onToggleSceneExclusion(scene.id, !scene.exclude_from_timeline);
-                                          }}
-                                          className={cn(
-                                            "flex items-center justify-center p-1.5 rounded-lg transition-all border border-transparent opacity-0 group-hover/scene:opacity-100",
-                                            scene.exclude_from_timeline 
-                                              ? "text-red-400 hover:bg-red-400/10 hover:border-red-400/20" 
-                                              : "text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--accent-soft)]",
-                                            activeSceneId === scene.id && "text-[var(--bg-deep)]/40 hover:text-[var(--bg-deep)] hover:bg-black/10"
-                                          )}
-                                          title={scene.exclude_from_timeline ? "Includi nella timeline" : "Escludi dalla timeline (Bozza)"}
-                                        >
-                                          {scene.exclude_from_timeline ? (
-                                            <EyeOff className="w-3.5 h-3.5" />
-                                          ) : (
-                                            <Eye className="w-3.5 h-3.5" />
-                                          )}
-                                        </button>
-                                      </div>
+                                          <button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              onDeleteScene(scene.id);
+                                            }}
+                                            className={cn(
+                                              "flex items-center justify-center p-1.5 rounded-lg transition-all border border-transparent opacity-0 group-hover/scene:opacity-100 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-400/10",
+                                              activeSceneId === scene.id && "text-[var(--bg-deep)]/40 hover:text-[var(--bg-deep)]"
+                                            )}
+                                            title="Elimina Scena"
+                                          >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                          </button>
+                                          <button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              onToggleSceneExclusion(scene.id, !scene.exclude_from_timeline);
+                                            }}
+                                            className={cn(
+                                              "flex items-center justify-center p-1.5 rounded-lg transition-all border border-transparent opacity-0 group-hover/scene:opacity-100",
+                                              scene.exclude_from_timeline 
+                                                ? "text-red-400 hover:bg-red-400/10 hover:border-red-400/20" 
+                                                : "text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--accent-soft)]",
+                                              activeSceneId === scene.id && "text-[var(--bg-deep)]/40 hover:text-[var(--bg-deep)] hover:bg-black/10"
+                                            )}
+                                            title={scene.exclude_from_timeline ? "Includi nella timeline" : "Escludi dalla timeline (Bozza)"}
+                                          >
+                                            {scene.exclude_from_timeline ? (
+                                              <EyeOff className="w-3.5 h-3.5" />
+                                            ) : (
+                                              <Eye className="w-3.5 h-3.5" />
+                                            )}
+                                          </button>
+                                        </div>
 
 
                                     )}

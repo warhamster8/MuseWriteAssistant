@@ -66,9 +66,25 @@ export function useWorld() {
     }
   };
 
+  const deleteSetting = async (id: string) => {
+    if (!confirm('Sei sicuro di voler eliminare questo elemento dal mondo?')) return;
+    
+    if (isLocalMode) {
+      storage.delete('settings', id);
+      fetchWorld();
+    } else {
+      const { error } = await supabase.from('settings').delete().eq('id', id);
+      if (error) {
+        console.error('Error deleting setting:', error);
+      } else {
+        fetchWorld();
+      }
+    }
+  };
+
   useEffect(() => {
     fetchWorld();
   }, [currentProject, isLocalMode]);
 
-  return { settings, loading, addSetting, updateSetting, refresh: fetchWorld };
+  return { settings, loading, addSetting, updateSetting, deleteSetting, refresh: fetchWorld };
 }

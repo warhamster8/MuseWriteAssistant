@@ -281,6 +281,42 @@ export function useNarrative() {
   };
 
 
+  const deleteChapter = async (chapterId: string) => {
+    if (!confirm('Sei sicuro di voler eliminare questo capitolo e tutte le sue scene?')) return;
+    
+    if (isLocalMode) {
+      storage.delete('chapters', chapterId);
+      // Elimina anche le scene associate
+      const allScenes = storage.getCollection<Scene>('scenes');
+      const filteredScenes = allScenes.filter(s => s.chapter_id !== chapterId);
+      storage.setCollection('scenes', filteredScenes);
+      fetchNarrative();
+    } else {
+      const { error } = await supabase.from('chapters').delete().eq('id', chapterId);
+      if (error) {
+        console.error('Error deleting chapter:', error);
+      } else {
+        fetchNarrative();
+      }
+    }
+  };
+
+  const deleteScene = async (sceneId: string) => {
+    if (!confirm('Sei sicuro di voler eliminare questa scena?')) return;
+
+    if (isLocalMode) {
+      storage.delete('scenes', sceneId);
+      fetchNarrative();
+    } else {
+      const { error } = await supabase.from('scenes').delete().eq('id', sceneId);
+      if (error) {
+        console.error('Error deleting scene:', error);
+      } else {
+        fetchNarrative();
+      }
+    }
+  };
+
   useEffect(() => {
     fetchNarrative();
   }, [currentProject, isLocalMode]);
@@ -290,6 +326,8 @@ export function useNarrative() {
     loading, 
     addChapter, 
     addScene, 
+    deleteChapter,
+    deleteScene,
     updateSceneContent, 
     updateTimelineEvents,
     updateSceneMetadata,

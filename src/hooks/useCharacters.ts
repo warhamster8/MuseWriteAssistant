@@ -110,9 +110,25 @@ export function useCharacters() {
     }
   };
 
+  const deleteCharacter = async (id: string) => {
+    if (!confirm('Sei sicuro di voler eliminare questo personaggio?')) return;
+    
+    if (isLocalMode) {
+      storage.delete('characters', id);
+      fetchCharacters();
+    } else {
+      const { error } = await supabase.from('characters').delete().eq('id', id);
+      if (error) {
+        console.error('Error deleting character:', error);
+      } else {
+        fetchCharacters();
+      }
+    }
+  };
+
   useEffect(() => {
     fetchCharacters();
   }, [currentProject, isLocalMode]);
 
-  return { characters, loading, addCharacter, updateCharacter, addInterview, refresh: fetchCharacters };
+  return { characters, loading, addCharacter, updateCharacter, deleteCharacter, addInterview, refresh: fetchCharacters };
 }

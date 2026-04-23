@@ -7,7 +7,7 @@ import { CreationModal } from '../components/CreationModal';
 import { useToast } from '../components/Toast';
 
 export const CharactersView: React.FC = () => {
-  const { characters, addCharacter, updateCharacter, addInterview } = useCharacters();
+  const { characters, addCharacter, updateCharacter, deleteCharacter, addInterview } = useCharacters();
   const { addToast } = useToast();
   const [selectedCharId, setSelectedCharId] = React.useState<string | null>(null);
   const selectedChar = React.useMemo(() => 
@@ -352,6 +352,16 @@ export const CharactersView: React.FC = () => {
                             <Trash2 className="w-5 h-5 opacity-40 hover:opacity-100" />
                           </button>
                         )}
+                        <button 
+                            onClick={() => {
+                              deleteCharacter(selectedChar.id);
+                              setSelectedCharId(null);
+                            }}
+                            className="text-[var(--text-muted)] hover:text-red-400 p-2.5 transition-all bg-[var(--bg-surface)]/10 rounded-xl border border-transparent hover:border-red-500/20"
+                            title="Elimina Personaggio"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                        </button>
                       </div>
                       <input 
                         value={localName}
