@@ -102,7 +102,7 @@ export const ProjectSelector: React.FC = () => {
             <div className="relative group">
                 <div className="absolute -inset-4 bg-[var(--accent)]/20 rounded-[32px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 <div className="relative w-24 h-24 bg-[var(--bg-deep)] rounded-[24px] flex items-center justify-center p-3 border border-[var(--border-subtle)] shadow-inner">
-                  <img src="/logo.png" alt="Muse Logo" className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 logo-blend" />
+                  <img src="/logo.png" alt="Muse Logo" className="w-full h-full object-contain rounded-[20px] transition-transform duration-700 group-hover:scale-110 logo-blend" />
                 </div>
             </div>
             <div>

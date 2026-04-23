@@ -59,7 +59,7 @@ export const Sidebar: React.FC = React.memo(() => {
           <img 
             src="/logo.png" 
             alt="Muse Logo" 
-            className="w-full h-full object-contain logo-blend transition-all duration-1000 group-hover:scale-110 group-hover:rotate-3" 
+            className="w-full h-full object-contain rounded-[16px] xl:rounded-[20px] logo-blend transition-all duration-1000 group-hover:scale-110 group-hover:rotate-3" 
           />
         </div>
       </div>
