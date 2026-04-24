@@ -67,7 +67,6 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
       currentSuggestion.suggestion = currentSuggestion.suggestion.replace(/(?:Suggerimento|Suggestione|Correzione)\s*\d+[:\s]*/gi, '').trim();
     }
   });
-  });
 
   const final: any = currentSuggestion;
   if (final && final.original && final.suggestion && final.original.trim() !== final.suggestion.trim()) {
