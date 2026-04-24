@@ -11,7 +11,7 @@ export const groqService = {
    * Ottiene un'istanza di Groq con la chiave fornita o quella d'ambiente.
    */
   getInstance(providedKey?: string) {
-    const key = providedKey || apiKey;
+    const key = providedKey?.trim() || apiKey?.trim();
     if (!key) return null;
     return new Groq({ apiKey: key, dangerouslyAllowBrowser: true });
   },

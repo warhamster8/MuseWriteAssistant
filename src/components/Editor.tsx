@@ -60,6 +60,13 @@ const CustomShortcuts = Extension.create({
 
 export const Editor: React.FC<{ initialContent: string; onChange: (content: string) => void }> = React.memo(({ initialContent, onChange }) => {
   const isExternallyUpdating = React.useRef(false);
+  const onChangeRef = React.useRef(onChange);
+  
+  // Sincronizziamo il ref ogni volta che onChange cambia (es. cambia scena)
+  React.useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
   const setActiveSelection = useStore(s => s.setActiveSelection);
   const theme = useStore(s => s.theme);
   const [showDropCapMenu, setShowDropCapMenu] = React.useState(false);
@@ -95,7 +102,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
     },
     onUpdate: ({ editor }) => {
       if (isExternallyUpdating.current) return;
-      onChange(editor.getHTML());
+      onChangeRef.current(editor.getHTML());
     },
     onSelectionUpdate: ({ editor }) => {
       const { from, to, empty } = editor.state.selection;

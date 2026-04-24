@@ -14,12 +14,13 @@ export const deepseekService = {
    * @throws Error se la chiave è mancante o la validazione fallisce
    */
   async streamChatCompletion(
-    apiKey: string,
+    providedKey: string,
     messages: any[],
     onChunk: (text: string) => void,
     temperature = 0.7,
     signal?: AbortSignal
   ) {
+    const apiKey = providedKey.trim();
     // Validazione rigida: la chiave deve avere il prefisso corretto e una lunghezza minima
     if (!apiKey || !apiKey.startsWith('sk-') || apiKey.length < 20) {
       throw new Error('Configurazione di sicurezza: Chiave DeepSeek non valida o malformata');
@@ -97,7 +98,8 @@ export const deepseekService = {
    * Verifica la validità della chiave API eseguendo una chiamata minima.
    */
   async testConnection(apiKey: string) {
-    if (!apiKey || !apiKey.startsWith('sk-')) {
+    const key = apiKey.trim();
+    if (!key || !key.startsWith('sk-')) {
       return { ok: false, status: 0, error: 'Formato chiave non valido' };
     }
 
@@ -106,7 +108,7 @@ export const deepseekService = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey.trim()}`,
+          'Authorization': `Bearer ${key}`
         },
         body: JSON.stringify({
           model: 'deepseek-chat',

@@ -14,21 +14,20 @@ export const geminiService = {
    * @param signal - AbortSignal per annullare la richiesta
    */
   async streamChatCompletion(
-    apiKey: string,
+    providedKey: string,
     messages: any[],
     onChunk: (text: string) => void,
-    model = 'gemini-flash-latest',
-    temperature = 0.7,
+    model = 'gemini-1.5-flash',
+    temperature = 0.5,
     signal?: AbortSignal
   ) {
-    if (!apiKey || apiKey.length < 10) {
+    const apiKey = providedKey?.trim();
+    if (!apiKey) {
       throw new Error('Configurazione di sicurezza: Chiave Gemini non valida');
     }
 
-    // Normalizzazione del nome modello — usa l'alias stabile supportato da v1beta
-    const normalizedModel = (model === 'gemini-flash-latest' || model === 'gemini-1.5-flash') 
-      ? 'gemini-1.5-flash-latest' 
-      : model;
+    // Usiamo il nome modello standard
+    const normalizedModel = 'gemini-1.5-flash';
 
     // Strategia di compatibilità massima: incorporiamo le istruzioni di sistema nel primo messaggio utente
     const systemInstruction = messages.find((m) => m.role === 'system')?.content;
@@ -66,8 +65,8 @@ export const geminiService = {
     headers.delete('Authorization');
 
     try {
-      // Usiamo l'endpoint v1beta senza alt=sse per evitare conflitti di protocollo
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${normalizedModel}:streamGenerateContent?key=${apiKey.trim()}`, {
+      // Torniamo a v1 per massima stabilità con il modello standard
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${normalizedModel}:streamGenerateContent?key=${apiKey}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(body),
@@ -136,20 +135,17 @@ export const geminiService = {
   /**
    * Verifica la connettività con l'endpoint Google.
    */
-  async testConnection(apiKey: string, model = 'gemini-flash-latest') {
-    if (!apiKey || apiKey.length < 10) {
-      return { ok: false, status: 0, error: 'Formato chiave non valido' };
-    }
+  async testConnection(providedKey: string, model = 'gemini-1.5-flash') {
+    const apiKey = providedKey?.trim();
+    if (!apiKey) return { ok: false, status: 0, error: 'Chiave mancante' };
 
     const headers = new Headers();
     headers.set('Content-Type', 'application/json');
     headers.delete('Authorization'); // Prevents any phantom Bearer tokens from triggering 401
 
-    const normalizedModel = (model === 'gemini-flash-latest' || model === 'gemini-1.5-flash') 
-      ? 'gemini-1.5-flash-latest' 
-      : model;
+    const normalizedModel = 'gemini-1.5-flash';
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${normalizedModel}:generateContent?key=${apiKey.trim()}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${normalizedModel}:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({
