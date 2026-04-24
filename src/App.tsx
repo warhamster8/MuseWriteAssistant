@@ -162,7 +162,7 @@ function App() {
           <div className="absolute -top-32 -right-32 w-80 h-80 bg-[var(--accent)]/10 blur-[140px] rounded-full" />
           <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-[var(--accent)]/10 blur-[140px] rounded-full" />
           
-          <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-[48px] bg-[var(--bg-surface)] flex items-center justify-center p-6 mb-6 logo-glow border border-[var(--border-subtle)] shadow-inner">
+          <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-[48px] flex items-center justify-center p-6 mb-6 logo-glow transition-all duration-700">
             <img src="/logo.png" alt="Project Muse Logo" className="w-full h-full object-contain rounded-[24px] md:rounded-[32px] logo-blend" />
           </div>
           <div>

@@ -57,7 +57,7 @@ export const Sidebar: React.FC = React.memo(() => {
       {/* Internal Scrollable Container to keep scrollbars within rounded borders */}
       <div className="flex flex-row md:flex-col items-center md:items-stretch w-full h-full overflow-x-auto md:overflow-x-visible md:overflow-y-auto scrollbar-hide">
         <div className="hidden md:flex relative flex-col items-center mb-6 xl:mb-8 pt-2">
-          <div className="w-12 xl:w-48 aspect-square flex items-center justify-center logo-glow overflow-hidden group relative bg-[var(--bg-deep)] rounded-[24px] xl:rounded-[40px] p-2 border border-[var(--border-subtle)] shadow-inner transition-all hover:border-[var(--accent)]/20">
+          <div className="w-12 xl:w-48 aspect-square flex items-center justify-center logo-glow overflow-hidden group relative rounded-[24px] xl:rounded-[40px] p-2 transition-all">
             <img 
               src="/logo.png" 
               alt="Muse Logo" 
