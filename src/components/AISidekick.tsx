@@ -256,6 +256,7 @@ REGOLE MANDATORIE:
    🏷️ Categoria (es. Ritmo, Dialogo, Show Don't Tell, Emozione)
    💡 Spiegazione approfondita del perché questo cambiamento rende la scena più potente.
    IMPORTANTE: Non aggiungere mai prefissi come "Suggerimento 1:" o "Correzione:" all'interno delle righe ❌ o ✅.
+   IMPORTANTE: Rispetta gli a capo. Se il testo originale contiene dei ritorni a capo (paragrafi), mantienili anche nella versione suggerita. Non unire paragrafi distinti senza un motivo editoriale gravissimo.
 
 LINGUA: Italiano.`;
 
@@ -684,10 +685,10 @@ Rispondi in italiano. Sii concreto e originale.`;
                     </div>
                     
                     <div className="space-y-2">
-                       <div className="text-[10px] text-[var(--text-muted)] line-through decoration-red-400/30 opacity-60 italic leading-relaxed">
+                       <div className="text-[10px] text-[var(--text-muted)] line-through decoration-red-400/30 opacity-60 italic leading-relaxed whitespace-pre-line">
                          "{parsedSuggestions[suggestionIndex]?.original}"
                        </div>
-                       <div className="text-[11px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--accent)]/5 p-3 rounded-xl border border-[var(--accent)]/10">
+                       <div className="text-[11px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--accent)]/5 p-3 rounded-xl border border-[var(--accent)]/10 whitespace-pre-line">
                          {parsedSuggestions[suggestionIndex]?.suggestion}
                        </div>
                     </div>
@@ -789,10 +790,10 @@ Rispondi in italiano. Sii concreto e originale.`;
                 <div className="space-y-4">
                   <div className="p-4 bg-[var(--bg-deep)]/40 rounded-2xl border border-[var(--border-subtle)] space-y-3">
                     <div className="space-y-2">
-                       <div className="text-[10px] text-[var(--text-muted)] line-through decoration-red-400/30 opacity-60 italic leading-relaxed">
+                       <div className="text-[10px] text-[var(--text-muted)] line-through decoration-red-400/30 opacity-60 italic leading-relaxed whitespace-pre-line">
                          "{parsedSuggestions[suggestionIndex]?.original}"
                        </div>
-                       <div className="text-[11px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--accent)]/5 p-3 rounded-xl border border-[var(--accent)]/10">
+                       <div className="text-[11px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--accent)]/5 p-3 rounded-xl border border-[var(--accent)]/10 whitespace-pre-line">
                          {parsedSuggestions[suggestionIndex]?.suggestion}
                        </div>
                     </div>

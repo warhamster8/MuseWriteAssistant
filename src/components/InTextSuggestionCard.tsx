@@ -62,7 +62,7 @@ export const InTextSuggestionCard: React.FC<InTextSuggestionCardProps> = ({
 
         {/* Proposal */}
         <div className="flex-1 p-5 relative group">
-          <div className="text-[14px] text-slate-900 dark:text-white leading-relaxed font-serif line-clamp-3">
+          <div className="text-[14px] text-slate-900 dark:text-white leading-relaxed font-serif line-clamp-6 whitespace-pre-line">
             {newParts.map((part, i) => (
               <span key={i} className={cn(part.added && "bg-[var(--accent)]/10 text-[var(--accent)] font-bold px-0.5 rounded")}>
                 {part.value}

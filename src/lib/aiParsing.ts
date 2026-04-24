@@ -53,9 +53,9 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
       }
     } else if (currentSuggestion && !hasOriginalEmoji && !hasSuggestionEmoji && line.trim()) {
       if (currentSuggestion.original && !currentSuggestion.suggestion) {
-        currentSuggestion.original += (currentSuggestion.original ? ' ' : '') + line.trim();
+        currentSuggestion.original += (currentSuggestion.original ? '\n' : '') + line.trim();
       } else if (currentSuggestion.suggestion) {
-        currentSuggestion.suggestion += (currentSuggestion.suggestion ? ' ' : '') + line.trim();
+        currentSuggestion.suggestion += (currentSuggestion.suggestion ? '\n' : '') + line.trim();
       }
     }
     
