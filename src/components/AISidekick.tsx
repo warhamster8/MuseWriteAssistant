@@ -321,7 +321,9 @@ REVISIONA IL TARGET SOPRA.`;
 
     } catch (err: any) {
       if (err.name === 'AbortError') return;
-      setAnalysis(`❌ Errore AI: ${err?.message || 'Errore Sconosciuto'}`);
+      const errorMsg = err?.message || 'Errore Sconosciuto';
+      addToast(`Errore AI: ${errorMsg}`, 'error');
+      setAnalysis(`❌ ${errorMsg}`);
     } finally {
       setIsAnalyzing(false);
       abortControllerRef.current = null;
@@ -400,7 +402,9 @@ CORREGGI IL TARGET SOPRA.`;
       );
     } catch (err: any) {
       if (err.name === 'AbortError') return;
-      setAnalysis(`❌ Errore AI: ${err?.message || 'Errore Sconosciuto'}`);
+      const errorMsg = err?.message || 'Errore Sconosciuto';
+      addToast(`Errore grammatica AI: ${errorMsg}`, 'error');
+      setAnalysis(`❌ ${errorMsg}`);
     } finally {
       setIsAnalyzing(false);
       abortControllerRef.current = null;
