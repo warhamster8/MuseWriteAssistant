@@ -101,6 +101,7 @@ export const useStore = create<AppState>()(
         geminiKey: '',
         groqKey: ''
       },
+      groqKey: null,
       analysisRequestToken: 0,
       authorName: '',
       isSidekickOpen: true,
