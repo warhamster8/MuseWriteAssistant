@@ -5,7 +5,7 @@ import { findMatchesInDoc } from './matchUtils';
 import type { AISuggestion } from '../aiParsing';
 
 export interface SuggestionHighlightOptions {
-  // Empty options as we use storage for dynamic updates
+  onSuggestionClick: (index: number) => void;
 }
 
 export interface SuggestionHighlightStorage {
@@ -14,6 +14,12 @@ export interface SuggestionHighlightStorage {
 
 export const SuggestionHighlight = Extension.create<SuggestionHighlightOptions, SuggestionHighlightStorage>({
   name: 'suggestionHighlight',
+
+  addOptions() {
+    return {
+      onSuggestionClick: () => {},
+    };
+  },
 
   addStorage() {
     return {
@@ -28,6 +34,17 @@ export const SuggestionHighlight = Extension.create<SuggestionHighlightOptions, 
       new Plugin({
         key: new PluginKey('suggestionHighlight'),
         props: {
+          handleClick(_view, _pos, event) {
+            const target = event.target as HTMLElement;
+            if (target && target.classList.contains('suggestion-highlight-pulse')) {
+              const suggestionId = target.getAttribute('data-suggestion-id');
+              if (suggestionId !== null) {
+                extension.options.onSuggestionClick(parseInt(suggestionId, 10));
+                return true; // prevent default handling
+              }
+            }
+            return false;
+          },
           decorations(state) {
             const { suggestions } = extension.storage;
             if (!suggestions || suggestions.length === 0) {

@@ -78,7 +78,11 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
       Highlight.configure({ multicolor: true }),
       CharacterCount,
       CustomShortcuts,
-      SuggestionHighlight.configure({ suggestions: [] }),
+      SuggestionHighlight.configure({ 
+        onSuggestionClick: (index) => {
+          useStore.getState().setSuggestionIndex(index);
+        }
+      }),
     ],
     content: initialContent,
     editorProps: {
