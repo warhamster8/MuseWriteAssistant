@@ -401,8 +401,8 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                 <div 
                   className="fixed z-[100]" 
                   style={{ 
-                    top: coords.bottom + 10, 
-                    left: coords.left - 160, // Center roughly
+                    top: coords.bottom + 15, 
+                    left: coords.left - 425, // Centering for 850px width (850 / 2)
                   }}
                 >
                    <InTextSuggestionCard 
