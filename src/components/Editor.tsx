@@ -384,13 +384,22 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
         <div className="w-full relative">
            {editor && (() => {
               const { from } = editor.state.selection;
+              // Only show if the cursor is within a highlight
+              // Note: the user mentioned "selezionato", but usually clicking/moving cursor is better.
+              // We'll keep it on cursor for now but ensure it's a valid highlight.
+              
               const domAtPos = editor.view.domAtPos(from).node;
               const element = domAtPos instanceof Element ? domAtPos : domAtPos.parentElement;
               const highlight = element?.closest('.suggestion-highlight-pulse');
               
               if (!highlight) return null;
               
-              const text = highlight.getAttribute('data-suggestion-text');
+              const text = highlight.getAttribute('data-suggestion-text') || '';
+              
+              // Verify it's not ignored
+              const ignored = activeSceneId ? (ignoredSuggestions[activeSceneId] || []) : [];
+              if (ignored.includes(text)) return null;
+
               const suggestion = parsedSuggestions.find(s => s.original === text);
               if (!suggestion || !suggestion.suggestion) return null;
 
@@ -402,7 +411,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                   className="fixed z-[100]" 
                   style={{ 
                     top: coords.bottom + 15, 
-                    left: coords.left - 425, // Centering for 850px width (850 / 2)
+                    left: Math.max(20, Math.min(window.innerWidth - 820, coords.left - 400)), 
                   }}
                 >
                    <InTextSuggestionCard 
@@ -416,7 +425,11 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                         }
                      }}
                      onIgnore={() => {
-                        if (activeSceneId) addIgnoredSuggestion(activeSceneId, suggestion.original);
+                        if (activeSceneId) {
+                          addIgnoredSuggestion(activeSceneId, suggestion.original);
+                          // Force a re-render by slightly moving the selection or just relying on state
+                          editor.view.dispatch(editor.state.tr);
+                        }
                      }}
                    />
                 </div>
