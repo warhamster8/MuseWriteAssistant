@@ -25,14 +25,14 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
         }
       }
       // Cerchiamo di isolare il testo dopo l'emoji o l'etichetta senza mangiare lo spazio iniziale del contenuto
-      const contentMatch = line.match(/❌\s*(?:TESTO\s*ORIGINALE\s*(?:ESATTO)?:?)?\s*(.*)/i);
+      const contentMatch = line.match(/❌\s*(?:TESTO\s*ORIGINALE\s*(?:ESATTO)?|SUGGERIMENTO\s*\d+|SUGGESTIONE\s*\d+)?\s*:?\s*(.*)/i);
       const cleanOriginal = (contentMatch ? contentMatch[1] : '')
         .replace(/\*\*/g, '')
         .replace(/^["“”«»\[]+|["“”«»\]]+$/g, '');
       currentSuggestion = { original: cleanOriginal };
     } else if (hasSuggestionEmoji) {
       if (currentSuggestion) {
-        const contentMatch = line.match(/✅\s*(?:NUOVA\s*VERSIONE\s*(?:SUGGERITA)?:?)?\s*(.*)/i);
+        const contentMatch = line.match(/✅\s*(?:NUOVA\s*VERSIONE\s*(?:SUGGERITA)?|SUGGERIMENTO\s*\d+|SUGGESTIONE\s*\d+)?\s*:?\s*(.*)/i);
         currentSuggestion.suggestion = (contentMatch ? contentMatch[1] : '')
           .replace(/\*\*/g, '')
           .replace(/^["“”«»\[]+|["“”«»\]]+$/g, '')

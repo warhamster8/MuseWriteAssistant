@@ -248,6 +248,7 @@ REGOLE MANDATORIE:
    ✅ [Nuova versione migliorata - stessa grammatica/tempo del contesto]
    🏷️ Categoria (es. Ritmo, Dialogo, Show Don't Tell, Emozione)
    💡 Spiegazione approfondita del perché questo cambiamento rende la scena più potente.
+   IMPORTANTE: Non aggiungere mai prefissi come "Suggerimento 1:" o "Correzione:" all'interno delle righe ❌ o ✅.
 
 LINGUA: Italiano.`;
 
