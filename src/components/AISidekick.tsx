@@ -39,10 +39,10 @@ export const AISidekick: React.FC = React.memo(() => {
   const activeSelection = useStore(s => s.activeSelection);
   const aiConfig = useStore(s => s.aiConfig);
   const setParsedSuggestions = useStore(s => s.setParsedSuggestions);
-  const parsedSuggestions = useStore(s => s.parsedSuggestions);
   const suggestionIndex = useStore(s => s.suggestionIndex);
   const setSuggestionIndex = useStore(s => s.setSuggestionIndex);
   const addIgnoredSuggestion = useStore(s => s.addIgnoredSuggestion);
+  const ignoredSuggestions = useStore(s => s.ignoredSuggestions);
 
   const setHighlightedText = useStore(s => s.setHighlightedText);
   const requestScrollToHighlight = useStore(s => s.requestScrollToHighlight);
@@ -69,21 +69,27 @@ export const AISidekick: React.FC = React.memo(() => {
     setSuggestionIndex(-1);
   }, [activeTab, setSuggestionIndex]);
 
-  // Automated parsing of suggestions
+  // Automated parsing of suggestions with filtering
   React.useEffect(() => {
     if (activeTab === 'revision' || activeTab === 'grammar') {
-      const suggestions = parseAIAnalysis(analysis);
-      setParsedSuggestions(suggestions);
-      if (suggestions.length > 0 && suggestionIndex === -1) {
+      const allSuggestions = parseAIAnalysis(analysis);
+      const ignored = activeSceneId ? (ignoredSuggestions[activeSceneId] || []) : [];
+      const visible = allSuggestions.filter(s => !ignored.includes(s.original));
+      
+      setParsedSuggestions(visible);
+      
+      if (visible.length > 0 && suggestionIndex === -1) {
         setSuggestionIndex(0);
-      } else if (suggestions.length === 0) {
+      } else if (visible.length === 0) {
         setSuggestionIndex(-1);
+      } else if (suggestionIndex >= visible.length) {
+        setSuggestionIndex(visible.length - 1);
       }
     } else {
       setParsedSuggestions([]);
       setSuggestionIndex(-1);
     }
-  }, [analysis, activeTab]);
+  }, [analysis, activeTab, ignoredSuggestions, activeSceneId]);
 
   // Automated scrolling when navigating
   React.useEffect(() => {
@@ -252,18 +258,32 @@ REGOLE MANDATORIE:
 
 LINGUA: Italiano.`;
 
-      const userContent = `
-CONTESTO DELL'INTERA SCENA (SOLO PER RIFERIMENTO):
+      const userContent = isSelection ? `
+L'utente desidera revisionare SOLO questa specifica selezione di testo:
+
+TARGET DA REVISIONARE (AGISCI SOLO QUI):
+---
+${textToAnalyze}
+---
+
+CONTESTO DELLA SCENA (USA SOLO COME RIFERIMENTO PER LA COERENZA):
 ---
 ${plainText.substring(0, 10000)}
 ---
 
+IMPORTANTE: Fornisci suggerimenti di revisione ESCLUSIVAMENTE per il TARGET sopra. Ignora il resto del contesto per quanto riguarda le correzioni dirette.` 
+: `
 TARGET DA REVISIONARE:
 ---
 ${textToAnalyze}
 ---
 
-${isSelection ? 'REVISIONA SOLO IL TARGET SOPRA, MA USA IL CONTESTO PER LA COERENZA.' : 'REVISIONA IL TARGET SOPRA.'}`;
+CONTESTO DELLA SCENA (SOLO PER RIFERIMENTO):
+---
+${plainText.substring(0, 10000)}
+---
+
+REVISIONA IL TARGET SOPRA.`;
 
       await aiService.streamChat(
         aiConfig,
@@ -334,18 +354,32 @@ REGOLE MANDATORIE:
 
 LINGUA: Italiano.`;
 
-      const userContent = `
-CONTESTO DELL'INTERA SCENA (SOLO PER RIFERIMENTO):
+      const userContent = isSelection ? `
+L'utente desidera correggere SOLO questa specifica selezione di testo:
+
+TARGET DA CORREGGERE (AGISCI SOLO QUI):
+---
+${textToAnalyze}
+---
+
+CONTESTO DELLA SCENA (USA SOLO COME RIFERIMENTO PER LA COERENZA):
 ---
 ${plainText.substring(0, 10000)}
 ---
 
+IMPORTANTE: Fornisci correzioni tecniche ESCLUSIVAMENTE per il TARGET sopra.` 
+: `
 TARGET DA CORREGGERE:
 ---
 ${textToAnalyze}
 ---
 
-${isSelection ? 'CORREGGI SOLO IL TARGET SOPRA, MA USA IL CONTESTO PER LA COERENZA.' : 'CORREGGI IL TARGET SOPRA.'}`;
+CONTESTO DELL'INTERA SCENA (SOLO PER RIFERIMENTO):
+---
+${plainText.substring(0, 10000)}
+---
+
+CORREGGI IL TARGET SOPRA.`;
 
       await aiService.streamChat(
         aiConfig,
@@ -678,10 +712,7 @@ Rispondi in italiano. Sii concreto e originale.`;
                       onClick={() => {
                         if (activeSceneId) {
                           addIgnoredSuggestion(activeSceneId, parsedSuggestions[suggestionIndex].original);
-                          setSuggestionIndex(prev => {
-                            if (parsedSuggestions.length <= 1) return -1;
-                            return Math.min(prev, parsedSuggestions.length - 2);
-                          });
+                          // L'indice si aggiusterà da solo grazie allo useEffect sopra che filtra i suggerimenti
                         }
                       }}
                       className="p-3 text-[var(--text-muted)] hover:text-red-400 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-xl hover:border-red-400/30 transition-all"
@@ -777,10 +808,7 @@ Rispondi in italiano. Sii concreto e originale.`;
                       onClick={() => {
                         if (activeSceneId) {
                           addIgnoredSuggestion(activeSceneId, parsedSuggestions[suggestionIndex].original);
-                          setSuggestionIndex(prev => {
-                            if (parsedSuggestions.length <= 1) return -1;
-                            return Math.min(prev, parsedSuggestions.length - 2);
-                          });
+                          // L'indice si aggiusterà da solo grazie allo useEffect sopra che filtra i suggerimenti
                         }
                       }}
                       className="p-3 text-[var(--text-muted)] hover:text-red-400 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-xl hover:border-red-400/30 transition-all"
