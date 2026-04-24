@@ -137,7 +137,7 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
           </div>
         ) : (
           <div className="h-full overflow-y-auto custom-scrollbar bg-[var(--bg-deep)] transition-colors duration-500">
-            <div className="mx-auto w-full max-w-[1200px] p-6 lg:p-12">
+            <div className="mx-auto w-full max-w-[1200px] p-4 lg:p-8 2xl:p-12">
               <Editor 
                 initialContent={activeScene.content || ''} 
                 onChange={(newContent) => onUpdateContent(activeScene.id, newContent)} 

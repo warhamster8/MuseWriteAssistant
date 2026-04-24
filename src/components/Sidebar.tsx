@@ -50,7 +50,7 @@ export const Sidebar: React.FC = React.memo(() => {
   };
 
   return (
-    <div className="w-full md:w-20 xl:w-64 h-16 md:h-full glass rounded-t-[24px] md:rounded-b-none md:rounded-[40px] flex flex-row md:flex-col p-2 md:p-4 xl:p-5 z-40 md:z-30 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-2xl relative overflow-hidden transition-all duration-500 items-center md:items-stretch">
+    <div className="w-full md:w-20 xl:w-56 2xl:w-64 h-16 md:h-full glass rounded-t-[24px] md:rounded-b-none md:rounded-[40px] flex flex-row md:flex-col p-2 md:p-4 xl:p-5 z-40 md:z-30 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-2xl relative overflow-hidden transition-all duration-500 items-center md:items-stretch">
       {/* Sidebar background decorative glow */}
       <div className="absolute top-0 left-0 w-full h-32 bg-[var(--accent)]/5 blur-[60px] pointer-events-none" />
 
