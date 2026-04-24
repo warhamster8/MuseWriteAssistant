@@ -420,15 +420,15 @@ Rispondi in italiano. Sii concreto e originale.`;
   const currentLastPhrase = activeSceneId ? lastAnalyzedPhrase[`${activeSceneId}-${activeTab}`] : null;
 
   return (
-    <div className="w-full md:w-64 xl:w-72 2xl:w-80 h-full glass rounded-none md:rounded-[40px] flex-shrink-0 flex flex-col shadow-premium z-20 transition-all duration-500 overflow-hidden relative border-[var(--border-subtle)]">
-      <div className="p-8 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/30">
-        <div className="flex items-center space-x-4">
-          <div className="p-2.5 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/20 shadow-glow-mint">
-             <Sparkles className="w-6 h-6 text-[var(--accent)]" />
+    <div className="w-full md:w-56 lg:w-64 h-full glass rounded-none md:rounded-[40px] flex-shrink-0 flex flex-col shadow-premium z-20 transition-all duration-500 overflow-hidden relative border-[var(--border-subtle)]">
+      <div className="p-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/30">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-[var(--accent-soft)] rounded-xl border border-[var(--accent)]/20 shadow-glow-mint">
+             <Sparkles className="w-4 h-4 text-[var(--accent)]" />
           </div>
-          <div>
-            <h2 className="text-lg font-black tracking-tight text-[var(--text-bright)] leading-tight">AI Companion</h2>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)]">Analisi In Tempo Reale</p>
+          <div className="min-w-0">
+            <h2 className="text-sm font-black tracking-tight text-[var(--text-bright)] leading-tight truncate">Companion</h2>
+            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)]">Live Analysis</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -510,13 +510,13 @@ Rispondi in italiano. Sii concreto e originale.`;
             <button 
               onClick={runDraftRevision} 
               disabled={isAnalyzing || !content || content.length < 10} 
-              className="w-full py-5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] disabled:opacity-50 rounded-[28px] text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-2xl active:scale-95 group"
+              className="w-full py-4 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] disabled:opacity-50 rounded-[20px] text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-2xl active:scale-95 group"
             >
-              <Wand2 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-              <span>{isAnalyzing ? 'Elaborazione...' : 'Analisi Strutturale'}</span>
+              <Wand2 className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+              <span>{isAnalyzing ? '...' : 'Analisi Strutturale'}</span>
             </button>
             
-            <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] p-5 rounded-[24px] space-y-4 shadow-inner">
+            <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] p-3 rounded-[20px] space-y-3 shadow-inner">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="p-2.5 bg-[var(--accent)]/10 rounded-xl">

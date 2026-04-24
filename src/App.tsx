@@ -248,7 +248,7 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-              className="z-40 h-full flex-shrink-0 absolute md:relative right-0 border-l border-[var(--border-subtle)] shadow-2xl bg-[var(--bg-deep)] md:bg-transparent"
+              className="z-40 h-full flex-shrink-0 absolute xl:relative right-0 border-l border-[var(--border-subtle)] shadow-2xl bg-[var(--bg-card)]/90 backdrop-blur-3xl xl:bg-transparent xl:backdrop-blur-none"
             >
               <AISidekick />
             </motion.div>

@@ -87,7 +87,7 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
           
           <div className="h-8 w-[1px] bg-[var(--border-subtle)] mx-1" />
                   {activeScene ? (
-             <button 
+              <button 
                 onClick={() => setSidekickOpen(!isSidekickOpen)}
                 className={cn(
                   "flex items-center gap-3 px-4 xl:px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl group",
@@ -95,7 +95,7 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
                 )}
               >
                 <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                <span className="hidden sm:inline">AI Sidekick</span>
+                <span className="hidden xl:inline">AI Sidekick</span>
               </button>
           ) : (
             <button 
