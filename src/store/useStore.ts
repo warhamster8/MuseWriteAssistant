@@ -35,6 +35,7 @@ interface AppState {
   lastAnalyzedPhrase: Record<string, string>;
   sceneAnalysis: Record<string, string>;
   aiConfig: AIConfig;
+  groqKey: string | null;
   analysisRequestToken: number;
   authorName: string;
   isSidekickOpen: boolean;
@@ -97,7 +98,8 @@ export const useStore = create<AppState>()(
         provider: 'groq',
         model: 'llama-3.3-70b-versatile',
         deepseekKey: '',
-        geminiKey: ''
+        geminiKey: '',
+        groqKey: ''
       },
       analysisRequestToken: 0,
       authorName: '',
@@ -188,7 +190,8 @@ export const useStore = create<AppState>()(
         aiConfig: {
           ...state.aiConfig,
           deepseekKey: '', // Mai persistere la chiave nel localStorage
-          geminiKey: ''
+          geminiKey: '',
+          groqKey: ''
         }
       }),
     }

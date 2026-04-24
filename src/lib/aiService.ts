@@ -9,6 +9,7 @@ export interface AIConfig {
   model: string;
   deepseekKey?: string;
   geminiKey?: string;
+  groqKey?: string;
 }
 
 /**
@@ -72,7 +73,8 @@ export const aiService = {
         config.model || 'llama-3.3-70b-versatile',
         onChunk,
         options?.temperature,
-        options?.signal
+        options?.signal,
+        config.groqKey
       );
     } catch (err: any) {
       // Gestione Errori Sicura (Rule 3)

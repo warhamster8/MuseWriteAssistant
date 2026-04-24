@@ -30,8 +30,10 @@ export const ConfigView: React.FC = React.memo(() => {
   const [isExporting, setIsExporting] = React.useState(false);
   const [keyInput, setKeyInput] = React.useState('');
   const [geminiKeyInput, setGeminiKeyInput] = React.useState('');
+  const [groqKeyInput, setGroqKeyInput] = React.useState('');
   const [isSaving, setIsSaving] = React.useState(false);
   const [isSavingGemini, setIsSavingGemini] = React.useState(false);
+  const [isSavingGroq, setIsSavingGroq] = React.useState(false);
 
   const handleSaveKey = async () => {
     const trimmedKey = keyInput.trim();
@@ -127,11 +129,40 @@ export const ConfigView: React.FC = React.memo(() => {
       setIsTestingGemini(false);
     }
   };
+
+  const handleSaveGroqKey = async () => {
+    const trimmedKey = groqKeyInput.trim();
+    if (!trimmedKey || !trimmedKey.startsWith('gsk_') || trimmedKey.length < 20) {
+      addToast("Inserisci una chiave Groq valida (deve iniziare con gsk_)", 'error');
+      return;
+    }
+    if (!user) return;
+
+    setIsSavingGroq(true);
+    try {
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({ 
+          groq_api_key: trimmedKey,
+          ai_settings: { ...aiConfig, provider: 'groq', groqKey: trimmedKey }
+        })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      setAIConfig({ groqKey: trimmedKey, provider: 'groq' });
+      addToast("Groq attivo!", 'success');
+      setGroqKeyInput('');
+    } catch (err: any) {
+      addToast("Errore nel salvataggio", 'error');
+    } finally {
+      setIsSavingGroq(false);
+    }
+  };
   
   const handleTestGroq = async () => {
     setIsTestingGroq(true);
     try {
-      const result = await groqService.testConnection(aiConfig.model);
+      const result = await groqService.testConnection(aiConfig.groqKey, aiConfig.model);
       setTestGroqResult(result);
       if (result.ok) {
         addToast("Groq Online", 'success');
@@ -376,19 +407,33 @@ export const ConfigView: React.FC = React.memo(() => {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h4 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.3em]">Nucleo Groq</h4>
-                  <button onClick={handleTestGroq} disabled={isTestingGroq} className="p-2.5 bg-[var(--accent)] text-[var(--bg-deep)] rounded-xl hover:scale-105 transition-all">
-                    <Activity className={cn("w-3.5 h-3.5", isTestingGroq && "animate-spin")} />
-                  </button>
+                  {aiConfig.groqKey && (
+                    <button onClick={handleTestGroq} disabled={isTestingGroq} className="p-2.5 bg-[var(--accent)] text-[var(--bg-deep)] rounded-xl hover:scale-105 transition-all">
+                      <Activity className={cn("w-3.5 h-3.5", isTestingGroq && "animate-spin")} />
+                    </button>
+                  )}
                 </div>
                 
-                <div className="p-6 bg-[var(--accent-soft)] border border-[var(--accent)]/10 rounded-3xl group">
-                  <p className="text-[9px] uppercase tracking-widest text-[var(--accent)] font-black mb-2 flex items-center gap-2">
-                     <CheckCircle className="w-3 h-3" /> Integrato via Server
-                  </p>
-                  <p className="text-[10px] text-[var(--text-muted)] leading-relaxed italic">
-                    La chiave Groq è gestita internamente dal sistema per massimizzare le performance.
-                  </p>
-                </div>
+                {!aiConfig.groqKey ? (
+                  <div className="flex gap-4">
+                    <input 
+                      type="password" value={groqKeyInput} onChange={(e) => setGroqKeyInput(e.target.value)}
+                      placeholder="gsk_..." className="flex-1 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl px-6 py-4 text-xs text-[var(--text-bright)] focus:outline-none focus:border-[var(--accent)]/30 transition-all font-mono"
+                    />
+                    <button onClick={handleSaveGroqKey} disabled={isSavingGroq} className="px-8 bg-[var(--accent)] text-[var(--bg-deep)] rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95">
+                      Attiva
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-6 bg-[var(--accent-soft)] border border-[var(--accent)]/10 rounded-3xl group">
+                    <p className="text-[9px] uppercase tracking-widest text-[var(--accent)] font-black mb-2 flex items-center gap-2">
+                       <CheckCircle className="w-3 h-3" /> Chiave Configurata
+                    </p>
+                    <code className="text-xs text-[var(--text-muted)] font-mono block truncate">
+                      {aiConfig.groqKey.slice(0, 4)}...{aiConfig.groqKey.slice(-6)}
+                    </code>
+                  </div>
+                )}
                 
                 {testGroqResult && (
                   <pre className="p-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl text-[9px] text-[var(--accent)] font-mono overflow-x-auto">

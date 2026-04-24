@@ -28,13 +28,20 @@ export const geminiService = {
     // Normalizzazione del nome modello per gli endpoint stabili
     const normalizedModel = model === 'gemini-flash-latest' ? 'gemini-1.5-flash' : model;
 
-    const systemInstructionText = messages.find((m) => m.role === 'system')?.content;
+    // Strategia di compatibilità massima: incorporiamo le istruzioni di sistema nel primo messaggio utente
+    const systemInstruction = messages.find((m) => m.role === 'system')?.content;
     const history = messages
       .filter((m) => m.role !== 'system')
-      .map((m) => ({
-        role: m.role === 'user' ? 'user' : 'model',
-        parts: [{ text: m.content }],
-      }));
+      .map((m, idx) => {
+        let text = m.content;
+        if (idx === 0 && systemInstruction) {
+          text = `ISTRUZIONI DI SISTEMA:\n${systemInstruction}\n\nRICHIESTA UTENTE:\n${m.content}`;
+        }
+        return {
+          role: m.role === 'user' ? 'user' : 'model',
+          parts: [{ text }],
+        };
+      });
 
     const body: any = {
       contents: history,
@@ -50,12 +57,6 @@ export const geminiService = {
       ]
     };
 
-    if (systemInstructionText) {
-      body.system_instruction = {
-        parts: [{ text: systemInstructionText }]
-      };
-    }
-
     const headers = new Headers();
     headers.set('Content-Type', 'application/json');
     // Prevenzione assoluta contro interceptor (es. estensioni browser o vecchie cache SDK) 
@@ -63,7 +64,8 @@ export const geminiService = {
     headers.delete('Authorization');
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${normalizedModel}:streamGenerateContent?alt=sse&key=${apiKey.trim()}`, {
+      // Usiamo l'endpoint v1beta senza alt=sse per evitare conflitti di protocollo
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${normalizedModel}:streamGenerateContent?key=${apiKey.trim()}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(body),
@@ -72,16 +74,12 @@ export const geminiService = {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('[SECURITY LOG] Gemini API Error:', errorData);
-        if (response.status === 401 || response.status === 403 || errorData?.error?.message?.includes('invalid authentication credentials') || errorData?.error?.message?.includes('ACCESS_TOKEN_TYPE_UNSUPPORTED')) {
-           throw new Error('Errore di Autenticazione (401): La chiave API non è valida o non è autorizzata. Assicurati di usare una API Key valida di Google AI Studio.');
-        }
-        const errorMessage = errorData?.error?.message || 'Errore sconosciuto dall\'API Google';
-        throw new Error(`Sorgente AI non disponibile (Status: ${response.status}): ${errorMessage}`);
+        const errorMessage = errorData?.error?.message || 'Errore di comunicazione con Gemini';
+        throw new Error(`Gemini Error (${response.status}): ${errorMessage}`);
       }
 
       const reader = response.body?.getReader();
-      if (!reader) throw new Error('Interfaccia di comunicazione streaming fallita');
+      if (!reader) throw new Error('Interfaccia streaming non disponibile');
 
       const decoder = new TextDecoder();
       let buffer = '';
@@ -95,26 +93,34 @@ export const geminiService = {
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          const trimmedLine = line.trim();
-          if (!trimmedLine) continue;
-
-          if (trimmedLine.startsWith('data: ')) {
-            const dataStr = trimmedLine.substring(6);
-            if (dataStr === '[DONE]') continue;
+        
+        // Gemini stream può restituire array di JSON o frammenti.
+        // Puliamo il buffer per trovare oggetti JSON validi
+        let startIdx = buffer.indexOf('{');
+        while (startIdx !== -1) {
+          let depth = 0;
+          let endIdx = -1;
+          for (let i = startIdx; i < buffer.length; i++) {
+            if (buffer[i] === '{') depth++;
+            else if (buffer[i] === '}') depth--;
             
-            try {
-              const json = JSON.parse(dataStr);
-              const content = json.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (content) {
-                onChunk(content);
-              }
-            } catch (e) {
-              // Silenzioso: frammento JSON incompleto durante lo stream
+            if (depth === 0) {
+              endIdx = i;
+              break;
             }
+          }
+
+          if (endIdx !== -1) {
+            const jsonStr = buffer.substring(startIdx, endIdx + 1);
+            try {
+              const json = JSON.parse(jsonStr);
+              const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (text) onChunk(text);
+            } catch (e) {}
+            buffer = buffer.substring(endIdx + 1);
+            startIdx = buffer.indexOf('{');
+          } else {
+            break;
           }
         }
       }

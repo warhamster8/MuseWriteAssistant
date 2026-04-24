@@ -10,18 +10,28 @@ const groq = apiKey ? new Groq({ apiKey, dangerouslyAllowBrowser: true }) : null
  */
 export const groqService = {
   /**
+   * Ottiene un'istanza di Groq con la chiave fornita o quella d'ambiente.
+   */
+  getInstance(providedKey?: string) {
+    const key = providedKey || apiKey;
+    if (!key) return null;
+    return new Groq({ apiKey: key, dangerouslyAllowBrowser: true });
+  },
+
+  /**
    * Ottiene una chat completion completa (non stream).
    * 
    * @throws Error se la chiave API non è configurata o la chiamata fallisce.
    */
-  async getChatCompletion(messages: any[], model = 'llama-3.3-70b-versatile', temperature = 0.5) {
-    if (!groq) {
+  async getChatCompletion(messages: any[], model = 'llama-3.3-70b-versatile', temperature = 0.5, apiKey?: string) {
+    const instance = this.getInstance(apiKey);
+    if (!instance) {
       console.error('[SECURITY LOG] Groq instance not initialized. Check VITE_GROQ_API_KEY.');
       throw new Error('Servizio Groq momentaneamente non disponibile.');
     }
     
     try {
-      return await groq.chat.completions.create({
+      return await instance.chat.completions.create({
         messages,
         model,
         temperature,
@@ -43,15 +53,17 @@ export const groqService = {
     model = 'llama-3.3-70b-versatile',
     onChunk: (text: string) => void,
     temperature = 0.55,
-    signal?: AbortSignal
+    signal?: AbortSignal,
+    apiKey?: string
   ) {
-    if (!groq) {
+    const instance = this.getInstance(apiKey);
+    if (!instance) {
       console.error('[SECURITY LOG] Groq stream requested but instance missing.');
       throw new Error('Servizio Groq non configurato.');
     }
 
     try {
-      const stream = await groq.chat.completions.create({
+      const stream = await instance.chat.completions.create({
         messages,
         model,
         stream: true,
@@ -74,11 +86,12 @@ export const groqService = {
   /**
    * Verifica la connettività con l'endpoint Groq.
    */
-  async testConnection(model = 'llama-3.3-70b-versatile') {
-    if (!groq) return { ok: false, status: 0, error: 'Groq non inizializzato' };
+  async testConnection(apiKey?: string, model = 'llama-3.3-70b-versatile') {
+    const instance = this.getInstance(apiKey);
+    if (!instance) return { ok: false, status: 0, error: 'Groq non inizializzato' };
     
     try {
-      const result = await groq.chat.completions.create({
+      const result = await instance.chat.completions.create({
         messages: [{ role: 'user', content: 'Ping' }],
         model,
         max_tokens: 1
