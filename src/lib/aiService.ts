@@ -69,7 +69,7 @@ export const aiService = {
       // Default: Groq Core Architecture
       return await groqService.streamChatCompletion(
         messages,
-        'llama-3.3-70b-versatile',
+        config.model || 'llama-3.3-70b-versatile',
         onChunk,
         options?.temperature,
         options?.signal

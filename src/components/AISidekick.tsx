@@ -279,14 +279,14 @@ ${plainText.substring(0, 10000)}
 IMPORTANTE: Fornisci suggerimenti di revisione ESCLUSIVAMENTE per il TARGET sopra. Ignora il resto del contesto per quanto riguarda le correzioni dirette.` 
 : `
 TARGET DA REVISIONARE:
----
+[INIZIO TARGET]
 ${textToAnalyze}
----
+[FINE TARGET]
 
 CONTESTO DELLA SCENA (SOLO PER RIFERIMENTO):
----
+[INIZIO CONTESTO]
 ${plainText.substring(0, 10000)}
----
+[FINE CONTESTO]
 
 REVISIONA IL TARGET SOPRA.`;
 
@@ -378,14 +378,14 @@ ${plainText.substring(0, 10000)}
 IMPORTANTE: Fornisci correzioni tecniche ESCLUSIVAMENTE per il TARGET sopra.` 
 : `
 TARGET DA CORREGGERE:
----
+[INIZIO TARGET]
 ${textToAnalyze}
----
+[FINE TARGET]
 
 CONTESTO DELL'INTERA SCENA (SOLO PER RIFERIMENTO):
----
+[INIZIO CONTESTO]
 ${plainText.substring(0, 10000)}
----
+[FINE CONTESTO]
 
 CORREGGI IL TARGET SOPRA.`;
 
