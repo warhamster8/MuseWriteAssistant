@@ -449,16 +449,16 @@ Rispondi in italiano. Sii concreto e originale.`;
       </div>
 
 
-          <div className="px-6 py-2">
-            <div className="grid grid-cols-3 gap-1.5 bg-[var(--bg-card)]/50 p-1.5 rounded-[24px] border border-[var(--border-subtle)] backdrop-blur-xl">
+          <div className="px-4 py-2">
+            <div className="grid grid-cols-2 gap-1.5 bg-[var(--bg-card)]/80 p-1 rounded-[20px] border border-[var(--border-subtle)]">
              {(['revision', 'grammar', 'braindump', 'transformer', 'lexicon'] as SidekickTab[]).map((tab) => (
                <button
                  key={tab}
                  onClick={() => setActiveTab(tab)}
                   className={cn(
-                    "py-2 px-1 rounded-[18px] text-[8px] font-black uppercase tracking-widest transition-all duration-300 text-center",
+                    "py-2 px-1 rounded-[16px] text-[7px] font-black uppercase tracking-widest transition-all duration-300 text-center",
                     activeTab === tab 
-                      ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-md" 
+                      ? "bg-[var(--accent)] text-[var(--bg-deep)]" 
                       : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-[var(--accent-soft)]"
                   )}
                >
@@ -468,7 +468,7 @@ Rispondi in italiano. Sii concreto e originale.`;
             </div>
           </div>
 
-      <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide bg-[var(--bg-deep)]/30">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide bg-[var(--bg-deep)]/30">
         {activeTab === 'revision' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
