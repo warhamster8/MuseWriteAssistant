@@ -68,6 +68,7 @@ export const groqService = {
       if (err.name === 'AbortError') return;
       console.error('[SECURITY LOG] Groq Stream Exception:', err.message);
       throw new Error('Errore nello streaming dei dati dal motore Groq.');
+    }
   },
   
   /**
