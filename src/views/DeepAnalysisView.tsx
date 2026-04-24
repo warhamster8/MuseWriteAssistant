@@ -29,6 +29,9 @@ export const DeepAnalysisView: React.FC = () => {
   const activeSceneId = useStore(s => s.activeSceneId);
   const setActiveSceneId = useStore(s => s.setActiveSceneId);
   const isNavigatorOpen = useStore(s => s.isNavigatorOpen);
+  const setNavigatorOpen = useStore(s => s.setNavigatorOpen);
+  const isSidekickOpen = useStore(s => s.isSidekickOpen);
+  const setSidekickOpen = useStore(s => s.setSidekickOpen);
   const isZenMode = useStore(s => s.isZenMode);
   const setParsedSuggestions = useStore(s => s.setParsedSuggestions);
   const { addToast } = useToast();
@@ -37,7 +40,6 @@ export const DeepAnalysisView: React.FC = () => {
   const [analysis, setAnalysis] = useState('');
   const [query, setQuery] = useState('');
   const [instructions, setInstructions] = useState('');
-  const [showAnalysisPanel, setShowAnalysisPanel] = useState(true);
   
   const activeScene = chapters.flatMap(c => c.scenes || []).find(s => s.id === activeSceneId);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -130,16 +132,16 @@ Il tuo obiettivo è elevare il testo alla qualità da pubblicazione. Sii onesto,
     <div className="flex h-full overflow-hidden animate-in fade-in duration-700 bg-[var(--bg-deep)] p-2 gap-4">
       {/* Colonna Laterale: Navigator o Pannello Analisi */}
       <AnimatePresence mode="wait">
-        {(isNavigatorOpen || showAnalysisPanel) && !isZenMode && (
+        {(isNavigatorOpen || isSidekickOpen) && !isZenMode && (
           <motion.div
-            key={showAnalysisPanel ? 'analysis' : 'navigator'}
+            key={isSidekickOpen ? 'analysis' : 'navigator'}
             initial={{ width: 0, opacity: 0, x: -20 }}
             animate={{ width: 'auto', opacity: 1, x: 0 }}
             exit={{ width: 0, opacity: 0, x: -20 }}
             transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             className="h-full flex-shrink-0 origin-left"
           >
-            {showAnalysisPanel ? (
+            {isSidekickOpen ? (
               <div className="w-full md:w-56 xl:w-72 2xl:w-80 h-full glass rounded-[32px] flex flex-col shadow-lg border border-[var(--border-subtle)] overflow-hidden">
                 <div className="p-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/20 flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -147,7 +149,10 @@ Il tuo obiettivo è elevare il testo alla qualità da pubblicazione. Sii onesto,
                     <h2 className="text-xs font-black uppercase tracking-tight text-[var(--text-bright)]">Deep Analysis</h2>
                   </div>
                   <button 
-                    onClick={() => setShowAnalysisPanel(false)} 
+                    onClick={() => {
+                      setSidekickOpen(false);
+                      setNavigatorOpen(true);
+                    }} 
                     className="text-[9px] font-black uppercase text-[var(--accent)] hover:text-[var(--text-bright)] transition-colors"
                   >
                     Navigator
@@ -230,7 +235,8 @@ Il tuo obiettivo è elevare il testo alla qualità da pubblicazione. Sii onesto,
                 activeSceneId={activeSceneId} 
                 onSelectScene={(id) => { 
                   setActiveSceneId(id); 
-                  setShowAnalysisPanel(true); 
+                  setSidekickOpen(true); 
+                  setNavigatorOpen(false);
                 }} 
                 expandedChapters={new Set()} 
                 onToggleChapter={() => {}} 
