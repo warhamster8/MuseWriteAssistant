@@ -63,7 +63,7 @@ export const geminiService = {
     headers.delete('Authorization');
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${normalizedModel}:streamGenerateContent?alt=sse&key=${apiKey.trim()}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${normalizedModel}:streamGenerateContent?alt=sse&key=${apiKey.trim()}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(body),
@@ -137,9 +137,9 @@ export const geminiService = {
     headers.set('Content-Type', 'application/json');
     headers.delete('Authorization'); // Prevents any phantom Bearer tokens from triggering 401
 
-    const normalizedModel = model === 'gemini-flash-latest' ? 'gemini-1.5-flash' : model;
+    const normalizedModel = model.includes('gemini-1.5-flash') ? 'gemini-1.5-flash' : model;
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${normalizedModel}:generateContent?key=${apiKey.trim()}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${normalizedModel}:generateContent?key=${apiKey.trim()}`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({

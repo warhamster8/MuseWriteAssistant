@@ -68,6 +68,32 @@ export const groqService = {
       if (err.name === 'AbortError') return;
       console.error('[SECURITY LOG] Groq Stream Exception:', err.message);
       throw new Error('Errore nello streaming dei dati dal motore Groq.');
+  },
+  
+  /**
+   * Verifica la connettività con l'endpoint Groq.
+   */
+  async testConnection(model = 'llama-3.3-70b-versatile') {
+    if (!groq) return { ok: false, status: 0, error: 'Groq non inizializzato' };
+    
+    try {
+      const result = await groq.chat.completions.create({
+        messages: [{ role: 'user', content: 'Ping' }],
+        model,
+        max_tokens: 1
+      });
+      return {
+        ok: true,
+        status: 200,
+        data: { status: 'online', model: result.model }
+      };
+    } catch (err: any) {
+      console.error('[SECURITY LOG] Groq Connection Test Failed:', err.message);
+      return {
+        ok: false,
+        status: 0,
+        error: err.message || 'Errore di connessione Groq'
+      };
     }
   }
 };

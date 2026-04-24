@@ -5,6 +5,7 @@ import { Settings, Cpu, Zap, ShieldCheck, Activity, Loader2, CheckCircle, Sun, M
 import { useToast } from '../components/Toast';
 import { deepseekService } from '../lib/deepseek';
 import { geminiService } from '../lib/gemini';
+import { groqService } from '../lib/groq';
 import { cn } from '../lib/utils';
 import { exportToDocx } from '../lib/exportUtils';
 import { FileDown, UserCircle, BookOpen } from 'lucide-react';
@@ -22,8 +23,10 @@ export const ConfigView: React.FC = React.memo(() => {
   const { addToast } = useToast();
   const [testResult, setTestResult] = React.useState<any>(null);
   const [testGeminiResult, setTestGeminiResult] = React.useState<any>(null);
+  const [testGroqResult, setTestGroqResult] = React.useState<any>(null);
   const [isTesting, setIsTesting] = React.useState(false);
   const [isTestingGemini, setIsTestingGemini] = React.useState(false);
+  const [isTestingGroq, setIsTestingGroq] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
   const [keyInput, setKeyInput] = React.useState('');
   const [geminiKeyInput, setGeminiKeyInput] = React.useState('');
@@ -122,6 +125,23 @@ export const ConfigView: React.FC = React.memo(() => {
       addToast("Errore di rete Gemini", 'error');
     } finally {
       setIsTestingGemini(false);
+    }
+  };
+  
+  const handleTestGroq = async () => {
+    setIsTestingGroq(true);
+    try {
+      const result = await groqService.testConnection(aiConfig.model);
+      setTestGroqResult(result);
+      if (result.ok) {
+        addToast("Groq Online", 'success');
+      } else {
+        addToast(`Errore Groq: ${result.error}`, 'error');
+      }
+    } catch (err) {
+      addToast("Errore di rete Groq", 'error');
+    } finally {
+      setIsTestingGroq(false);
     }
   };
 
@@ -275,7 +295,7 @@ export const ConfigView: React.FC = React.memo(() => {
             <h3 className="text-xl font-black text-[var(--text-bright)] uppercase tracking-tight italic">Security & Diagnostics</h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {/* DeepSeek Security */}
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -348,6 +368,31 @@ export const ConfigView: React.FC = React.memo(() => {
                 {testGeminiResult && (
                   <pre className="p-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl text-[9px] text-[var(--accent)] font-mono overflow-x-auto">
                     {JSON.stringify(testGeminiResult, null, 2)}
+                  </pre>
+                )}
+              </div>
+
+              {/* Groq Security */}
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.3em]">Nucleo Groq</h4>
+                  <button onClick={handleTestGroq} disabled={isTestingGroq} className="p-2.5 bg-[var(--accent)] text-[var(--bg-deep)] rounded-xl hover:scale-105 transition-all">
+                    <Activity className={cn("w-3.5 h-3.5", isTestingGroq && "animate-spin")} />
+                  </button>
+                </div>
+                
+                <div className="p-6 bg-[var(--accent-soft)] border border-[var(--accent)]/10 rounded-3xl group">
+                  <p className="text-[9px] uppercase tracking-widest text-[var(--accent)] font-black mb-2 flex items-center gap-2">
+                     <CheckCircle className="w-3 h-3" /> Integrato via Server
+                  </p>
+                  <p className="text-[10px] text-[var(--text-muted)] leading-relaxed italic">
+                    La chiave Groq è gestita internamente dal sistema per massimizzare le performance.
+                  </p>
+                </div>
+                
+                {testGroqResult && (
+                  <pre className="p-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl text-[9px] text-[var(--accent)] font-mono overflow-x-auto">
+                    {JSON.stringify(testGroqResult, null, 2)}
                   </pre>
                 )}
               </div>
