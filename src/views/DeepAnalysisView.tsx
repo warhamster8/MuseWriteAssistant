@@ -11,7 +11,6 @@ import { useNarrative } from '../hooks/useNarrative';
 import { useToast, ToastContainer } from '../components/Toast';
 import { aiService } from '../lib/aiService';
 import { cn } from '../lib/utils';
-import { StructuredOutput } from '../components/analysis/StructuredOutput';
 import { getPlainTextForAI } from '../lib/textUtils';
 import { parseAIAnalysis } from '../lib/aiParsing';
 import { ManuscriptNavigator } from './narrative/ManuscriptNavigator';
@@ -37,11 +36,10 @@ export const DeepAnalysisView: React.FC = () => {
   const { addToast } = useToast();
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysis, setAnalysis] = useState('');
   const [query, setQuery] = useState('');
   const [instructions, setInstructions] = useState('');
-  
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
+  
   const activeScene = chapters.flatMap(c => c.scenes || []).find(s => s.id === activeSceneId);
   
   const toggleChapter = (id: string) => {
@@ -58,24 +56,6 @@ export const DeepAnalysisView: React.FC = () => {
     };
   }, []);
 
-  const [appliedSuggestions, setAppliedSuggestions] = useState<string[]>([]);
-  const [rejectedSuggestions, setRejectedSuggestions] = useState<string[]>([]);
-
-  const applySuggestion = async (originalText: string, suggestion: string) => {
-    if (!activeScene || !activeScene.content) return;
-    const content = activeScene.content;
-    const cleanOriginalText = originalText.replace(/^(\.\.\.|…)+/, '').replace(/(\.\.\.|…)+$/, '').replace(/\*\*/g, '').trim();
-    
-    if (content.includes(cleanOriginalText)) {
-      const newContent = content.replace(cleanOriginalText, suggestion);
-      await updateSceneContent(activeScene.id, newContent);
-      setAppliedSuggestions(prev => [...prev, originalText]);
-      addToast('Modifica applicata con successo', 'success');
-    } else {
-      addToast('Allineamento testo fallito', 'error');
-    }
-  };
-
   const handleProviderChange = (provider: 'groq' | 'deepseek' | 'gemini') => {
     const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-1.5-flash' : 'deepseek-chat');
     setAIConfig({ provider, model });
@@ -88,28 +68,32 @@ export const DeepAnalysisView: React.FC = () => {
     abortControllerRef.current = new AbortController();
 
     setIsAnalyzing(true);
-    setAnalysis('');
     setParsedSuggestions([]); // Reset evidenziazioni precedenti
     
     const systemPrompt = `Sei un Capo Redattore Senior. Esegui una CORREZIONE DI BOZZE professionale.
 
-REGOLE TASSATIVE PER L'EVIDENZIAZIONE:
-Per ogni correzione, scrivi l'emoji e IMMEDIATAMENTE DOPO il testo, senza etichette intermedie.
-❌ [Testo originale ESATTO del manoscritto]
-✅ [Versione corretta]
-🏷️ [Categoria]
-💡 [Nota Editoriale]
+REGOLE TASSATIVE (NON DEROGARE):
+1. EVIDENZIAZIONE: Scrivi l'emoji e IMMEDIATAMENTE il testo.
+   ❌ [Testo originale ESATTO]
+   ✅ [Versione corretta]
+2. SPAZI E PUNTEGGIATURA: Non togliere mai lo spazio dopo il punto fermo o tra le frasi. Le correzioni devono rispettare le regole grammaticali italiane.
+3. NO MODIFICHE INUTILI: Non proporre correzioni se il testo originale e quello suggerito sono identici o differiscono solo per spazi bianchi.
+4. QUALITÀ: Ogni intervento deve elevare lo stile o correggere errori reali.
 
-Esempio:
-❌ Il gatto sul tavolo.
-✅ Il gatto è sul tavolo.
+Esempio Corretto:
+❌ Era tardi.Andai a casa.
+✅ Era tardi. Andai a casa. (Corregge la mancanza di spazio)
 
-Sii chirurgico. Se il testo originale non è identico al 100%, non potrà essere evidenziato.
+Esempio Errato (NON FARLO):
+❌ Era tardi. Andai a casa.
+✅ Era tardi.Andai a casa. (Togliere lo spazio è un errore)
+
 ${instructions ? `ORDINE DI SERVIZIO: "${instructions}"` : ''}`;
 
     let textToAnalyze = getPlainTextForAI(activeScene.content || '');
     if (textToAnalyze.length > 25000) textToAnalyze = textToAnalyze.substring(0, 25000);
 
+    let fullAnalysisText = '';
     try {
       await aiService.streamChat(
         aiConfig,
@@ -118,16 +102,13 @@ ${instructions ? `ORDINE DI SERVIZIO: "${instructions}"` : ''}`;
           { role: 'user', content: `SCENA: ${activeScene.title}\n\nCONTENUTO:\n${textToAnalyze}\n\nRICHIESTA: ${customQuery || "Analisi strutturale profonda."}` }
         ],
         (chunk) => {
-          setAnalysis(prev => {
-            const next = prev + chunk;
-            setParsedSuggestions(parseAIAnalysis(next));
-            return next;
-          });
+          fullAnalysisText += chunk;
+          setParsedSuggestions(parseAIAnalysis(fullAnalysisText));
         },
         { signal: abortControllerRef.current.signal }
       );
     } catch (err: any) {
-      if (err.name !== 'AbortError') setAnalysis(`❌ Errore IA: ${err.message}`);
+      if (err.name !== 'AbortError') addToast(`Errore IA: ${err.message}`, 'error');
     } finally {
       setIsAnalyzing(false);
     }
@@ -201,18 +182,7 @@ ${instructions ? `ORDINE DI SERVIZIO: "${instructions}"` : ''}`;
                     </button>
                   </div>
 
-                  {analysis && (
-                    <div className="pt-4 border-t border-[var(--border-subtle)]">
-                      <StructuredOutput 
-                        text={analysis} 
-                        isAnalyzing={isAnalyzing} 
-                        onApply={applySuggestion} 
-                        onReject={(t) => setRejectedSuggestions(p => [...p, t])} 
-                        appliedSuggestions={appliedSuggestions} 
-                        rejectedSuggestions={rejectedSuggestions} 
-                      />
-                    </div>
-                  )}
+                  {/* Analisi nascosta dal pannello laterale su richiesta utente per focus su Editor */}
                 </div>
                 
                 <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--bg-deep)]/20">

@@ -21,6 +21,7 @@ import {
   AlignJustify,
   Highlighter,
   Type,
+  ALargeSmall,
   Sparkles
 } from 'lucide-react';
 
@@ -288,13 +289,13 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
             onClick={() => setShowDropCapMenu(!showDropCapMenu)}
             className={cn(
               "p-2 rounded-lg transition-all",
-              editor.getAttributes('paragraph').dropCap !== 'none' || showDropCapMenu
+              showDropCapMenu
                 ? 'text-[var(--accent)] bg-[var(--accent-soft)]' 
                 : 'text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]'
             )}
             title="Capolettera"
           >
-            <Sparkles className="w-4 h-4" />
+            <ALargeSmall className="w-4 h-4" />
           </button>
 
           {showDropCapMenu && (

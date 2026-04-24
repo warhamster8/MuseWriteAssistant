@@ -12,49 +12,49 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
   let currentSuggestion: Partial<AISuggestion> | null = null;
 
   lines.forEach((line) => {
-    const trimmedLine = line.trim();
-    if (!trimmedLine) return;
+    // We don't use line.trim() here to preserve internal spacing
+    const hasOriginalEmoji = /❌/.test(line);
+    const hasSuggestionEmoji = /✅/.test(line);
+    const hasReasonEmoji = /💡/.test(line);
+    const hasCategoryEmoji = /🏷️/.test(line);
 
-    // Detection patterns matching StructuredOutput.tsx logic
-    if (/❌/.test(trimmedLine)) {
+    if (hasOriginalEmoji) {
       if (currentSuggestion?.original && currentSuggestion?.suggestion) {
-        suggestions.push(currentSuggestion as AISuggestion);
+        if (currentSuggestion.original.trim() !== currentSuggestion.suggestion.trim()) {
+          suggestions.push(currentSuggestion as AISuggestion);
+        }
       }
-      const cleanOriginal = trimmedLine
+      const cleanOriginal = line
         .replace(/.*❌\s*(?:TESTO\s*ORIGINALE\s*(?:ESATTO)?:?)?\s*/i, '')
         .replace(/\*\*/g, '')
-        .replace(/^["“”«»]+|["“”«»]+$/g, '')
-        .trim();
+        .replace(/^["“”«»]+|["“”«»]+$/g, '');
       currentSuggestion = { original: cleanOriginal };
-    } else if (/✅/.test(trimmedLine)) {
+    } else if (hasSuggestionEmoji) {
       if (currentSuggestion) {
-        currentSuggestion.suggestion = trimmedLine
+        currentSuggestion.suggestion = line
           .replace(/.*✅\s*(?:NUOVA\s*VERSIONE\s*(?:SUGGERITA)?:?)?\s*/i, '')
           .replace(/\*\*/g, '')
-          .replace(/^["“”«»]+|["“”«»]+$/g, '')
-          .trim();
+          .replace(/^["“”«»]+|["“”«»]+$/g, '');
       }
-    } else if (/💡/.test(trimmedLine)) {
+    } else if (hasReasonEmoji) {
       if (currentSuggestion) {
-        currentSuggestion.reason = trimmedLine.replace(/.*💡\s*(?:NOTA\s*EDITORIALE:?)?\s*/i, '').trim();
+        currentSuggestion.reason = line.replace(/.*💡\s*(?:NOTA\s*EDITORIALE:?)?\s*/i, '').trim();
       }
-    } else if (/🏷️/.test(trimmedLine)) {
+    } else if (hasCategoryEmoji) {
       if (currentSuggestion) {
-        currentSuggestion.category = trimmedLine.replace(/.*🏷️\s*(?:CATEGORIA:?)?\s*/i, '').trim();
+        currentSuggestion.category = line.replace(/.*🏷️\s*(?:CATEGORIA:?)?\s*/i, '').trim();
       }
-    } else if (currentSuggestion && !trimmedLine.includes('❌') && !trimmedLine.includes('✅')) {
-      // Append multi-line text if it's continuing the original or suggestion
+    } else if (currentSuggestion && !hasOriginalEmoji && !hasSuggestionEmoji && line.trim()) {
       if (currentSuggestion.original && !currentSuggestion.suggestion) {
-        currentSuggestion.original += ' ' + trimmedLine;
+        currentSuggestion.original += (currentSuggestion.original ? ' ' : '') + line.trim();
       } else if (currentSuggestion.suggestion) {
-        currentSuggestion.suggestion += ' ' + trimmedLine;
+        currentSuggestion.suggestion += (currentSuggestion.suggestion ? ' ' : '') + line.trim();
       }
     }
   });
 
-  // Push last one
   const final: any = currentSuggestion;
-  if (final && final.original && final.suggestion) {
+  if (final && final.original && final.suggestion && final.original.trim() !== final.suggestion.trim()) {
     suggestions.push(final as AISuggestion);
   }
 
