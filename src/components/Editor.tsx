@@ -28,6 +28,7 @@ import { useStore } from '../store/useStore';
 import { SuggestionHighlight } from '../lib/tiptap/SuggestionHighlight';
 import { findMatchesInDoc } from '../lib/tiptap/matchUtils';
 import { cn } from '../lib/utils';
+import { InTextSuggestionCard } from './InTextSuggestionCard';
 
 // Custom Paragraph extension to support Drop Caps
 const CustomParagraph = Paragraph.extend({
@@ -102,17 +103,30 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
 
   const highlightedText = useStore(s => s.highlightedText);
   const scrollRequestToken = useStore(s => s.scrollRequestToken);
+  const parsedSuggestions = useStore(s => s.parsedSuggestions);
+  const addIgnoredSuggestion = useStore(s => s.addIgnoredSuggestion);
+  const activeSceneId = useStore(s => s.activeSceneId);
+  const ignoredSuggestions = useStore(s => s.ignoredSuggestions);
 
-  // Update decorations when highlightedText changes
+  // Update decorations when suggestions change
   React.useEffect(() => {
     if (editor) {
       const storage = editor.storage as any;
       if (storage.suggestionHighlight) {
-        storage.suggestionHighlight.suggestions = highlightedText ? [highlightedText] : [];
+        // Filter out ignored suggestions
+        const ignored = activeSceneId ? (ignoredSuggestions[activeSceneId] || []) : [];
+        const visible = parsedSuggestions.filter(s => !ignored.includes(s.original));
+        
+        // If we have a single "highlightedText" from legacy, include it too if not in visible
+        if (highlightedText && !visible.some(s => s.original === highlightedText)) {
+          visible.push({ original: highlightedText, suggestion: '', reason: '', category: 'Highlight' });
+        }
+        
+        storage.suggestionHighlight.suggestions = visible;
       }
       editor.view.dispatch(editor.state.tr);
     }
-  }, [highlightedText, editor]);
+  }, [parsedSuggestions, highlightedText, ignoredSuggestions, activeSceneId, editor]);
 
   // Handle scroll requests
   React.useEffect(() => {
@@ -367,7 +381,47 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
       </div>
 
       <div className="flex-1 px-8 py-12 bg-[var(--bg-deep)] rounded-b-[inherit]">
-        <div className="w-full">
+        <div className="w-full relative">
+           {editor && (() => {
+              const { from } = editor.state.selection;
+              const domAtPos = editor.view.domAtPos(from).node;
+              const element = domAtPos instanceof Element ? domAtPos : domAtPos.parentElement;
+              const highlight = element?.closest('.suggestion-highlight-pulse');
+              
+              if (!highlight) return null;
+              
+              const text = highlight.getAttribute('data-suggestion-text');
+              const suggestion = parsedSuggestions.find(s => s.original === text);
+              if (!suggestion || !suggestion.suggestion) return null;
+
+              // Calculate position
+              const coords = editor.view.coordsAtPos(from);
+              
+              return (
+                <div 
+                  className="fixed z-[100]" 
+                  style={{ 
+                    top: coords.bottom + 10, 
+                    left: coords.left - 160, // Center roughly
+                  }}
+                >
+                   <InTextSuggestionCard 
+                     suggestion={suggestion}
+                     onApply={() => {
+                        const { original, suggestion: nextText } = suggestion;
+                        const matches = findMatchesInDoc(editor.state.doc, original);
+                        if (matches.length > 0) {
+                          const match = matches[0]; 
+                          editor.chain().focus().insertContentAt({ from: match.from, to: match.to }, nextText).run();
+                        }
+                     }}
+                     onIgnore={() => {
+                        if (activeSceneId) addIgnoredSuggestion(activeSceneId, suggestion.original);
+                     }}
+                   />
+                </div>
+              );
+           })()}
            <EditorContent editor={editor} />
         </div>
       </div>

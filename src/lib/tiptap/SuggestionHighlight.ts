@@ -2,13 +2,14 @@ import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import { findMatchesInDoc } from './matchUtils';
+import type { AISuggestion } from '../aiParsing';
 
 export interface SuggestionHighlightOptions {
   // Empty options as we use storage for dynamic updates
 }
 
 export interface SuggestionHighlightStorage {
-  suggestions: string[];
+  suggestions: AISuggestion[];
 }
 
 export const SuggestionHighlight = Extension.create<SuggestionHighlightOptions, SuggestionHighlightStorage>({
@@ -36,12 +37,14 @@ export const SuggestionHighlight = Extension.create<SuggestionHighlightOptions, 
             const { doc } = state;
             const decorations: Decoration[] = [];
 
-            suggestions.forEach((suggestion) => {
-              const matches = findMatchesInDoc(doc, suggestion);
+            suggestions.forEach((sug, index) => {
+              const matches = findMatchesInDoc(doc, sug.original);
               matches.forEach(match => {
                 decorations.push(
                   Decoration.inline(match.from, match.to, {
                     class: 'suggestion-highlight-pulse',
+                    'data-suggestion-id': index.toString(),
+                    'data-suggestion-text': sug.original,
                   })
                 );
               });

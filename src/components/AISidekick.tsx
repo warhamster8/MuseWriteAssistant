@@ -8,10 +8,11 @@ import {
   Wand2,
   BookOpen,
   Languages,
-  X,
-  ChevronRight,
   Quote,
-  CheckCircle
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  X
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useStore } from '../store/useStore';
@@ -20,7 +21,8 @@ import { useToast } from './Toast';
 import { aiService } from '../lib/aiService';
 import { findMatchInText } from '../lib/tiptap/matchUtils';
 import { StructuredOutput } from './analysis/StructuredOutput';
-import { getPlainTextForAI, buildMapping } from '../lib/textUtils';
+import { getPlainTextForAI } from '../lib/textUtils';
+import { parseAIAnalysis } from '../lib/aiParsing';
 
 
 type SidekickTab = 'revision' | 'grammar' | 'braindump' | 'transformer' | 'lexicon';
@@ -29,14 +31,18 @@ export const AISidekick: React.FC = React.memo(() => {
   const content = useStore(s => s.currentSceneContent);
   const activeSceneId = useStore(s => s.activeSceneId);
   const setCurrentSceneContent = useStore(s => s.setCurrentSceneContent);
-  const ignoredSuggestions = useStore(s => s.ignoredSuggestions);
-  const addIgnoredSuggestion = useStore(s => s.addIgnoredSuggestion);
   const lastAnalyzedPhrase = useStore(s => s.lastAnalyzedPhrase);
   const setLastAnalyzedPhrase = useStore(s => s.setLastAnalyzedPhrase);
   const sceneAnalysis = useStore(s => s.sceneAnalysis);
   const setSceneAnalysis = useStore(s => s.setSceneAnalysis);
   const activeSelection = useStore(s => s.activeSelection);
   const aiConfig = useStore(s => s.aiConfig);
+  const setParsedSuggestions = useStore(s => s.setParsedSuggestions);
+  const parsedSuggestions = useStore(s => s.parsedSuggestions);
+  const suggestionIndex = useStore(s => s.suggestionIndex);
+  const setSuggestionIndex = useStore(s => s.setSuggestionIndex);
+  const setHighlightedText = useStore(s => s.setHighlightedText);
+  const requestScrollToHighlight = useStore(s => s.requestScrollToHighlight);
 
   const setSidekickOpen = useStore(s => s.setSidekickOpen);
   
@@ -55,7 +61,31 @@ export const AISidekick: React.FC = React.memo(() => {
     setSceneAnalysis(activeSceneId, val, activeTab);
   };
 
-  const [appliedSuggestions, setAppliedSuggestions] = React.useState<string[]>([]);
+  // Automated parsing of suggestions
+  React.useEffect(() => {
+    if (activeTab === 'revision' || activeTab === 'grammar') {
+      const suggestions = parseAIAnalysis(analysis);
+      setParsedSuggestions(suggestions);
+      if (suggestions.length > 0 && suggestionIndex === -1) {
+        setSuggestionIndex(0);
+      } else if (suggestions.length === 0) {
+        setSuggestionIndex(-1);
+      }
+    } else {
+      setParsedSuggestions([]);
+      setSuggestionIndex(-1);
+    }
+  }, [analysis, activeTab]);
+
+  // Automated scrolling when navigating
+  React.useEffect(() => {
+    if (suggestionIndex >= 0 && parsedSuggestions[suggestionIndex]) {
+      const sug = parsedSuggestions[suggestionIndex];
+      setHighlightedText(sug.original);
+      requestScrollToHighlight();
+    }
+  }, [suggestionIndex, parsedSuggestions, setHighlightedText, requestScrollToHighlight]);
+
   const [braindumpInput, setBraindumpInput] = React.useState<string>('');
   const [lexiconInput, setLexiconInput] = React.useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = React.useState(false);
@@ -84,18 +114,28 @@ export const AISidekick: React.FC = React.memo(() => {
     lastTokenRef.current = analysisRequestToken;
   }, [analysisRequestToken]);
 
-  const sceneIgnoredSuggestions = React.useMemo(() => 
-    activeSceneId ? (ignoredSuggestions || {})[activeSceneId] || [] : []
-  , [ignoredSuggestions, activeSceneId]);
-
-  const handleReject = (originalText: string) => {
-    if (activeSceneId) {
-       addIgnoredSuggestion(activeSceneId, originalText);
-       setLastAnalyzedPhrase(activeSceneId, originalText, activeTab);
+  const handleConvertQuotes = async () => {
+    if (!activeSceneId || !content) return;
+    const div = document.createElement('div');
+    div.innerHTML = content;
+    const walk = (node: Node) => {
+      let child = node.firstChild;
+      while (child) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          child.nodeValue = (child.nodeValue || '').replace(/"([^"]+)"/g, '«$1»');
+        } else if (child.nodeType === Node.ELEMENT_NODE) walk(child);
+        child = child.nextSibling;
+      }
+    };
+    walk(div);
+    const newContent = div.innerHTML;
+    if (newContent !== content) {
+      setCurrentSceneContent(newContent);
+      await updateSceneContent(activeSceneId, newContent);
+      addToast('Virgolette convertite in « »', 'success');
     }
   };
 
-  // Helper to sort structured text by appearance in the manuscript
   const sortAnalysisResults = (fullText: string, analysisText: string) => {
     const sections = analysisText.split(/(?=## |❌ )/);
     const header = sections.find(s => s.startsWith('##')) || '';
@@ -106,7 +146,6 @@ export const AISidekick: React.FC = React.memo(() => {
       .map(sug => {
         const match = sug.match(/❌\s*(.+?)(?=\n|✅|$)/);
         const phrase = match ? match[1].replace(/^["“”«»]+|["“”«»]+$/g, '').trim() : '';
-        // Use fuzzy matching for sorting
         const matchPos = phrase ? findMatchInText(fullText, phrase) : null;
         return { content: sug, index: matchPos ? matchPos.start : -1 };
       })
@@ -120,95 +159,6 @@ export const AISidekick: React.FC = React.memo(() => {
     return [header, ...sortedSuggestions, footer].join('\n').trim();
   };
 
-  const handleConvertQuotes = async () => {
-    if (!activeSceneId || !content) return;
-    
-    const div = document.createElement('div');
-    div.innerHTML = content;
-    
-    const walk = (node: Node) => {
-      let child = node.firstChild;
-      while (child) {
-        if (child.nodeType === Node.TEXT_NODE) {
-          child.nodeValue = (child.nodeValue || '').replace(/"([^"]+)"/g, '«$1»');
-        } else if (child.nodeType === Node.ELEMENT_NODE) {
-          walk(child);
-        }
-        child = child.nextSibling;
-      }
-    };
-    
-    walk(div);
-    const newContent = div.innerHTML;
-    
-    if (newContent !== content) {
-      setCurrentSceneContent(newContent);
-      await updateSceneContent(activeSceneId, newContent);
-      addToast('Virgolette convertite in « »', 'success');
-    } else {
-      addToast('Nessuna virgoletta " " trovata', 'info');
-    }
-  };
-
-  const applySuggestion = async (originalText: string, suggestion: string) => {
-    if (!activeSceneId || !content) return;
-    
-    const { textStr, textMap, charLens } = buildMapping(content);
-    
-    // Pre-cleaning: strip leading/trailing ellipses that AI often adds for context
-    const cleanOriginalText = originalText
-      .replace(/^(\.\.\.|…)+/, '')
-      .replace(/(\.\.\.|…)+$/, '')
-      .trim();
-
-    // Use unified fuzzy matching
-    let match = findMatchInText(textStr, cleanOriginalText);
-    
-    // Fallback: search with even more fuzzy logic if first attempt fails
-    if (!match && originalText.length > 20) {
-      const parts = originalText.split(/\s+/);
-      const shorterQuery = parts.slice(0, Math.min(parts.length, 10)).join(' ');
-      match = findMatchInText(textStr, shorterQuery);
-    }
-
-    if (match) {
-      const textStart = match.start;
-      const textEnd = match.end - 1;
-      
-      // Safety check for mapping bounds
-      if (textStart < 0 || textEnd >= textMap.length) {
-         console.warn('[SECURITY LOG] Suggestion mapping out of bounds');
-         addToast('Errore di allineamento nel documento', 'error');
-         return;
-      }
-
-      const htmlStart = textMap[textStart];
-      let htmlEnd = textMap[textEnd] + charLens[textEnd];
-      
-      // Punctuation Merge: avoid double punctuation
-      const terminalPunctuation = ['.', ',', '!', '?', ';', ':', '…'];
-      const lastChar = suggestion.trim().slice(-1);
-      if (terminalPunctuation.includes(lastChar)) {
-        let lookupIdx = htmlEnd;
-        while (lookupIdx < content.length && /\s/.test(content[lookupIdx])) lookupIdx++;
-        if (content[lookupIdx] === lastChar) {
-          htmlEnd = lookupIdx + 1;
-        }
-      }
-
-      const newContent = content.slice(0, htmlStart) + suggestion + content.slice(htmlEnd);
-      
-      setCurrentSceneContent(newContent);
-      await updateSceneContent(activeSceneId, newContent);
-      setAppliedSuggestions(prev => [...prev, originalText]);
-      setLastAnalyzedPhrase(activeSceneId, suggestion, activeTab);
-      addToast('Modifica applicata con successo', 'success');
-    } else {
-      console.warn('[SECURITY LOG] Match failed for phrase:', originalText);
-      addToast('Testo originale non trovato nel documento', 'error');
-    }
-  };
-
     const plainText = getPlainTextForAI(content || '');
 
   const runDraftRevision = async () => {
@@ -220,7 +170,7 @@ export const AISidekick: React.FC = React.memo(() => {
     
     setIsAnalyzing(true);
     setAnalysis('');
-    setAppliedSuggestions([]);
+    setParsedSuggestions([]);
 
     let textToAnalyze = activeSelection || plainText;
     const isSelection = !!activeSelection;
@@ -314,7 +264,7 @@ LINGUA: Italiano.`;
     
     setIsAnalyzing(true);
     setAnalysis('');
-    setAppliedSuggestions([]);
+    setParsedSuggestions([]);
     let textToAnalyze = activeSelection || plainText;
     const isSelection = !!activeSelection;
     if (textToAnalyze.length > 30000) textToAnalyze = textToAnalyze.substring(0, 30000);
@@ -603,16 +553,47 @@ Rispondi in italiano. Sii concreto e originale.`;
               </div>
             </div>
 
-            {analysis ? (
-              <div className="animate-in slide-in-from-bottom-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                <StructuredOutput 
-                  text={analysis} 
-                  onApply={applySuggestion} 
-                  onReject={handleReject} 
-                  appliedSuggestions={appliedSuggestions} 
-                  rejectedSuggestions={sceneIgnoredSuggestions} 
-                  isAnalyzing={isAnalyzing}
-                />
+            {parsedSuggestions.length > 0 ? (
+              <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] p-6 rounded-[32px] space-y-6 shadow-premium animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.3em]">Revisione In-Text</span>
+                    <span className="text-[9px] text-[var(--text-muted)] font-bold uppercase mt-1">
+                      {suggestionIndex + 1} di {parsedSuggestions.length} suggestioni
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setSuggestionIndex(prev => Math.max(0, prev - 1))}
+                      disabled={suggestionIndex <= 0}
+                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 disabled:opacity-30 transition-all"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => setSuggestionIndex(prev => Math.min(parsedSuggestions.length - 1, prev + 1))}
+                      disabled={suggestionIndex >= parsedSuggestions.length - 1}
+                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 disabled:opacity-30 transition-all"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/10">
+                   <p className="text-[10px] text-[var(--text-primary)] leading-relaxed italic line-clamp-3">
+                     "{parsedSuggestions[suggestionIndex]?.original}"
+                   </p>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                   <div className="h-1.5 flex-1 bg-[var(--bg-deep)] rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-[var(--accent)] transition-all duration-500" 
+                        style={{ width: `${((suggestionIndex + 1) / parsedSuggestions.length) * 100}%` }}
+                      />
+                   </div>
+                </div>
               </div>
             ) : (
               !isAnalyzing && <div className="flex flex-col items-center justify-center h-36 text-[var(--text-muted)] space-y-2"><AlertTriangle className="w-8 h-8 opacity-20" /><p className="text-xs text-center">Seleziona una scena e premi Analizza.</p></div>
@@ -639,16 +620,32 @@ Rispondi in italiano. Sii concreto e originale.`;
               <PenLine className="w-4 h-4 group-hover:scale-110 transition-transform" />
               <span className="text-[11px] font-black uppercase tracking-widest">{activeSelection ? 'Correggi Selezione' : 'Trova Errori Tecnici'}</span>
             </button>
-            {analysis ? (
-              <div className="animate-in slide-in-from-bottom-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                <StructuredOutput 
-                  text={analysis} 
-                  onApply={applySuggestion} 
-                  onReject={handleReject} 
-                  appliedSuggestions={appliedSuggestions} 
-                  rejectedSuggestions={sceneIgnoredSuggestions} 
-                  isAnalyzing={isAnalyzing}
-                />
+            {parsedSuggestions.length > 0 ? (
+               <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] p-6 rounded-[32px] space-y-6 shadow-premium animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.3em]">Navigazione Errori</span>
+                    <span className="text-[9px] text-[var(--text-muted)] font-bold uppercase mt-1">
+                      {suggestionIndex + 1} di {parsedSuggestions.length} correzioni
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setSuggestionIndex(prev => Math.max(0, prev - 1))}
+                      disabled={suggestionIndex <= 0}
+                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 disabled:opacity-30 transition-all"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => setSuggestionIndex(prev => Math.min(parsedSuggestions.length - 1, prev + 1))}
+                      disabled={suggestionIndex >= parsedSuggestions.length - 1}
+                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 disabled:opacity-30 transition-all"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
               </div>
             ) : (
               !isAnalyzing && <div className="flex flex-col items-center justify-center h-48 text-[var(--text-muted)] space-y-4 bg-[var(--accent-soft)] rounded-[32px] border border-dashed border-[var(--border-subtle)]"><CheckCircle className="w-10 h-10 opacity-20" /><p className="text-[10px] font-bold border-t border-[var(--border-subtle)] pt-4 uppercase tracking-[0.2em]">Nessuna anomalia tecnica rilevata</p></div>

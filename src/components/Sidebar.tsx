@@ -26,11 +26,11 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { id: 'narrative', label: 'Narrative', icon: BookOpen },
-  { id: 'timeline', label: 'Timeline', icon: GitCommit },
-  { id: 'deep-analysis', label: 'Deep Analysis', icon: ScanSearch },
   { id: 'characters', label: 'Characters', icon: Users },
   { id: 'world', label: 'World Settings', icon: Globe },
   { id: 'notes', label: 'Note', icon: StickyNote },
+  { id: 'timeline', label: 'Timeline', icon: GitCommit },
+  { id: 'deep-analysis', label: 'Deep Analysis', icon: ScanSearch },
   { id: 'analysis', label: 'Analysis', icon: BarChart2 },
   { id: 'config', label: 'Project & AI', icon: Settings },
 ];

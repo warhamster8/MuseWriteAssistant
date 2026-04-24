@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { Chapter } from '../types/narrative';
 import type { AIConfig } from '../lib/aiService';
 import type { GlobalTimelineEvent } from '../types/timeline';
+import type { AISuggestion } from '../lib/aiParsing';
 
 
 
@@ -41,6 +42,9 @@ interface AppState {
   isZenMode: boolean;
   timelineEvents: GlobalTimelineEvent[];
   
+  parsedSuggestions: AISuggestion[];
+  suggestionIndex: number;
+  
   activeSelection: string | null;
   highlightedText: string | null;
   scrollRequestToken: number;
@@ -70,6 +74,8 @@ interface AppState {
   setZenMode: (enabled: boolean) => void;
   setTimelineEvents: (events: GlobalTimelineEvent[]) => void;
   setTheme: (theme: 'dark' | 'light') => void;
+  setParsedSuggestions: (suggestions: AISuggestion[]) => void;
+  setSuggestionIndex: (index: number | ((prev: number) => number)) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -103,6 +109,8 @@ export const useStore = create<AppState>()(
       highlightedText: null,
       scrollRequestToken: 0,
       theme: 'dark',
+      parsedSuggestions: [],
+      suggestionIndex: -1,
       
       setUser: (user) => set({ user }),
       setCurrentProject: (project) => set({ currentProject: project }),
@@ -155,6 +163,10 @@ export const useStore = create<AppState>()(
       setZenMode: (isZenMode) => set({ isZenMode }),
       setTimelineEvents: (timelineEvents) => set({ timelineEvents }),
       setTheme: (theme) => set({ theme }),
+      setParsedSuggestions: (suggestions) => set({ parsedSuggestions: suggestions }),
+      setSuggestionIndex: (index) => set((state) => ({ 
+        suggestionIndex: typeof index === 'function' ? index(state.suggestionIndex) : index 
+      })),
     }),
     {
       name: 'muse-storage',
