@@ -28,12 +28,12 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
   const setZenMode = useStore(s => s.setZenMode);
 
   return (
-    <div className="flex-1 min-w-0 flex flex-col bg-[var(--bg-surface)] relative overflow-hidden animate-in fade-in duration-500 rounded-[40px] border border-[var(--border-subtle)] shadow-sm">
+    <div className="flex-1 min-w-0 flex flex-col bg-[var(--bg-surface)] relative overflow-hidden animate-in fade-in duration-500 rounded-[32px] border border-[var(--border-subtle)] shadow-sm">
       {/* Background Decorative Element */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)]/5 blur-[100px] pointer-events-none opacity-50" />
 
       {/* Toolbar Premium (Sempre visibile per controlli layout) */}
-      <div className="sticky top-0 h-20 bg-[var(--bg-card)]/80 border-b border-[var(--border-subtle)] flex items-center justify-between px-10 backdrop-blur-xl z-30 shrink-0">
+      <div className="sticky top-0 h-20 bg-[var(--bg-card)]/80 border-b border-[var(--border-subtle)] flex items-center justify-between px-6 xl:px-10 backdrop-blur-xl z-30 shrink-0">
         <div className="flex items-center gap-6">
           <div className="flex flex-col">
             <span className="text-[9px] font-black text-[var(--accent)] uppercase tracking-[0.4em] mb-1">

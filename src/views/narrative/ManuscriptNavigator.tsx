@@ -69,7 +69,7 @@ export const ManuscriptNavigator: React.FC<ManuscriptNavigatorProps> = ({
   const setNavigatorOpen = useStore(s => s.setNavigatorOpen);
 
   return (
-    <div className="w-full md:w-56 xl:w-72 2xl:w-80 h-full flex-shrink-0 glass rounded-none md:rounded-[40px] overflow-hidden flex flex-col shadow-soft border border-[var(--border-subtle)] md:mx-1 md:my-1 transition-all duration-500">
+    <div className="w-full md:w-56 xl:w-72 2xl:w-80 h-full flex-shrink-0 glass rounded-none md:rounded-[32px] overflow-hidden flex flex-col shadow-soft border border-[var(--border-subtle)] transition-all duration-500">
       {/* Header del Navigatore */}
       <div className="p-6 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/30">
         <div className="flex items-center gap-3">
