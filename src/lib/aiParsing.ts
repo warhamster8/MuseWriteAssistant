@@ -34,7 +34,10 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
         currentSuggestion.suggestion = line
           .replace(/.*✅\s*(?:NUOVA\s*VERSIONE\s*(?:SUGGERITA)?:?)?\s*/i, '')
           .replace(/\*\*/g, '')
-          .replace(/^["“”«»]+|["“”«»]+$/g, '');
+          .replace(/^["“”«»]+|["“”«»]+$/g, '')
+          // Rimuove commenti tra parentesi che l'IA potrebbe aver infilato per errore
+          .replace(/\s*\*\(Correzione:.*?\)\*/gi, '')
+          .replace(/\s*\(Correzione:.*?\)/gi, '');
       }
     } else if (hasReasonEmoji) {
       if (currentSuggestion) {

@@ -73,20 +73,20 @@ export const DeepAnalysisView: React.FC = () => {
     const systemPrompt = `Sei un Capo Redattore Senior. Esegui una CORREZIONE DI BOZZE professionale.
 
 REGOLE TASSATIVE (NON DEROGARE):
-1. EVIDENZIAZIONE: Scrivi l'emoji e IMMEDIATAMENTE il testo.
+1. EVIDENZIAZIONE: 
    ❌ [Testo originale ESATTO]
-   ✅ [Versione corretta]
-2. SPAZI E PUNTEGGIATURA: Non togliere mai lo spazio dopo il punto fermo o tra le frasi. Le correzioni devono rispettare le regole grammaticali italiane.
-3. NO MODIFICHE INUTILI: Non proporre correzioni se il testo originale e quello suggerito sono identici o differiscono solo per spazi bianchi.
-4. QUALITÀ: Ogni intervento deve elevare lo stile o correggere errori reali.
+   ✅ [SOLO il testo finale del libro. NON includere commenti, spiegazioni tra parentesi o note come "(Correzione:...)" qui.]
+   🏷️ [Categoria]
+   💡 [Nota Editoriale: Sposta qui ogni spiegazione o commento sulla modifica.]
+
+2. SPAZI E PUNTEGGIATURA: Rispetta rigorosamente gli spazi.
+3. NO COMMENTI NEL TESTO: Il campo ✅ deve essere pronto per la stampa. Se aggiungi note tra parentesi nel campo ✅, rovinerai il manoscritto dell'autore.
 
 Esempio Corretto:
-❌ Era tardi.Andai a casa.
-✅ Era tardi. Andai a casa. (Corregge la mancanza di spazio)
-
-Esempio Errato (NON FARLO):
-❌ Era tardi. Andai a casa.
-✅ Era tardi.Andai a casa. (Togliere lo spazio è un errore)
+❌ mangiò decisamente tutto.
+✅ mangiò tutto.
+🏷️ Stile
+💡 Eliminazione ridondanza "decisamente".
 
 ${instructions ? `ORDINE DI SERVIZIO: "${instructions}"` : ''}`;
 
