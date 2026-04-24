@@ -205,11 +205,18 @@ export const AISidekick: React.FC = React.memo(() => {
 
     try {
       const systemPrompt = `Sei il Capo Redattore di Muse. Il tuo compito è revisionare il testo (TARGET) garantendo coerenza assoluta con l'intera scena (CONTESTO).
+Non limitarti alla grammatica o alla punteggiatura: agisci come un editor di alto livello che migliora il ritmo, l'impatto emotivo e la vividezza della prosa.
+
+OBIETTIVI DI REVISIONE PROFONDA:
+1. RITMO E FLUSSO: Identifica frasi troppo lunghe o spezzettate che frenano la narrazione. Suggerisci dove spezzare o unire per migliorare il "respiro" della pagina.
+2. DIALOGHI: Rendi le battute più naturali, incisive e coerenti con la voce del personaggio. Proponi alternative che dicano di più con meno parole.
+3. MOSTRA, NON DIRE (SHOW DON'T TELL): Trasforma descrizioni astratte o spiegazioni di stati d'animo in immagini sensoriali concrete e azioni significative.
+4. TENSIONE E SCENA: Se una battuta o una scena manca di mordente, suggerisci come aumentare il conflitto, il sottotesto o la posta in gioco.
 
 REQUISITI DI COERENZA:
-1. POV E TEMPO: Mantieni rigorosamente lo stesso punto di vista e tempo narrativo del contesto.
-2. STILE: Adattati allo stile dell'autore. Se il testo è asciutto, non suggerire frasi barocche.
-3. PERSONAGGI: Assicurati che i nomi e i modi di fare siano coerenti con quanto appare nel contesto.
+1. POV E TEMPO: Mantieni rigorosamente lo stesso punto di vista e tempo narrativo del contesto (Presente o Passato).
+2. STILE: Adattati allo stile dell'autore (minimalista, lirico, ecc.) ma elevalo qualitativamente.
+3. PERSONAGGI: Assicurati che le azioni e le parole siano coerenti con la psicologia mostrata nel contesto.
 
 REGOLE MANDATORIE:
 1. Inizia IMMEDIATAMENTE con "## Analisi Revisione".
@@ -217,8 +224,8 @@ REGOLE MANDATORIE:
 3. Formato Suggerimento (ESATTO):
    ❌ [Testo originale ESATTO - identico al manoscritto]
    ✅ [Nuova versione migliorata - stessa grammatica/tempo del contesto]
-   🏷️ Categoria
-   💡 Spiegazione
+   🏷️ Categoria (es. Ritmo, Dialogo, Show Don't Tell, Emozione)
+   💡 Spiegazione approfondita del perché questo cambiamento rende la scena più potente.
 
 LINGUA: Italiano.`;
 
@@ -503,7 +510,7 @@ Rispondi in italiano. Sii concreto e originale.`;
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
               <div className="flex flex-col min-w-0">
-                <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] truncate">Correzione Bozza</span>
+                <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] truncate">Revisione Letteraria</span>
                 {activeSelection && (
                   <span className="text-[8px] text-[var(--accent)] font-bold uppercase tracking-widest mt-1 animate-pulse flex items-center gap-2">
                      <div className="w-1 h-1 bg-[var(--accent)] rounded-full" /> Selezione
@@ -543,7 +550,7 @@ Rispondi in italiano. Sii concreto e originale.`;
               className="w-full py-4 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] disabled:opacity-50 rounded-[20px] text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-2xl active:scale-95 group"
             >
               <Wand2 className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-              <span>{isAnalyzing ? '...' : 'Analisi Strutturale'}</span>
+              <span>{isAnalyzing ? 'Elaborazione...' : 'Revisione Letteraria'}</span>
             </button>
             
             <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] p-3 rounded-[20px] space-y-3 shadow-inner">
@@ -610,14 +617,60 @@ Rispondi in italiano. Sii concreto e originale.`;
                   </div>
                 </div>
                 
-                <div className="p-4 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/10">
-                   <p className="text-[10px] text-[var(--text-primary)] leading-relaxed italic line-clamp-3">
-                     "{parsedSuggestions[suggestionIndex]?.original}"
-                   </p>
+                <div className="space-y-4">
+                  <div className="p-4 bg-[var(--bg-deep)]/40 rounded-2xl border border-[var(--border-subtle)] space-y-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="px-2 py-0.5 bg-[var(--accent)]/10 text-[var(--accent)] text-[8px] font-black uppercase tracking-widest rounded-md border border-[var(--accent)]/20">
+                        {parsedSuggestions[suggestionIndex]?.category || 'Analisi'}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-2">
+                       <div className="text-[10px] text-[var(--text-muted)] line-through decoration-red-400/30 opacity-60 italic leading-relaxed">
+                         "{parsedSuggestions[suggestionIndex]?.original}"
+                       </div>
+                       <div className="text-[11px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--accent)]/5 p-3 rounded-xl border border-[var(--accent)]/10">
+                         {parsedSuggestions[suggestionIndex]?.suggestion}
+                       </div>
+                    </div>
+                  </div>
+
+                  {parsedSuggestions[suggestionIndex]?.reason && (
+                    <div className="flex gap-3 px-2">
+                      <div className="mt-1 w-1 h-1 rounded-full bg-[var(--accent)] shrink-0" />
+                      <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed italic">
+                        {parsedSuggestions[suggestionIndex]?.reason}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <button 
+                      onClick={() => applySuggestion(parsedSuggestions[suggestionIndex])}
+                      className="flex-1 py-3 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95"
+                    >
+                      Applica
+                    </button>
+                    <button 
+                      onClick={() => {
+                        if (activeSceneId) {
+                          addIgnoredSuggestion(activeSceneId, parsedSuggestions[suggestionIndex].original);
+                          setSuggestionIndex(prev => {
+                            if (parsedSuggestions.length <= 1) return -1;
+                            return Math.min(prev, parsedSuggestions.length - 2);
+                          });
+                        }
+                      }}
+                      className="p-3 text-[var(--text-muted)] hover:text-red-400 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-xl hover:border-red-400/30 transition-all"
+                      title="Ignora"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2 pt-2">
-                   <div className="h-1.5 flex-1 bg-[var(--bg-deep)] rounded-full overflow-hidden">
+                   <div className="h-1 flex-1 bg-[var(--bg-deep)] rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-[var(--accent)] transition-all duration-500" 
                         style={{ width: `${((suggestionIndex + 1) / parsedSuggestions.length) * 100}%` }}
@@ -678,19 +731,50 @@ Rispondi in italiano. Sii concreto e originale.`;
                 </div>
 
                 {/* Anteprima Errore */}
-                <div className="p-4 bg-[var(--accent-soft)] rounded-2xl border border-[var(--accent)]/10">
-                  <p className="text-[10px] text-[var(--text-primary)] leading-relaxed italic line-clamp-3">
-                    "{parsedSuggestions[suggestionIndex]?.original}"
-                  </p>
+                <div className="space-y-4">
+                  <div className="p-4 bg-[var(--bg-deep)]/40 rounded-2xl border border-[var(--border-subtle)] space-y-3">
+                    <div className="space-y-2">
+                       <div className="text-[10px] text-[var(--text-muted)] line-through decoration-red-400/30 opacity-60 italic leading-relaxed">
+                         "{parsedSuggestions[suggestionIndex]?.original}"
+                       </div>
+                       <div className="text-[11px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--accent)]/5 p-3 rounded-xl border border-[var(--accent)]/10">
+                         {parsedSuggestions[suggestionIndex]?.suggestion}
+                       </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <button 
+                      onClick={() => applySuggestion(parsedSuggestions[suggestionIndex])}
+                      className="flex-1 py-3 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95"
+                    >
+                      Correggi
+                    </button>
+                    <button 
+                      onClick={() => {
+                        if (activeSceneId) {
+                          addIgnoredSuggestion(activeSceneId, parsedSuggestions[suggestionIndex].original);
+                          setSuggestionIndex(prev => {
+                            if (parsedSuggestions.length <= 1) return -1;
+                            return Math.min(prev, parsedSuggestions.length - 2);
+                          });
+                        }
+                      }}
+                      className="p-3 text-[var(--text-muted)] hover:text-red-400 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-xl hover:border-red-400/30 transition-all"
+                      title="Ignora"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2 pt-2">
-                  <div className="h-1.5 flex-1 bg-[var(--bg-deep)] rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-[var(--accent)] transition-all duration-500" 
-                      style={{ width: `${((suggestionIndex + 1) / parsedSuggestions.length) * 100}%` }}
-                    />
-                  </div>
+                   <div className="h-1 flex-1 bg-[var(--bg-deep)] rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-[var(--accent)] transition-all duration-500" 
+                        style={{ width: `${((suggestionIndex + 1) / parsedSuggestions.length) * 100}%` }}
+                      />
+                   </div>
                 </div>
               </div>
             ) : (

@@ -80,7 +80,9 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
       CustomShortcuts,
       SuggestionHighlight.configure({ 
         onSuggestionClick: (index) => {
-          useStore.getState().setSuggestionIndex(index);
+          const store = useStore.getState();
+          store.setSuggestionIndex(index);
+          store.setSidekickOpen(true);
         }
       }),
     ],
