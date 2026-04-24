@@ -221,7 +221,8 @@ REQUISITI DI COERENZA:
 REGOLE MANDATORIE:
 1. Inizia IMMEDIATAMENTE con "## Analisi Revisione".
 2. Segui l'ordine del testo linearmente.
-3. Formato Suggerimento (ESATTO):
+3. GRANULARITÀ: Anche se il TARGET è un intero blocco o selezione, NON restituire mai un'unica correzione gigante. Spezzala in micro-correzioni (singole frasi o brevi passaggi) in modo che l'autore possa navigarle e accettarle una per una.
+4. Formato Suggerimento (ESATTO):
    ❌ [Testo originale ESATTO - identico al manoscritto]
    ✅ [Nuova versione migliorata - stessa grammatica/tempo del contesto]
    🏷️ Categoria (es. Ritmo, Dialogo, Show Don't Tell, Emozione)
