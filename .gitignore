@@ -29,3 +29,4 @@ supabase_setup.sql
 
 # Security and Optimization
 Optimization/
+.npmrc
