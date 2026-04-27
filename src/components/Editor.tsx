@@ -452,18 +452,26 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                 }
               }
 
-              if (!activeSuggestion || !activeSuggestion.suggestion || hiddenSuggestionId === suggestionIndex) return null;
+if (!activeSuggestion || !activeSuggestion.suggestion || hiddenSuggestionId === suggestionIndex) return null;
 
               // Calculate position based on the END of the highlight to avoid overlapping
               const startCoords = editor.view.coordsAtPos(startPos);
               const endCoords = editor.view.coordsAtPos(endPos);
               
+              // Calculate if the card would overflow bottom of viewport - if so, show above instead
+              const cardHeight = 350; // Approximate card height
+              const spaceBelow = window.innerHeight - endCoords.bottom;
+              const showAbove = spaceBelow < cardHeight + 20;
+              
               return (
                 <div 
-                  className="fixed z-[100]" 
+                  className="absolute z-[100]" 
                   style={{ 
-                    top: endCoords.bottom + 12, 
-                    left: Math.max(20, Math.min(window.innerWidth - 450, startCoords.left - 100)), 
+                    top: showAbove 
+                      ? startCoords.top - cardHeight - 12 
+                      : endCoords.bottom + 12, 
+                    left: Math.max(20, Math.min(window.innerWidth - 450, startCoords.left - 100)),
+                    maxWidth: '420px'
                   }}
                 >
                    <InTextSuggestionCard 
@@ -473,7 +481,11 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                         const matches = findMatchesInDoc(editor.state.doc, original);
                         if (matches.length > 0) {
                           const match = matches[0]; 
-                          editor.chain().focus().insertContentAt({ from: match.from, to: match.to }, nextText).run();
+                          // Check if there's a space after the original text and preserve it
+                          const charAfter = editor.state.doc.textBetween(match.to, match.to + 1, ' ', ' ');
+                          const needsSpace = charAfter === ' ' && !nextText.endsWith(' ');
+                          const finalText = needsSpace ? nextText + ' ' : nextText;
+                          editor.chain().focus().insertContentAt({ from: match.from, to: match.to }, finalText).run();
                         }
                      }}
                      onIgnore={() => {
