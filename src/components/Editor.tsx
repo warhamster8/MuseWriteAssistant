@@ -470,7 +470,7 @@ if (!activeSuggestion || !activeSuggestion.suggestion || hiddenSuggestionId === 
                     top: showAbove 
                       ? startCoords.top - cardHeight - 12 
                       : endCoords.bottom + 12, 
-                    left: Math.max(20, Math.min(window.innerWidth - 450, startCoords.left - 100)),
+                    left: Math.max(10, Math.min(window.innerWidth - 430, startCoords.left)),
                     maxWidth: '420px'
                   }}
                 >
