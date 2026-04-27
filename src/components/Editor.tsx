@@ -405,10 +405,10 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
         <div className="w-full relative">
             {editor && (() => {
               const { from } = editor.state.selection;
-              const suggestionIndex = useStore.getState().suggestionIndex;
+const suggestionIndex = useStore.getState().suggestionIndex;
               const parsedSuggestions = useStore.getState().parsedSuggestions;
-              
-              const findHighlight = (pos: number) => {
+               
+              const getHighlightAtPos = (pos: number) => {
                 try {
                   const dom = editor.view.domAtPos(pos).node;
                   const el = dom instanceof Element ? dom : dom.parentElement;
@@ -418,11 +418,11 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                 }
               };
 
-              let activeSuggestion: any = null;
+let activeSuggestion: any = null;
               let startPos = from;
               let endPos = from;
 
-              // 1. Priorità: Suggerimento attivo tramite indice (navigazione)
+              // Use the stored suggestion index (set by clicking on highlight)
               if (suggestionIndex >= 0 && parsedSuggestions[suggestionIndex]) {
                 activeSuggestion = parsedSuggestions[suggestionIndex];
                 const matches = findMatchesInDoc(editor.state.doc, activeSuggestion.original);
@@ -434,10 +434,10 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                 }
               }
 
-              // 2. Fallback: Rilevamento sotto il cursore
+              // Fallback: detect highlight under cursor
               if (!activeSuggestion) {
-                let highlight = findHighlight(from);
-                if (!highlight && from > 0) highlight = findHighlight(from - 1);
+                let highlight = getHighlightAtPos(from);
+                if (!highlight && from > 0) highlight = getHighlightAtPos(from - 1);
                 
                 if (highlight) {
                   const text = highlight.getAttribute('data-suggestion-text') || '';
