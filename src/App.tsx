@@ -16,9 +16,11 @@ const ProjectSelector = lazyRetry(() => import('./views/ProjectSelector').then(m
 const TimelineView = lazyRetry(() => import('./views/TimelineView').then(m => ({ default: m.TimelineView })), 'TimelineView');
 import { AlertCircle, Cloud } from 'lucide-react';
 import { ToastContainer } from './components/Toast';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function App() {
+  useKeyboardShortcuts();
   const user = useStore(s => s.user);
   const currentProject = useStore(s => s.currentProject);
   const activeTab = useStore(s => s.activeTab);
@@ -232,7 +234,18 @@ function App() {
                 Sincronizzazione Modulo...
               </div>
             }>
-              {renderView()}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                  className="h-full"
+                >
+                  {renderView()}
+                </motion.div>
+              </AnimatePresence>
             </React.Suspense>
           </div>
         </main>

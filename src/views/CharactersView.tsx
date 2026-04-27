@@ -5,9 +5,10 @@ import { cn } from '../lib/utils';
 import { groqService } from '../lib/groq';
 import { CreationModal } from '../components/CreationModal';
 import { useToast } from '../components/Toast';
+import { Skeleton } from '../components/Skeleton';
 
 export const CharactersView: React.FC = () => {
-  const { characters, addCharacter, updateCharacter, deleteCharacter, addInterview } = useCharacters();
+  const { characters, loading, addCharacter, updateCharacter, deleteCharacter, addInterview } = useCharacters();
   const { addToast } = useToast();
   const [selectedCharId, setSelectedCharId] = React.useState<string | null>(null);
   const selectedChar = React.useMemo(() => 
@@ -152,7 +153,14 @@ export const CharactersView: React.FC = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-hide">
-          {characters.map(char => (
+          {loading ? (
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => (
+                <Skeleton key={i} className="h-20 w-full rounded-[28px]" />
+              ))}
+            </div>
+          ) : (
+            characters.map(char => (
             <div 
               key={char.id}
               onClick={() => setSelectedCharId(char.id)}
@@ -205,7 +213,8 @@ export const CharactersView: React.FC = () => {
               {char.role === 'co-protagonist' && <Star className="w-4 h-4 text-cyan-400 absolute top-4 right-4" />}
               {char.role === 'antagonist' && <Sword className="w-4 h-4 text-red-400 absolute top-4 right-4" />}
             </div>
-          ))}
+          ))
+          )}
         </div>
       </div>
 

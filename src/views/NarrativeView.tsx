@@ -24,11 +24,8 @@ export const NarrativeView: React.FC = React.memo(() => {
     updateSceneContent, 
     reorderScenes, 
     reorderChapters,
-    renameChapter,
-    renameScene,
-    deleteChapter,
-    deleteScene,
-    updateSceneMetadata
+    updateSceneMetadata,
+    loading
   } = useNarrative();
 
   
@@ -62,6 +59,32 @@ export const NarrativeView: React.FC = React.memo(() => {
       setCurrentSceneContent('');
     }
   }, [activeSceneId, chapters, setCurrentSceneContent]);
+
+  /**
+   * Effetto: Gestione Shortcut Tastiera (Custom Events)
+   */
+  useEffect(() => {
+    const handleNewScene = () => {
+      const lastChapter = chapters[chapters.length - 1];
+      if (lastChapter) {
+        setTargetChapterId(lastChapter.id);
+        setModalType('scene');
+      } else {
+        setModalType('chapter');
+      }
+    };
+
+    const handleEscape = () => {
+      setModalType(null);
+    };
+
+    window.addEventListener('muse-shortcut-new-scene', handleNewScene);
+    window.addEventListener('muse-shortcut-escape', handleEscape);
+    return () => {
+      window.removeEventListener('muse-shortcut-new-scene', handleNewScene);
+      window.removeEventListener('muse-shortcut-escape', handleEscape);
+    };
+  }, [chapters]);
 
   /**
    * Effetto: Espandi automaticamente i capitoli al caricamento iniziale
@@ -177,13 +200,11 @@ export const NarrativeView: React.FC = React.memo(() => {
                   setModalType('scene');
                 }}
                 onReorder={handleReorder}
-                onRenameChapter={renameChapter}
-                onRenameScene={renameScene}
-                onDeleteChapter={deleteChapter}
-                onDeleteScene={deleteScene}
-                onToggleSceneExclusion={(id, exclude) => updateSceneMetadata(id, { exclude_from_timeline: exclude })}
+                onUpdateSceneStatus={(id, status) => updateSceneMetadata(id, { status })}
+                onUpdateSceneTags={(id, tags) => updateSceneMetadata(id, { tags })}
                 onExport={handleExport}
                 isExporting={isExporting}
+                loading={loading}
               />
             )}
           </motion.div>

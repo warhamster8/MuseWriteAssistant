@@ -4,6 +4,7 @@ import { Editor } from '../../components/Editor';
 import type { Scene } from '../../types/narrative';
 import { useStore } from '../../store/useStore';
 import { cn } from '../../lib/utils';
+import { Skeleton } from '../../components/Skeleton';
 
 interface EditorWorkspaceProps {
   activeScene: Scene | undefined;
@@ -115,10 +116,12 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
           <div className="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] space-y-6 bg-[var(--bg-deep)]/10 animate-in fade-in duration-500">
             <div 
               onClick={() => setNavigatorOpen(true)}
-              className="w-24 h-24 rounded-full border border-[var(--border-subtle)] flex items-center justify-center opacity-20 bg-[var(--bg-surface)] transition-all hover:scale-110 hover:opacity-40 cursor-pointer group"
+              className="w-24 h-24 rounded-full border border-[var(--border-subtle)] flex items-center justify-center opacity-20 bg-[var(--bg-surface)] transition-all hover:scale-110 hover:opacity-40 cursor-pointer group mb-10"
             >
               <LayoutList className="w-10 h-10 group-hover:text-[var(--accent)] transition-colors" />
             </div>
+            <Skeleton className="h-4 w-64 rounded-full mb-4" />
+            <Skeleton className="h-3 w-48 rounded-full mb-8 opacity-50" />
             <div className="text-center">
                 <h3 className="text-lg font-medium text-[var(--text-bright)]">Pronto per scrivere?</h3>
                 <p className="text-xs opacity-50 max-w-[200px] mx-auto mt-2 tracking-wide font-light">

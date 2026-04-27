@@ -39,6 +39,7 @@ create table public.scenes (
   chapter_id uuid references public.chapters(id) on delete cascade not null,
   title text not null,
   content text default '',
+  status text default 'draft' check (status in ('draft', 'revised', 'complete')),
   order_index integer default 0,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
