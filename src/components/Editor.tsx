@@ -121,6 +121,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
   const addIgnoredSuggestion = useStore(s => s.addIgnoredSuggestion);
   const activeSceneId = useStore(s => s.activeSceneId);
   const ignoredSuggestions = useStore(s => s.ignoredSuggestions);
+  const suggestionIndex = useStore(s => s.suggestionIndex);
   const [hiddenSuggestionId, setHiddenSuggestionId] = React.useState<number | null>(null);
 
   // Reset hidden state when selection or global index changes
@@ -450,8 +451,8 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                   }
                 }
               }
-                            if (!activeSuggestion || !activeSuggestion.suggestion || hiddenSuggestionId === suggestionIndex) return null;
 
+              if (!activeSuggestion || !activeSuggestion.suggestion || hiddenSuggestionId === suggestionIndex) return null;
 
               // Calculate position based on the END of the highlight to avoid overlapping
               const startCoords = editor.view.coordsAtPos(startPos);
@@ -484,9 +485,9 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                      }}
                      onClose={() => setHiddenSuggestionId(suggestionIndex)}
                    />
-                </div>
-              ); );
-           })()}
+</div>
+              );
+            })()}
            <EditorContent editor={editor} />
         </div>
       </div>

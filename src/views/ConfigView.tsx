@@ -477,11 +477,6 @@ export const ConfigView: React.FC = React.memo(() => {
 
         {/* FINAL SPACER */}
         <div className="h-20" />
-
-        {/* FINAL SPACER */}
-        <div className="h-20" />
-      </div>
-    </div>
       </div>
     </div>
   );
