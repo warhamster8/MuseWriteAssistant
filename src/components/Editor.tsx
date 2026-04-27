@@ -117,10 +117,8 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
   const highlightedText = useStore(s => s.highlightedText);
   const scrollRequestToken = useStore(s => s.scrollRequestToken);
   const parsedSuggestions = useStore(s => s.parsedSuggestions);
-  const addIgnoredSuggestion = useStore(s => s.addIgnoredSuggestion);
   const activeSceneId = useStore(s => s.activeSceneId);
   const ignoredSuggestions = useStore(s => s.ignoredSuggestions);
-  const suggestionIndex = useStore(s => s.suggestionIndex);
 
   // Update decorations when suggestions change
   React.useEffect(() => {
