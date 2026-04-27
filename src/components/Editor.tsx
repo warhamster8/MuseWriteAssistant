@@ -23,8 +23,7 @@ import {
   Highlighter,
   Type,
   ALargeSmall,
-  Sparkles,
-  CheckCircle
+  Sparkles
 } from 'lucide-react';
 
 import { useStore } from '../store/useStore';
