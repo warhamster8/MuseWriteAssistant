@@ -478,60 +478,10 @@ export const ConfigView: React.FC = React.memo(() => {
         {/* FINAL SPACER */}
         <div className="h-20" />
 
-        {/* TEMPORARY DIAGNOSTIC SECTION */}
-        <div className="bg-red-950/20 p-10 rounded-[48px] border border-red-500/20 space-y-6">
-          <div className="flex items-center gap-4">
-            <Activity className="w-5 h-5 text-red-500" />
-            <h3 className="text-xl font-black text-white uppercase tracking-tight italic">Raw Data Diagnostics (Temporary)</h3>
-          </div>
-          
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <button 
-                onClick={async () => {
-                  if (!user) return;
-                  addToast("Avvio Deep Scan...", "info");
-                  const { data, error } = await supabase
-                    .from('scenes')
-                    .select('*, chapters!inner(project_id, projects!inner(user_id, title))')
-                    .eq('chapters.projects.user_id', user.id);
-                  
-                  if (error) {
-                    console.error("Deep Scan Error:", error);
-                    alert("Errore Deep Scan: " + error.message);
-                  } else {
-                    console.log("DEEP SCAN RESULTS:", data);
-                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `muse_deep_scan_${Date.now()}.json`;
-                    a.click();
-                    addToast("Scansione completata! File scaricato.", "success");
-                  }
-                }}
-                className="px-6 py-3 bg-red-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 transition-all"
-              >
-                Esegui Deep Scan (Cerca in tutto il DB)
-              </button>
-              <p className="text-[9px] text-slate-500 font-bold uppercase">Scaricherà un JSON con TUTTE le tue scene per trovare il testo perduto.</p>
-            </div>
-
-            <div className="p-4 bg-black/40 rounded-2xl border border-white/5">
-              <p className="text-[10px] text-slate-400 uppercase font-black mb-2">Current Project ID</p>
-              <code className="text-xs text-red-400 font-mono">{currentProject?.id || 'None'}</code>
-            </div>
-
-            <div className="p-4 bg-black/40 rounded-2xl border border-white/5">
-              <p className="text-[10px] text-slate-400 uppercase font-black mb-2">Fetched Chapters & Scenes JSON (Current Project)</p>
-              <pre className="text-[10px] text-emerald-400 font-mono overflow-x-auto max-h-96 scrollbar-thin">
-                {JSON.stringify(chapters, null, 2)}
-              </pre>
-            </div>
-          </div>
-        </div>
-
+        {/* FINAL SPACER */}
         <div className="h-20" />
+      </div>
+    </div>
       </div>
     </div>
   );
