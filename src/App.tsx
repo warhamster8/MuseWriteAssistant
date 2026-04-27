@@ -117,7 +117,7 @@ function App() {
 
           // Tentiamo di recuperare le chiavi. Se una colonna manca, la query fallirà, 
           // quindi le recuperiamo singolarmente o verifichiamo la risposta.
-          const { data: keysData, error: keysError } = await supabase
+          const { data: keysData } = await supabase
             .from('user_profiles')
             .select('*') // Usiamo * per essere sicuri di prendere quello che c'è
             .eq('user_id', user.id)
