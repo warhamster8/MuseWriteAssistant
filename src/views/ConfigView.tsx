@@ -477,6 +477,35 @@ export const ConfigView: React.FC = React.memo(() => {
 
         {/* FINAL SPACER */}
         <div className="h-20" />
+
+        {/* TEMPORARY DIAGNOSTIC SECTION */}
+        <div className="bg-red-950/20 p-10 rounded-[48px] border border-red-500/20 space-y-6">
+          <div className="flex items-center gap-4">
+            <Activity className="w-5 h-5 text-red-500" />
+            <h3 className="text-xl font-black text-white uppercase tracking-tight italic">Raw Data Diagnostics (Temporary)</h3>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="p-4 bg-black/40 rounded-2xl border border-white/5">
+              <p className="text-[10px] text-slate-400 uppercase font-black mb-2">Current Project ID</p>
+              <code className="text-xs text-red-400 font-mono">{currentProject?.id || 'None'}</code>
+            </div>
+
+            <div className="p-4 bg-black/40 rounded-2xl border border-white/5">
+              <p className="text-[10px] text-slate-400 uppercase font-black mb-2">Fetched Chapters & Scenes JSON</p>
+              <pre className="text-[10px] text-emerald-400 font-mono overflow-x-auto max-h-96 scrollbar-thin">
+                {JSON.stringify(chapters, null, 2)}
+              </pre>
+            </div>
+            
+            <p className="text-[9px] text-slate-500 leading-relaxed uppercase font-black tracking-widest">
+              Usa questi dati per verificare se il "Prologo" è presente nell'oggetto ricevuto da Supabase. 
+              Se non lo vedi qui, significa che Supabase non lo sta inviando per questo Project ID.
+            </p>
+          </div>
+        </div>
+
+        <div className="h-20" />
       </div>
     </div>
   );
