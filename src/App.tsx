@@ -126,10 +126,27 @@ function App() {
           if (keysData) {
             const savedSettings = settingsData?.ai_settings || keysData.ai_settings || {};
             
-            // Guard: normalize stale Gemini model strings
-            const VALID_GEMINI_MODELS = ['gemini-flash-latest', 'gemini-2.0-flash', 'gemini-2.0-flash-001', 'gemini-2.0-flash-exp:free', 'gemini-2.5-flash', 'gemini-pro-latest'];
-            if (savedSettings.provider === 'gemini' && savedSettings.model && !VALID_GEMINI_MODELS.includes(savedSettings.model)) {
-              savedSettings.model = 'gemini-2.0-flash-exp:free';
+            // --- Normalizzazione dei Modelli per stabilità post-deploy ---
+            
+            // 1. Gemini: Fallback su 2.0 Flash (più stabile)
+            const VALID_GEMINI_MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-001', 'gemini-2.0-flash-exp:free', 'gemini-2.5-flash', 'gemini-pro-latest', 'gemini-1.5-flash-latest'];
+            if (savedSettings.provider === 'gemini') {
+              if (!savedSettings.model || !VALID_GEMINI_MODELS.includes(savedSettings.model)) {
+                savedSettings.model = 'gemini-2.0-flash-exp:free';
+              }
+            }
+
+            // 2. Groq: Previene l'uso di modelli DeepSeek o nomi obsoleti
+            const VALID_GROQ_MODELS = ['llama-3.3-70b-versatile', 'llama-3.1-70b-versatile', 'mixtral-8x7b-32768'];
+            if (savedSettings.provider === 'groq') {
+              if (!savedSettings.model || !VALID_GROQ_MODELS.includes(savedSettings.model)) {
+                savedSettings.model = 'llama-3.3-70b-versatile';
+              }
+            }
+
+            // 3. DeepSeek: Forza l'unico modello disponibile via API standard
+            if (savedSettings.provider === 'deepseek') {
+              savedSettings.model = 'deepseek-chat';
             }
 
             setAIConfig({ 

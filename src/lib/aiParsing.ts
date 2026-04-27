@@ -27,7 +27,7 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
       // Cerchiamo di isolare il testo dopo l'emoji o l'etichetta senza mangiare lo spazio iniziale del contenuto
       const contentMatch = line.match(/❌\s*(?:TESTO\s*ORIGINALE\s*(?:ESATTO)?|SUGGERIMENTO\s*\d+|SUGGESTIONE\s*\d+)?\s*:?\s*(.*)/i);
       const cleanOriginal = (contentMatch ? contentMatch[1] : '')
-        .replace(/\*\*/g, '')
+        .replace(/\*/g, '') // Rimuove tutti gli asterischi (Markdown)
         .replace(/^["“”«»\[]+|["“”«»\]]+$/g, '')
         .replace(/(?:Suggerimento|Suggestione|Correzione)\s*\d+[:\s]*/gi, '')
         .trim();
@@ -36,7 +36,7 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
       if (currentSuggestion) {
         const contentMatch = line.match(/✅\s*(?:NUOVA\s*VERSIONE\s*(?:SUGGERITA)?|SUGGERIMENTO\s*\d+|SUGGESTIONE\s*\d+)?\s*:?\s*(.*)/i);
         currentSuggestion.suggestion = (contentMatch ? contentMatch[1] : '')
-          .replace(/\*\*/g, '')
+          .replace(/\*/g, '') // Rimuove tutti gli asterischi (Markdown)
           .replace(/^["“”«»\[]+|["“”«»\]]+$/g, '')
           .replace(/\s*\*\(Correzione:.*?\)\*/gi, '')
           .replace(/\s*\(Correzione:.*?\)/gi, '')
@@ -52,10 +52,13 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
         currentSuggestion.category = line.replace(/.*🏷️\s*(?:CATEGORIA:?)?\s*/i, '').trim();
       }
     } else if (currentSuggestion && !hasOriginalEmoji && !hasSuggestionEmoji && line.trim()) {
-      if (currentSuggestion.original && !currentSuggestion.suggestion) {
-        currentSuggestion.original += (currentSuggestion.original ? '\n' : '') + line.replace(/^\d+\.\s*/, '').trim();
-      } else if (currentSuggestion.suggestion) {
-        currentSuggestion.suggestion += (currentSuggestion.suggestion ? '\n' : '') + line.replace(/^\d+\.\s*/, '').trim();
+      const cleanLine = line.replace(/^\d+\.\s*/, '').replace(/\*/g, '').replace(/-{3,}/g, '').trim();
+      if (cleanLine) {
+        if (currentSuggestion.original && !currentSuggestion.suggestion) {
+          currentSuggestion.original += (currentSuggestion.original ? '\n' : '') + cleanLine;
+        } else if (currentSuggestion.suggestion) {
+          currentSuggestion.suggestion += (currentSuggestion.suggestion ? '\n' : '') + cleanLine;
+        }
       }
     }
     
@@ -64,7 +67,8 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
       currentSuggestion.original = currentSuggestion.original
         .replace(/^\d+\.\s*/gm, '')
         .replace(/(?:Suggerimento|Suggestione|Correzione)\s*\d+[:\s]*/gi, '')
-        .replace(/---/g, '')
+        .replace(/\*/g, '')
+        .replace(/-{3,}/g, '')
         .replace(/\[(?:INIZIO|FINE)\s*(?:TARGET|CONTESTO)\]/gi, '')
         .trim();
     }
@@ -72,7 +76,8 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
       currentSuggestion.suggestion = currentSuggestion.suggestion
         .replace(/^\d+\.\s*/gm, '')
         .replace(/(?:Suggerimento|Suggestione|Correzione)\s*\d+[:\s]*/gi, '')
-        .replace(/---/g, '')
+        .replace(/\*/g, '')
+        .replace(/-{3,}/g, '')
         .replace(/\[(?:INIZIO|FINE)\s*(?:TARGET|CONTESTO)\]/gi, '')
         .trim();
     }

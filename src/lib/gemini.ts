@@ -17,7 +17,7 @@ export const geminiService = {
     providedKey: string,
     messages: any[],
     onChunk: (text: string) => void,
-    _model = 'gemini-1.5-flash',
+    _model = 'gemini-2.0-flash-exp:free',
     temperature = 0.5,
     signal?: AbortSignal
   ) {
@@ -27,7 +27,7 @@ export const geminiService = {
     }
 
     // Usiamo il modello passato come parametro, con fallback
-    const normalizedModel = _model?.trim() || 'gemini-1.5-flash';
+    const normalizedModel = _model?.trim() || 'gemini-2.0-flash-exp:free';
 
     // Strategia di compatibilità massima: incorporiamo le istruzioni di sistema nel primo messaggio utente
     const systemInstruction = messages.find((m) => m.role === 'system')?.content;
@@ -135,7 +135,7 @@ export const geminiService = {
   /**
    * Verifica la connettività con l'endpoint Google.
    */
-  async testConnection(providedKey: string, _model = 'gemini-1.5-flash') {
+  async testConnection(providedKey: string, _model = 'gemini-2.0-flash-exp:free') {
     const apiKey = providedKey?.trim();
     if (!apiKey) return { ok: false, status: 0, error: 'Chiave mancante' };
 
@@ -143,7 +143,7 @@ export const geminiService = {
     headers.set('Content-Type', 'application/json');
     headers.delete('Authorization'); // Prevents any phantom Bearer tokens from triggering 401
 
-    const normalizedModel = _model?.trim() || 'gemini-1.5-flash';
+    const normalizedModel = _model?.trim() || 'gemini-2.0-flash-exp:free';
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${normalizedModel}:generateContent?key=${apiKey}`, {
         method: 'POST',

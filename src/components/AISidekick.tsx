@@ -263,6 +263,7 @@ REGOLE MANDATORIE:
    💡 Spiegazione approfondita del perché questo cambiamento rende la scena più potente.
    IMPORTANTE: Non aggiungere mai prefissi come "Suggerimento 1:" o "Correzione:" all'interno delle righe ❌ o ✅.
    IMPORTANTE: Rispetta gli a capo. Se il testo originale contiene dei ritorni a capo (paragrafi), mantienili anche nella versione suggerita. Non unire paragrafi distinti senza un motivo editoriale gravissimo.
+   IMPORTANTE: NON usare mai la formattazione Markdown (es. **grassetto**, *corsivo*) o separatori (es. **** o ---) all'interno delle righe ❌ e ✅. Il testo deve essere puro e pronto per essere inserito nel manoscritto.
 
 LINGUA: Italiano.`;
 
@@ -364,6 +365,7 @@ REGOLE MANDATORIE:
    ✅ [Testo corretto]
    🏷️ Categoria (Ortografia, Punteggiatura, Formattazione)
    💡 Spiegazione
+   IMPORTANTE: NON usare mai la formattazione Markdown (es. **grassetto**, *corsivo*) o separatori (es. **** o ---) all'interno delle righe ❌ e ✅. Il testo deve essere puro e pronto per essere inserito nel manoscritto.
 
 LINGUA: Italiano.`;
 
