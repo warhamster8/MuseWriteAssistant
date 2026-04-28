@@ -99,6 +99,7 @@ interface AppState {
   setTimelineEvents: (events: GlobalTimelineEvent[]) => void;
   setTheme: (theme: 'dark' | 'light') => void;
   setSidekickTab: (tab: SidekickTab) => void;
+  clearSceneAnalysis: (sceneId: string, tabId: SidekickTab) => void;
   setParsedSuggestions: (suggestions: AISuggestion[]) => void;
   setSuggestionIndex: (index: number | ((prev: number) => number)) => void;
 }
@@ -212,6 +213,23 @@ export const useStore = create<AppState>()(
         const analysis = state.activeSceneId ? state.sceneAnalysis[`${state.activeSceneId}-${sidekickTab}`] || '' : '';
         const synced = syncSuggestions(state, analysis, state.activeSceneId || '', sidekickTab);
         return { sidekickTab, ...synced };
+      }),
+
+      clearSceneAnalysis: (sceneId, tabId) => set((state) => {
+        const key = `${sceneId}-${tabId}`;
+        const newAnalysis = { ...(state.sceneAnalysis || {}) };
+        delete newAnalysis[key];
+        
+        const newPhrases = { ...(state.lastAnalyzedPhrase || {}) };
+        delete newPhrases[key];
+
+        const synced = syncSuggestions(state, '', sceneId, tabId);
+        
+        return {
+          sceneAnalysis: newAnalysis,
+          lastAnalyzedPhrase: newPhrases,
+          ...synced
+        };
       }),
       setParsedSuggestions: (suggestions) => set({ parsedSuggestions: suggestions }),
       setSuggestionIndex: (index) => set((state) => ({ 

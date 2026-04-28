@@ -55,6 +55,7 @@ export const AISidekick: React.FC = React.memo(() => {
   const { addToast } = useToast();
   const activeTab = useStore(s => s.sidekickTab);
   const setActiveTab = useStore(s => s.setSidekickTab);
+  const clearSceneAnalysis = useStore(s => s.clearSceneAnalysis);
   const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   const analysis = React.useMemo(() => {
@@ -568,6 +569,19 @@ Rispondi in italiano. Sii concreto e originale.`;
               </div>
             )}
             
+            {analysis && (
+              <button 
+                onClick={() => {
+                  handleStop();
+                  if (activeSceneId) clearSceneAnalysis(activeSceneId, activeTab);
+                }}
+                title="Pulisci tutto"
+                className="p-2.5 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all border border-rose-500/20 animate-pulse"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+            
             <button 
               onClick={() => setSidekickOpen(false)}
               className="p-2.5 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
@@ -845,10 +859,12 @@ Rispondi in italiano. Sii concreto e originale.`;
                 )}
                 <p className={cn("text-xs text-center px-4", (analysis?.startsWith('❌') || (analysis?.trim().startsWith('[') && parsedSuggestions.length === 0)) ? "text-rose-400 font-bold" : "")}>
                   {analysis?.startsWith('❌') 
-                    ? analysis.replace('❌', '').trim() 
+                    ? (analysis.includes('[') ? "Errore nell'analisi. Pulisci e riprova." : analysis.replace('❌', '').trim())
                     : (analysis?.trim().startsWith('[') && parsedSuggestions.length === 0)
                       ? "Errore nell'analisi del testo. Riprova."
-                      : (analysis ? "Analisi completata: nessun suggerimento trovato." : "Seleziona una scena e premi Analizza per ricevere suggerimenti.")
+                      : (analysis?.trim().startsWith('[') || analysis?.trim().startsWith('{'))
+                        ? "Errore nel formato dati. Pulisci e riprova."
+                        : (analysis ? "Analisi completata: nessun suggerimento trovato." : "Seleziona una scena e premi Analizza per ricevere suggerimenti.")
                   }
                 </p>
               </div>
