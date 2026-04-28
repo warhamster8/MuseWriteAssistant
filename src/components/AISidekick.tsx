@@ -58,19 +58,28 @@ export const AISidekick: React.FC = React.memo(() => {
     abortControllerRef.current = new AbortController();
     
     try {
-      const prompt = tab === 'revision' 
-        ? `Analizza questa scena e suggerisci miglioramenti stilistici e narrativi.`
-        : `Analizza questa scena e correggi errori grammaticali o tecnici.`;
+      const systemPrompt = tab === 'revision' 
+        ? `Sei un editor professionista. Analizza il testo e restituisci suggerimenti in formato JSON:
+           { "original": "testo esatto", "suggestion": "testo corretto", "reason": "spiegazione", "type": "stile" }`
+        : `Sei un correttore bozze. Analizza il testo e restituisci suggerimenti in formato JSON:
+           { "original": "testo esatto", "suggestion": "testo corretto", "reason": "spiegazione", "type": "grammatica" }`;
 
-      await aiService.analyzeScene(
-        plainText,
+      const userPrompt = `Testo da analizzare:
+      ${plainText}
+      
+      Contesto precedente:
+      ${lastPhrase}`;
+
+      await aiService.streamChat(
         aiConfig,
-        (chunk) => {
+        [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        (chunk: string) => {
           setSceneAnalysis(activeSceneId, (prev) => prev + chunk, tab);
         },
-        abortControllerRef.current.signal,
-        lastPhrase,
-        prompt
+        { signal: abortControllerRef.current.signal }
       );
       
       setLastAnalyzedPhrase(activeSceneId, plainText.slice(-200), tab);

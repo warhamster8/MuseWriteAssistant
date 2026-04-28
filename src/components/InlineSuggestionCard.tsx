@@ -1,6 +1,6 @@
 import React from 'react';
 import { Check, X, Trash2, Zap } from 'lucide-react';
-import { AISuggestion } from '../lib/aiParsing';
+import type { AISuggestion } from '../lib/aiParsing';
 import { cn } from '../lib/utils';
 
 interface Props {

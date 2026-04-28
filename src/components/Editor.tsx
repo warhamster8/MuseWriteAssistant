@@ -29,6 +29,7 @@ import {
 import { useStore } from '../store/useStore';
 import { InlineSuggestions } from '../lib/tiptap/InlineSuggestions';
 import { InlineSuggestionCard } from './InlineSuggestionCard';
+import { findMatchesInDoc } from '../lib/tiptap/matchUtils';
 import { useToast } from './Toast';
 import { cn } from '../lib/utils';
 import type { AISuggestion } from '../lib/aiParsing';
