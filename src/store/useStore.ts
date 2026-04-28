@@ -10,11 +10,19 @@ const syncSuggestions = (state: AppState, analysisText: string, sceneId: string,
     const allSuggestions = parseAIAnalysis(analysisText);
     const ignored = state.ignoredSuggestions?.[sceneId] || [];
     const visible = allSuggestions.filter(s => !ignored.includes(s.original));
+    
+    let newIndex = state.suggestionIndex;
+    if (visible.length > 0) {
+      // Se avevamo un indice valido, cerchiamo di mantenerlo o agganciarlo all'ultimo disponibile
+      if (newIndex === -1) newIndex = 0;
+      else newIndex = Math.min(newIndex, visible.length - 1);
+    } else {
+      newIndex = -1;
+    }
+
     return {
       parsedSuggestions: visible,
-      suggestionIndex: visible.length > 0 && state.suggestionIndex === -1 ? 0 : 
-                       visible.length === 0 ? -1 : 
-                       Math.min(state.suggestionIndex, visible.length - 1)
+      suggestionIndex: newIndex
     };
   }
   return { parsedSuggestions: [], suggestionIndex: -1 };
@@ -136,8 +144,9 @@ export const useStore = create<AppState>()(
       setCurrentProject: (project) => set({ currentProject: project }),
       setActiveTab: (tab) => set({ activeTab: tab }),
       setActiveSceneId: (id) => set((state) => {
-        const analysis = id ? state.sceneAnalysis[`${id}-revision`] || '' : '';
-        const synced = syncSuggestions(state, analysis, id || '', 'revision');
+        const currentTab = state.sidekickTab || 'revision';
+        const analysis = id ? state.sceneAnalysis[`${id}-${currentTab}`] || '' : '';
+        const synced = syncSuggestions(state, analysis, id || '', currentTab);
         return { activeSceneId: id, ...synced };
       }),
       setCurrentSceneContent: (content) => set({ currentSceneContent: content }),
