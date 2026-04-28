@@ -7,7 +7,50 @@ export interface AISuggestion {
   type: 'coerenza' | 'taglio' | 'stile' | 'grammatica';
 }
 
+export function parseAIAnalysisJSON(text: string): AISuggestion[] {
+  try {
+    // Look for JSON blocks in the text - can handle single objects or arrays
+    const jsonMatch = text.match(/\[\s*{[\s\S]*}\s*\]/);
+    if (jsonMatch) {
+      const data = JSON.parse(jsonMatch[0]);
+      if (Array.isArray(data)) {
+        return data.map(item => ({
+          original: item.original_fragment || item.original || '',
+          suggestion: item.replacement_text || item.suggestion || '',
+          reason: item.reason || '',
+          category: item.category || item.type || 'Revisione',
+          severity: (item.severity || 'medium').toLowerCase() as any,
+          type: (item.type || 'stile').toLowerCase() as any
+        })).filter(s => s.original && s.suggestion);
+      }
+    }
+    
+    // Fallback for single object not in array
+    const singleMatch = text.match(/{[\s\S]*}/);
+    if (singleMatch) {
+      const item = JSON.parse(singleMatch[0]);
+      if (item.original_fragment || item.original) {
+        return [{
+          original: item.original_fragment || item.original || '',
+          suggestion: item.replacement_text || item.suggestion || '',
+          reason: item.reason || '',
+          category: item.category || item.type || 'Revisione',
+          severity: (item.severity || 'medium').toLowerCase() as any,
+          type: (item.type || 'stile').toLowerCase() as any
+        }];
+      }
+    }
+  } catch (e) {
+    // Fail silently, likely incomplete JSON during streaming
+  }
+  return [];
+}
+
 export function parseAIAnalysis(text: string): AISuggestion[] {
+  // Try JSON first
+  const jsonResults = parseAIAnalysisJSON(text);
+  if (jsonResults.length > 0) return jsonResults;
+
   const suggestions: AISuggestion[] = [];
   const lines = text.split('\n');
   
@@ -109,3 +152,4 @@ export function parseAIAnalysis(text: string): AISuggestion[] {
 
   return suggestions;
 }
+

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEditor, EditorContent, Extension } from '@tiptap/react';
+import { useEditor, EditorContent, Extension, BubbleMenu } from '@tiptap/react';
 import BubbleMenuExtension from '@tiptap/extension-bubble-menu';
 import StarterKit from '@tiptap/starter-kit';
 import CharacterCount from '@tiptap/extension-character-count';
@@ -30,6 +30,8 @@ import { useStore } from '../store/useStore';
 import { SuggestionHighlight } from '../lib/tiptap/SuggestionHighlight';
 import { findMatchesInDoc } from '../lib/tiptap/matchUtils';
 import { cn } from '../lib/utils';
+import { InTextSuggestionCard } from './InTextSuggestionCard';
+import type { AISuggestion } from '../lib/aiParsing';
 
 // Custom Paragraph extension to support Drop Caps
 const CustomParagraph = Paragraph.extend({
@@ -85,6 +87,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
   const setActiveSelection = useStore(s => s.setActiveSelection);
   const theme = useStore(s => s.theme);
   const [showDropCapMenu, setShowDropCapMenu] = React.useState(false);
+  const [activeSuggestionForPopup, setActiveSuggestionForPopup] = React.useState<AISuggestion | null>(null);
   const dropCapRef = React.useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
@@ -124,9 +127,19 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
       const { from, to, empty } = editor.state.selection;
       if (empty) {
         setActiveSelection(null);
+        setActiveSuggestionForPopup(null);
       } else {
         const selectedText = editor.state.doc.textBetween(from, to, ' ');
         setActiveSelection(selectedText);
+        
+        // Check if selected text matches any suggestion
+        const suggestions = useStore.getState().parsedSuggestions;
+        const matchingSug = suggestions.find(s => 
+          s.original.trim() === selectedText.trim() || 
+          (selectedText.length > 5 && s.original.includes(selectedText)) ||
+          (selectedText.length > 5 && selectedText.includes(s.original))
+        );
+        setActiveSuggestionForPopup(matchingSug || null);
       }
     },
   });
@@ -444,6 +457,34 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
 
       <div className="flex-1 px-8 py-12 bg-[var(--bg-deep)] rounded-b-[inherit]">
         <div className="w-full relative">
+           {editor && activeSuggestionForPopup && (
+             <BubbleMenu 
+               editor={editor} 
+               tippyOptions={{ duration: 100, placement: 'top', offset: [0, 20] }}
+               className="z-50"
+             >
+               <InTextSuggestionCard 
+                 suggestion={activeSuggestionForPopup}
+                 onApply={() => {
+                   window.dispatchEvent(new CustomEvent('muse-apply-suggestion', { 
+                     detail: { 
+                       original: activeSuggestionForPopup.original, 
+                       suggestion: activeSuggestionForPopup.suggestion, 
+                       sceneId: activeSceneId 
+                     } 
+                   }));
+                   setActiveSuggestionForPopup(null);
+                 }}
+                 onIgnore={() => {
+                   if (activeSceneId) {
+                     useStore.getState().addIgnoredSuggestion(activeSceneId, activeSuggestionForPopup.original);
+                   }
+                   setActiveSuggestionForPopup(null);
+                 }}
+                 onClose={() => setActiveSuggestionForPopup(null)}
+               />
+             </BubbleMenu>
+           )}
            <EditorContent editor={editor} />
         </div>
       </div>
