@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEditor, EditorContent, Extension, BubbleMenu } from '@tiptap/react';
+import { useEditor, EditorContent, Extension } from '@tiptap/react';
 import BubbleMenuExtension from '@tiptap/extension-bubble-menu';
 import StarterKit from '@tiptap/starter-kit';
 import CharacterCount from '@tiptap/extension-character-count';
@@ -88,7 +88,9 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
   const theme = useStore(s => s.theme);
   const [showDropCapMenu, setShowDropCapMenu] = React.useState(false);
   const [activeSuggestionForPopup, setActiveSuggestionForPopup] = React.useState<AISuggestion | null>(null);
+  const [popupPosition, setPopupPosition] = React.useState({ top: 0, left: 0 });
   const dropCapRef = React.useRef<HTMLDivElement>(null);
+  const editorContainerRef = React.useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -132,14 +134,28 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
         const selectedText = editor.state.doc.textBetween(from, to, ' ');
         setActiveSelection(selectedText);
         
-        // Check if selected text matches any suggestion
+        // Find matching suggestion
         const suggestions = useStore.getState().parsedSuggestions;
         const matchingSug = suggestions.find(s => 
           s.original.trim() === selectedText.trim() || 
           (selectedText.length > 5 && s.original.includes(selectedText)) ||
           (selectedText.length > 5 && selectedText.includes(s.original))
         );
-        setActiveSuggestionForPopup(matchingSug || null);
+
+        if (matchingSug && editorContainerRef.current) {
+          const { view } = editor;
+          const { from: selFrom } = editor.state.selection;
+          const coords = view.coordsAtPos(selFrom);
+          const containerRect = editorContainerRef.current.getBoundingClientRect();
+          
+          setPopupPosition({
+            top: coords.top - containerRect.top - 20, // Offset above
+            left: Math.max(20, Math.min(coords.left - containerRect.left - 200, containerRect.width - 460))
+          });
+          setActiveSuggestionForPopup(matchingSug);
+        } else {
+          setActiveSuggestionForPopup(null);
+        }
       }
     },
   });
@@ -258,7 +274,10 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
   if (!editor) return null;
 
   return (
-    <div className="flex flex-col bg-[var(--bg-surface)] shadow-2xl rounded-[40px] border border-[var(--border-subtle)] relative overflow-visible">
+    <div 
+      ref={editorContainerRef}
+      className="flex flex-col bg-[var(--bg-surface)] shadow-2xl rounded-[40px] border border-[var(--border-subtle)] relative overflow-visible"
+    >
       {/* TOOLBAR */}
       <div className="sticky top-0 bg-[var(--bg-card)]/90 p-3 border-b border-[var(--border-subtle)] flex flex-wrap items-center gap-1 z-20 rounded-t-[39px] backdrop-blur-xl px-6">
         
@@ -457,11 +476,14 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
 
       <div className="flex-1 px-8 py-12 bg-[var(--bg-deep)] rounded-b-[inherit]">
         <div className="w-full relative">
-           {editor && activeSuggestionForPopup && (
-             <BubbleMenu 
-               editor={editor} 
-               tippyOptions={{ duration: 100, placement: 'top', offset: [0, 20] }}
-               className="z-50"
+           {activeSuggestionForPopup && (
+             <div 
+               className="absolute z-50 animate-in fade-in zoom-in-95 duration-200"
+               style={{ 
+                 top: `${popupPosition.top}px`, 
+                 left: `${popupPosition.left}px`,
+                 transform: 'translateY(-100%)'
+               }}
              >
                <InTextSuggestionCard 
                  suggestion={activeSuggestionForPopup}
@@ -481,9 +503,8 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
                    }
                    setActiveSuggestionForPopup(null);
                  }}
-                 onClose={() => setActiveSuggestionForPopup(null)}
                />
-             </BubbleMenu>
+             </div>
            )}
            <EditorContent editor={editor} />
         </div>

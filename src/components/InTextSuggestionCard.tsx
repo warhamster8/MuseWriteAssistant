@@ -11,11 +11,10 @@ interface InTextSuggestionCardProps {
   onClose: () => void;
 }
 
-export const InTextSuggestionCard: React.FC<InTextSuggestionCardProps> = ({
+export const InTextSuggestionCard: React.FC<Omit<InTextSuggestionCardProps, 'onClose'>> = ({
   suggestion,
   onApply,
   onIgnore,
-  onClose,
 }) => {
   const { original, suggestion: suggested, reason, category, type } = suggestion;
   const { oldParts, newParts } = suggested 
