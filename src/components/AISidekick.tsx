@@ -261,15 +261,16 @@ Fornisci suggerimenti specifici che includano:
 - CADENZA: Modifica la punteggiatura per creare un flusso armonioso o una tensione incalzante.
 
 REGOLE MANDATORIE DI FORMATO (JSON):
-Restituisci un array JSON di oggetti con questo schema ESATTO. Non aggiungere testo prima o dopo il JSON.
+Restituisci ESCLUSIVAMENTE un array JSON. Non aggiungere introduzioni, conclusioni o commenti fuori dal JSON.
+Esempio di formato:
 [
   {
-    "original_fragment": "testo esatto dal manoscritto",
-    "replacement_text": "nuova versione migliorata",
-    "type": "COERENZA" | "TAGLIO" | "STILE" | "GRAMMATICA",
-    "severity": "high" | "medium" | "low",
-    "category": "descrizione breve categoria",
-    "reason": "razionale editoriale dettagliato: spiega PERCHÉ questa modifica eleva la scena"
+    "original_fragment": "...",
+    "replacement_text": "...",
+    "type": "STILE",
+    "severity": "medium",
+    "category": "Ritmo",
+    "reason": "..."
   }
 ]
 
@@ -808,8 +809,23 @@ Rispondi in italiano. Sii concreto e originale.`;
                   />
                 </div>
               </div>
+            ) : isAnalyzing ? (
+              <div className="flex flex-col items-center justify-center h-48 space-y-4 animate-pulse">
+                <div className="p-4 bg-[var(--accent-soft)] rounded-full">
+                  <RefreshCw className="w-6 h-6 animate-spin text-[var(--accent)]" />
+                </div>
+                <div className="text-center space-y-1">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-bright)]">Analisi in corso</p>
+                  <p className="text-[9px] text-[var(--text-muted)] font-medium">Il Companion sta esaminando il testo...</p>
+                </div>
+              </div>
             ) : (
-              !isAnalyzing && <div className="flex flex-col items-center justify-center h-36 text-[var(--text-muted)] space-y-2"><AlertTriangle className="w-8 h-8 opacity-20" /><p className="text-xs text-center">Seleziona una scena e premi Analizza.</p></div>
+              <div className="flex flex-col items-center justify-center h-36 text-[var(--text-muted)] space-y-2">
+                <AlertTriangle className="w-8 h-8 opacity-20" />
+                <p className="text-xs text-center px-4">
+                  {analysis ? "Analisi completata: nessun suggerimento trovato." : "Seleziona una scena e premi Analizza per ricevere suggerimenti."}
+                </p>
+              </div>
             )}
           </div>
         )}

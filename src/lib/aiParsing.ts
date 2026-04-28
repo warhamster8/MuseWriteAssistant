@@ -8,42 +8,43 @@ export interface AISuggestion {
 }
 
 export function parseAIAnalysisJSON(text: string): AISuggestion[] {
-  try {
-    // Look for JSON blocks in the text - can handle single objects or arrays
-    const jsonMatch = text.match(/\[\s*{[\s\S]*}\s*\]/);
-    if (jsonMatch) {
-      const data = JSON.parse(jsonMatch[0]);
-      if (Array.isArray(data)) {
-        return data.map(item => ({
-          original: item.original_fragment || item.original || '',
-          suggestion: item.replacement_text || item.suggestion || '',
-          reason: item.reason || '',
-          category: item.category || item.type || 'Revisione',
-          severity: (item.severity || 'medium').toLowerCase() as any,
-          type: (item.type || 'stile').toLowerCase() as any
-        })).filter(s => s.original && s.suggestion);
+  const suggestions: AISuggestion[] = [];
+  
+  let depth = 0;
+  let start = -1;
+  
+  // Character-by-character balanced brace parser for maximum robustness in streams
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '{') {
+      if (depth === 0) start = i;
+      depth++;
+    } else if (text[i] === '}') {
+      if (depth > 0) {
+        depth--;
+        if (depth === 0 && start !== -1) {
+          const match = text.substring(start, i + 1);
+          try {
+            const item = JSON.parse(match);
+            if (item.original_fragment || item.original || item.text || item.old_fragment || item.old) {
+              suggestions.push({
+                original: item.original_fragment || item.original || item.text || item.old_fragment || item.old || '',
+                suggestion: item.replacement_text || item.suggestion || item.new_text || item.new || item.correction || '',
+                reason: item.reason || item.rationale || item.explanation || '',
+                category: item.category || item.type || 'Revisione',
+                severity: (item.severity || 'medium').toLowerCase() as any,
+                type: (item.type || item.category || 'stile').toLowerCase() as any
+              });
+            }
+          } catch (e) {
+            // Ignore partial or invalid JSON objects
+          }
+          start = -1;
+        }
       }
     }
-    
-    // Fallback for single object not in array
-    const singleMatch = text.match(/{[\s\S]*}/);
-    if (singleMatch) {
-      const item = JSON.parse(singleMatch[0]);
-      if (item.original_fragment || item.original) {
-        return [{
-          original: item.original_fragment || item.original || '',
-          suggestion: item.replacement_text || item.suggestion || '',
-          reason: item.reason || '',
-          category: item.category || item.type || 'Revisione',
-          severity: (item.severity || 'medium').toLowerCase() as any,
-          type: (item.type || 'stile').toLowerCase() as any
-        }];
-      }
-    }
-  } catch (e) {
-    // Fail silently, likely incomplete JSON during streaming
   }
-  return [];
+  
+  return suggestions.filter(s => s.original && s.suggestion);
 }
 
 export function parseAIAnalysis(text: string): AISuggestion[] {
