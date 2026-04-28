@@ -39,19 +39,15 @@ export const AISidekick: React.FC = React.memo(() => {
   const setSceneAnalysis = useStore(s => s.setSceneAnalysis);
   const activeSelection = useStore(s => s.activeSelection);
   const aiConfig = useStore(s => s.aiConfig);
-  const setParsedSuggestions = useStore(s => s.setParsedSuggestions);
   const parsedSuggestions = useStore(s => s.parsedSuggestions);
   const suggestionIndex = useStore(s => s.suggestionIndex);
   const setSuggestionIndex = useStore(s => s.setSuggestionIndex);
   const addIgnoredSuggestion = useStore(s => s.addIgnoredSuggestion);
-  const ignoredSuggestions = useStore(s => s.ignoredSuggestions);
 
   const setHighlightedText = useStore(s => s.setHighlightedText);
   const requestScrollToHighlight = useStore(s => s.requestScrollToHighlight);
 
   const setSidekickOpen = useStore(s => s.setSidekickOpen);
-  const chapters = useStore(s => s.chapters);
-  const currentProject = useStore(s => s.currentProject);
   
   const { updateSceneContent } = useNarrative();
   const { addToast } = useToast();
