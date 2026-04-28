@@ -48,6 +48,8 @@ export const AISidekick: React.FC = React.memo(() => {
   const requestScrollToHighlight = useStore(s => s.requestScrollToHighlight);
 
   const setSidekickOpen = useStore(s => s.setSidekickOpen);
+  const chapters = useStore(s => s.chapters);
+  const currentProject = useStore(s => s.currentProject);
   
   const { updateSceneContent } = useNarrative();
   const { addToast } = useToast();
@@ -218,7 +220,6 @@ export const AISidekick: React.FC = React.memo(() => {
     
     setIsAnalyzing(true);
     setAnalysis('');
-    setParsedSuggestions([]);
 
     let textToAnalyze = activeSelection || plainText;
     const isSelection = !!activeSelection;
@@ -349,7 +350,6 @@ REVISIONA IL TARGET SOPRA CON OCCHIO SEVERO E ANALITICO.`;
     
     setIsAnalyzing(true);
     setAnalysis('');
-    setParsedSuggestions([]);
     let textToAnalyze = activeSelection || plainText;
     const isSelection = !!activeSelection;
     if (textToAnalyze.length > 30000) textToAnalyze = textToAnalyze.substring(0, 30000);
