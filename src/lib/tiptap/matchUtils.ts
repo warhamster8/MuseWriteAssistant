@@ -6,13 +6,6 @@ export interface MatchResult {
 }
 
 /**
- * Normalizes a single character for comparison
- */
-const normalizeChar = (c: string): string => {
-  return c.toLowerCase();
-};
-
-/**
  * Finds matches of a query string within a document text using a robust index-mapping strategy
  */
 /**

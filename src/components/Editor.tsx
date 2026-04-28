@@ -31,7 +31,7 @@ import { SuggestionHighlight } from '../lib/tiptap/SuggestionHighlight';
 import { findMatchesInDoc } from '../lib/tiptap/matchUtils';
 import { cn } from '../lib/utils';
 import { InTextSuggestionCard } from './InTextSuggestionCard';
-import { useToast } from '../hooks/useToast';
+import { useToast } from './Toast';
 import type { AISuggestion } from '../lib/aiParsing';
 
 // Custom Paragraph extension to support Drop Caps

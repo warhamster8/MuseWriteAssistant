@@ -1,15 +1,9 @@
 import React from 'react';
 import { 
   Sparkles, 
-  AlertTriangle, 
-  Zap,
   RefreshCw,
-  PenLine,
   Wand2,
   BookOpen,
-  Languages,
-  Quote,
-  CheckCircle,
   ChevronLeft,
   ChevronRight,
   X,
@@ -24,7 +18,6 @@ import { findMatchInText } from '../lib/tiptap/matchUtils';
 import { StructuredOutput } from './analysis/StructuredOutput';
 import { getPlainTextForAI } from '../lib/textUtils';
 import { parseAIAnalysis } from '../lib/aiParsing';
-import { diffWords } from '../lib/diffUtils';
 
 
 type SidekickTab = 'revision' | 'grammar' | 'braindump' | 'transformer' | 'lexicon';
@@ -32,7 +25,6 @@ type SidekickTab = 'revision' | 'grammar' | 'braindump' | 'transformer' | 'lexic
 export const AISidekick: React.FC = React.memo(() => {
   const content = useStore(s => s.currentSceneContent);
   const activeSceneId = useStore(s => s.activeSceneId);
-  const setCurrentSceneContent = useStore(s => s.setCurrentSceneContent);
   const lastAnalyzedPhrase = useStore(s => s.lastAnalyzedPhrase);
   const setLastAnalyzedPhrase = useStore(s => s.setLastAnalyzedPhrase);
   const sceneAnalysis = useStore(s => s.sceneAnalysis);
@@ -237,8 +229,8 @@ export const AISidekick: React.FC = React.memo(() => {
     if (isIncremental && lastPhrase) {
       // Use fuzzy matching for checkpointing
       const match = findMatchInText(plainText, lastPhrase);
-      if (match) {
-        const startIndex = Math.max(0, match.end);
+      if (match.length > 0) {
+        const startIndex = Math.max(0, match[0].end);
         if (startIndex < plainText.length - 20) {
            textToAnalyze = plainText.substring(startIndex);
         }
@@ -627,6 +619,9 @@ Rispondi in italiano. Sii concreto e originale.`;
                   <span className="text-[8px] text-[var(--accent)] font-bold uppercase tracking-widest mt-1 animate-pulse flex items-center gap-2">
                      <div className="w-1 h-1 bg-[var(--accent)] rounded-full" /> Selezione
                   </span>
+                )}
+                {!activeSelection && currentLastPhrase && (
+                  <span className="text-[8px] text-[var(--text-muted)]/60 truncate max-w-[100px] italic mt-1 uppercase tracking-tighter">Memoria: {currentLastPhrase.slice(0, 10)}...</span>
                 )}
               </div>
               <div className="flex items-center gap-3">
