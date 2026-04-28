@@ -213,11 +213,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
           .insertContentAt({ from: match.from, to: match.to }, suggestion)
           .run();
       } else {
-        addToast({
-          title: "Impossibile applicare",
-          description: "Non ho trovato il testo originale nel documento. Potrebbe essere stato modificato.",
-          type: "error"
-        });
+        addToast("Impossibile applicare: testo originale non trovato.", "error");
         console.warn('Could not find match for suggestion application:', original);
       }
     };

@@ -25,6 +25,7 @@ type SidekickTab = 'revision' | 'grammar' | 'braindump' | 'transformer' | 'lexic
 export const AISidekick: React.FC = React.memo(() => {
   const content = useStore(s => s.currentSceneContent);
   const activeSceneId = useStore(s => s.activeSceneId);
+  const setCurrentSceneContent = useStore(s => s.setCurrentSceneContent);
   const lastAnalyzedPhrase = useStore(s => s.lastAnalyzedPhrase);
   const setLastAnalyzedPhrase = useStore(s => s.setLastAnalyzedPhrase);
   const sceneAnalysis = useStore(s => s.sceneAnalysis);
@@ -33,7 +34,6 @@ export const AISidekick: React.FC = React.memo(() => {
   const aiConfig = useStore(s => s.aiConfig);
   const parsedSuggestions = useStore(s => s.parsedSuggestions);
   const suggestionIndex = useStore(s => s.suggestionIndex);
-  const totalSuggestionsCount = useStore(s => s.totalSuggestionsCount);
   const setSuggestionIndex = useStore(s => s.setSuggestionIndex);
   const addIgnoredSuggestion = useStore(s => s.addIgnoredSuggestion);
 
@@ -669,6 +669,13 @@ Rispondi in italiano. Sii concreto e originale.`;
                     </select>
                   </div>
                 </div>
+                <button 
+                  onClick={handleConvertQuotes}
+                  title='Converti " " in « »'
+                  className="p-3 text-[var(--accent)]/40 hover:text-[var(--accent)] hover:bg-[var(--accent)]/10 rounded-2xl transition-all"
+                >
+                  « »
+                </button>
               </div>
             </div>
 
