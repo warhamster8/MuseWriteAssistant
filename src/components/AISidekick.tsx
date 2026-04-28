@@ -41,6 +41,7 @@ export const AISidekick: React.FC = React.memo(() => {
   const aiConfig = useStore(s => s.aiConfig);
   const parsedSuggestions = useStore(s => s.parsedSuggestions);
   const suggestionIndex = useStore(s => s.suggestionIndex);
+  const totalSuggestionsCount = useStore(s => s.totalSuggestionsCount);
   const setSuggestionIndex = useStore(s => s.setSuggestionIndex);
   const addIgnoredSuggestion = useStore(s => s.addIgnoredSuggestion);
 
@@ -854,17 +855,19 @@ Rispondi in italiano. Sii concreto e originale.`;
               <div className="flex flex-col items-center justify-center h-36 text-[var(--text-muted)] space-y-2">
                 {analysis?.startsWith('❌') ? (
                   <AlertTriangle className="w-8 h-8 text-rose-500 animate-pulse" />
+                ) : (analysis?.trim().startsWith('[') || analysis?.trim().startsWith('{')) && totalSuggestionsCount > 0 ? (
+                  <CheckCircle className="w-8 h-8 text-emerald-500/50" />
                 ) : (
                   <AlertTriangle className="w-8 h-8 opacity-20" />
                 )}
-                <p className={cn("text-xs text-center px-4", (analysis?.startsWith('❌') || (analysis?.trim().startsWith('[') && parsedSuggestions.length === 0)) ? "text-rose-400 font-bold" : "")}>
+                <p className={cn("text-xs text-center px-4", (analysis?.startsWith('❌') || (analysis?.trim().startsWith('[') && totalSuggestionsCount === 0)) ? "text-rose-400 font-bold" : "")}>
                   {analysis?.startsWith('❌') 
                     ? (analysis.includes('[') ? "Errore nell'analisi. Pulisci e riprova." : analysis.replace('❌', '').trim())
-                    : (analysis?.trim().startsWith('[') && parsedSuggestions.length === 0)
-                      ? "Errore nell'analisi del testo. Riprova."
-                      : (analysis?.trim().startsWith('[') || analysis?.trim().startsWith('{'))
-                        ? "Errore nel formato dati. Pulisci e riprova."
-                        : (analysis ? "Analisi completata: nessun suggerimento trovato." : "Seleziona una scena e premi Analizza per ricevere suggerimenti.")
+                    : (analysis?.trim().startsWith('[') || analysis?.trim().startsWith('{'))
+                      ? (totalSuggestionsCount > 0 
+                          ? "Analisi completata: tutte le suggestioni sono state gestite." 
+                          : "Errore nell'analisi del testo. Riprova.")
+                      : (analysis ? "Analisi completata: nessun suggerimento trovato." : "Seleziona una scena e premi Analizza per ricevere suggerimenti.")
                   }
                 </p>
               </div>

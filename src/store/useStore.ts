@@ -22,7 +22,8 @@ const syncSuggestions = (state: AppState, analysisText: string, sceneId: string,
 
     return {
       parsedSuggestions: visible,
-      suggestionIndex: newIndex
+      suggestionIndex: newIndex,
+      totalSuggestionsCount: allSuggestions.length
     };
   }
   return { parsedSuggestions: [], suggestionIndex: -1 };
@@ -68,6 +69,7 @@ interface AppState {
   
   parsedSuggestions: AISuggestion[];
   suggestionIndex: number;
+  totalSuggestionsCount: number;
   
   activeSelection: string | null;
   highlightedText: string | null;
@@ -140,6 +142,7 @@ export const useStore = create<AppState>()(
       sidekickTab: 'revision',
       parsedSuggestions: [],
       suggestionIndex: -1,
+      totalSuggestionsCount: 0,
       
       setUser: (user) => set({ user }),
       setCurrentProject: (project) => set({ currentProject: project }),
