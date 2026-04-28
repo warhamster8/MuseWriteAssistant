@@ -536,9 +536,6 @@ Rispondi in italiano. Sii concreto e originale.`;
     }
   };
 
-
-
-
   const currentLastPhrase = activeSceneId ? lastAnalyzedPhrase[`${activeSceneId}-${activeTab}`] : null;
 
   return (
@@ -547,6 +544,7 @@ Rispondi in italiano. Sii concreto e originale.`;
       isCollapsed ? "w-20" : "w-full md:w-56 xl:w-72 2xl:w-80"
     )}>
 
+      {/* Header Panel */}
       <div className="p-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/30">
         <div className="flex items-center space-x-3">
           <button 
@@ -594,29 +592,32 @@ Rispondi in italiano. Sii concreto e originale.`;
         )}
       </div>
 
+      {/* Tab Switcher */}
+      {!isCollapsed && (
+        <div className="px-4 py-2">
+          <div className="grid grid-cols-2 gap-1.5 bg-[var(--bg-card)]/80 p-1 rounded-[20px] border border-[var(--border-subtle)]">
+            {(['revision', 'grammar', 'braindump', 'transformer', 'lexicon'] as SidekickTab[]).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={cn(
+                  "py-2 px-1 rounded-[16px] text-[7px] font-black uppercase tracking-widest transition-all duration-300 text-center",
+                  activeTab === tab 
+                    ? "bg-[var(--accent)] text-[var(--bg-deep)]" 
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-[var(--accent-soft)]"
+                )}
+              >
+                {tab === 'transformer' ? 'Stile' : tab}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-          {!isCollapsed && (
-            <div className="px-4 py-2">
-              <div className="grid grid-cols-2 gap-1.5 bg-[var(--bg-card)]/80 p-1 rounded-[20px] border border-[var(--border-subtle)]">
-               {(['revision', 'grammar', 'braindump', 'transformer', 'lexicon'] as SidekickTab[]).map((tab) => (
-                 <button
-                   key={tab}
-                   onClick={() => setActiveTab(tab)}
-                    className={cn(
-                      "py-2 px-1 rounded-[16px] text-[7px] font-black uppercase tracking-widest transition-all duration-300 text-center",
-                      activeTab === tab 
-                        ? "bg-[var(--accent)] text-[var(--bg-deep)]" 
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-[var(--accent-soft)]"
-                    )}
-                 >
-                   {tab === 'transformer' ? 'Stile' : tab}
-                 </button>
-               ))}
-              </div>
-            </div>
-          )}
-
+      {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide bg-[var(--bg-deep)]/30">
+        
+        {/* Revision Tab */}
         {activeTab === 'revision' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
@@ -627,37 +628,15 @@ Rispondi in italiano. Sii concreto e originale.`;
                      <div className="w-1 h-1 bg-[var(--accent)] rounded-full" /> Selezione
                   </span>
                 )}
-                {!activeSelection && currentLastPhrase && (
-                  <span className="text-[8px] text-[var(--text-muted)]/60 truncate max-w-[100px] italic mt-1 uppercase tracking-tighter">Memoria: {currentLastPhrase.slice(0, 10)}...</span>
-                )}
               </div>
               <div className="flex items-center gap-3">
                 {isAnalyzing ? (
-                  <button 
-                    onClick={handleStop}
-                    title="Interrompi"
-                    className="p-2.5 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all border border-rose-500/20 animate-pulse"
-                  >
+                  <button onClick={handleStop} className="p-2.5 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all border border-rose-500/20">
                     <X className="w-4 h-4" />
                   </button>
-                ) : analysis ? (
-                  <button 
-                    onClick={handleStop}
-                    title="Rimuovi suggerimenti"
-                    className="p-2.5 text-[var(--text-muted)] hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
-                  >
+                ) : analysis && (
+                  <button onClick={handleStop} className="p-2.5 text-[var(--text-muted)] hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20">
                     <Trash2 className="w-4 h-4" />
-                  </button>
-                ) : currentLastPhrase && !activeSelection && (
-                  <button 
-                    onClick={() => { 
-                      setLastAnalyzedPhrase(activeSceneId!, '', 'revision'); 
-                      setSceneAnalysis(activeSceneId!, '', 'revision'); 
-                    }} 
-                    title="Pulisci memoria"
-                    className="p-2.5 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
-                  >
-                    <RefreshCw className="w-4 h-4" />
                   </button>
                 )}
               </div>
@@ -669,7 +648,7 @@ Rispondi in italiano. Sii concreto e originale.`;
               className="w-full py-4 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] disabled:opacity-50 rounded-[20px] text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-2xl active:scale-95 group"
             >
               <Wand2 className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-              <span>{isAnalyzing ? 'Elaborazione...' : 'Revisione Letteraria'}</span>
+              <span>{isAnalyzing ? 'Elaborazione...' : 'Analisi Stilistica'}</span>
             </button>
             
             <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] p-3 rounded-[20px] space-y-3 shadow-inner">
@@ -680,410 +659,227 @@ Rispondi in italiano. Sii concreto e originale.`;
                   </div>
                   <div className="flex flex-col text-left">
                     <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-tighter mb-1">Motore Attivo</span>
-                    <div className="flex items-center gap-2">
-                      <select 
-                        value={aiConfig.provider}
-                        onChange={(e) => {
-                          const provider = e.target.value as any;
-                          const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-2.0-flash-exp:free' : 'deepseek-chat');
-                          useStore.getState().setAIConfig({ provider, model });
-                        }}
-                        className="bg-transparent text-[11px] text-[var(--text-secondary)] font-medium hover:text-[var(--accent)] transition-colors outline-none cursor-pointer border-none p-0 appearance-none"
-                      >
-                        <option value="groq" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Groq (Llama 3.3)</option>
-                        <option value="deepseek" className="bg-[var(--bg-card)] text-[var(--text-primary)]">DeepSeek V3</option>
-                        <option value="gemini" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Gemini 2.0 Flash Exp</option>
-                      </select>
-                      <ChevronRight className="w-3 h-3 text-[var(--text-muted)] opacity-50" />
-                    </div>
+                    <select 
+                      value={aiConfig.provider}
+                      onChange={(e) => {
+                        const provider = e.target.value as any;
+                        const model = provider === 'groq' ? 'llama-3.3-70b-versatile' : (provider === 'gemini' ? 'gemini-2.0-flash-exp:free' : 'deepseek-chat');
+                        useStore.getState().setAIConfig({ provider, model });
+                      }}
+                      className="bg-transparent text-[11px] text-[var(--text-secondary)] font-medium outline-none cursor-pointer border-none p-0"
+                    >
+                      <option value="groq" className="bg-[var(--bg-card)]">Groq (Llama 3.3)</option>
+                      <option value="deepseek" className="bg-[var(--bg-card)]">DeepSeek V3</option>
+                      <option value="gemini" className="bg-[var(--bg-card)]">Gemini 2.0 Flash</option>
+                    </select>
                   </div>
                 </div>
-                <button 
-                  onClick={handleConvertQuotes}
-                  title='Converti " " in « »'
-                  className="p-3 text-[var(--accent)]/40 hover:text-[var(--accent)] hover:bg-[var(--accent)]/10 rounded-2xl transition-all flex items-center gap-2 group border border-transparent hover:border-[var(--accent)]/20"
-                >
-                  <Quote className="w-4 h-4" />
-                  <span className="text-[9px] font-bold uppercase tracking-tight hidden group-hover:block transition-all">Fix « »</span>
-                </button>
               </div>
             </div>
 
             {parsedSuggestions.length > 0 && suggestionIndex >= 0 && parsedSuggestions[suggestionIndex] ? (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {/* Header Suggerimenti */}
+              <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.3em]">Revisione In-Text</span>
-                    <span className="text-[9px] text-[var(--text-muted)] font-bold uppercase mt-1">
-                      {suggestionIndex + 1} di {parsedSuggestions.length} suggestioni
-                    </span>
-                  </div>
+                  <span className="text-[9px] text-[var(--text-muted)] font-bold uppercase">
+                    {suggestionIndex + 1} di {parsedSuggestions.length} suggestioni
+                  </span>
                   <div className="flex items-center gap-2">
                     <button 
                       onClick={() => setSuggestionIndex(prev => Math.max(0, prev - 1))}
                       disabled={suggestionIndex <= 0}
-                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 disabled:opacity-30 transition-all"
+                      className="p-2 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-xl disabled:opacity-30"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button 
                       onClick={() => setSuggestionIndex(prev => Math.min(parsedSuggestions.length - 1, prev + 1))}
                       disabled={suggestionIndex >= parsedSuggestions.length - 1}
-                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 disabled:opacity-30 transition-all"
+                      className="p-2 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-xl disabled:opacity-30"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
 
-                {/* Card Professionale */}
-                <div 
-                  className="group/card relative bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-3xl p-6 space-y-6 hover:border-[var(--accent)]/40 transition-all duration-500 shadow-xl overflow-hidden cursor-pointer"
-                  onClick={() => {
-                    const sug = parsedSuggestions[suggestionIndex];
-                    if (sug) {
-                      setHighlightedText(sug.original);
-                      requestScrollToHighlight();
-                    }
-                  }}
-                >
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-3xl p-6 space-y-6 shadow-xl">
                   <div className="flex items-center justify-between">
-                    <div className={cn(
-                      "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border font-sans",
-                      parsedSuggestions[suggestionIndex]?.type === 'coerenza' ? "bg-amber-500/10 text-amber-400 border-amber-500/20" :
-                      parsedSuggestions[suggestionIndex]?.type === 'taglio' ? "bg-rose-500/10 text-rose-400 border-rose-500/20" :
-                      parsedSuggestions[suggestionIndex]?.type === 'grammatica' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                      "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                    )}>
+                    <div className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border border-[var(--accent)]/20 bg-[var(--accent-soft)] text-[var(--accent)]">
                       {parsedSuggestions[suggestionIndex]?.category}
                     </div>
-                    <div className="flex gap-1">
-                      {[1, 2, 3].map(i => (
-                        <div key={i} className={cn(
-                          "w-1.5 h-1.5 rounded-full",
-                          i <= (parsedSuggestions[suggestionIndex]?.severity === 'high' ? 3 : parsedSuggestions[suggestionIndex]?.severity === 'medium' ? 2 : 1)
-                            ? "bg-[var(--accent)] shadow-[0_0_5px_var(--accent)]"
-                            : "bg-[var(--bg-deep)]"
-                        )} />
-                      ))}
-                    </div>
                   </div>
 
-                  <div className="space-y-3 bg-[var(--accent-soft)]/50 p-4 rounded-2xl border border-[var(--accent)]/20 shadow-sm">
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-[var(--accent)]/20 rounded-xl">
-                        <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
-                      </div>
-                      <p className="text-[13px] text-[var(--text-bright)] leading-relaxed font-sans font-bold">
-                        {parsedSuggestions[suggestionIndex]?.reason}
-                      </p>
-                    </div>
-                  </div>
+                  <p className="text-[13px] text-[var(--text-bright)] leading-relaxed font-sans font-bold">
+                    {parsedSuggestions[suggestionIndex]?.reason}
+                  </p>
 
-                  <div className="flex flex-col space-y-6 pt-2">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 px-1">
-                        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-rose-500/60">Attuale</span>
-                        <div className="h-[1px] flex-1 bg-rose-500/10" />
-                      </div>
-                      <div className="relative group/original">
-                        <div className="absolute -left-3 top-0 bottom-0 w-1 bg-rose-500/20 rounded-full" />
-                        <div className="text-[13px] text-[var(--text-muted)] line-through decoration-rose-500/40 opacity-90 leading-relaxed font-serif px-2 italic">
-                          {diffWords(parsedSuggestions[suggestionIndex]?.original || '', parsedSuggestions[suggestionIndex]?.suggestion || '').map((part, i) => (
-                            <span key={i} className={part.removed ? "text-rose-500/80 bg-rose-500/5" : ""}>
-                              {part.value}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                  <div className="space-y-4">
+                    <div className="text-[13px] text-[var(--text-muted)] line-through decoration-rose-500/40 opacity-70 leading-relaxed font-serif italic">
+                      {parsedSuggestions[suggestionIndex]?.original}
                     </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 px-1">
-                        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-emerald-500/60">Suggerimento</span>
-                        <div className="h-[1px] flex-1 bg-emerald-500/10" />
-                      </div>
-                      <div className="relative group/proposal">
-                        <div className="absolute -left-3 top-0 bottom-0 w-1 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.3)]" />
-                        <div className="text-[15px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--bg-deep)]/40 p-5 rounded-2xl border border-emerald-500/10 shadow-sm font-serif group-hover/proposal:border-emerald-500/30 transition-all">
-                          {diffWords(parsedSuggestions[suggestionIndex]?.original || '', parsedSuggestions[suggestionIndex]?.suggestion || '').map((part, i) => (
-                            <span key={i} className={part.added ? "text-emerald-500 dark:text-emerald-400 font-bold decoration-emerald-500/20 underline underline-offset-4 decoration-2" : ""}>
-                              {part.value}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                    <div className="text-[15px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--bg-deep)]/40 p-4 rounded-2xl border border-emerald-500/10 font-serif">
+                      {parsedSuggestions[suggestionIndex]?.suggestion}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 pt-4 border-t border-[var(--border-subtle)]/50">
                     <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const sug = parsedSuggestions[suggestionIndex];
-                        if (sug) applySuggestion(sug);
-                      }}
-                      className="flex-1 py-4 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-glow-mint active:scale-95 flex items-center justify-center gap-2"
+                      onClick={() => applySuggestion(parsedSuggestions[suggestionIndex])}
+                      className="flex-1 py-4 bg-[var(--accent)] text-[var(--bg-deep)] rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-glow-mint"
                     >
-                      <CheckCircle className="w-3.5 h-3.5" />
                       Applica
                     </button>
                     <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const sug = parsedSuggestions[suggestionIndex];
-                        if (sug && activeSceneId) {
-                          addIgnoredSuggestion(activeSceneId, sug.original);
-                        }
-                      }}
-                      className="p-4 text-[var(--text-muted)] hover:text-rose-400 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl hover:border-rose-400/30 transition-all active:scale-90"
-                      title="Scarta"
+                      onClick={() => activeSceneId && addIgnoredSuggestion(activeSceneId, parsedSuggestions[suggestionIndex].original)}
+                      className="p-4 text-[var(--text-muted)] hover:text-rose-400 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  {/* Progress Bar */}
-                  <div className="h-1 bg-[var(--bg-deep)] rounded-full overflow-hidden mx-4">
+                  <div className="h-1 bg-[var(--bg-deep)] rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-[var(--accent)] transition-all duration-500" 
                       style={{ width: `${((suggestionIndex + 1) / parsedSuggestions.length) * 100}%` }}
                     />
                   </div>
                 </div>
-            ) : isAnalyzing ? (
-              <div className="flex flex-col items-center justify-center h-48 space-y-4 animate-pulse">
-                <div className="p-4 bg-[var(--accent-soft)] rounded-full">
-                  <RefreshCw className="w-6 h-6 animate-spin text-[var(--accent)]" />
-                </div>
-                <div className="text-center space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-bright)]">Analisi in corso</p>
-                  <p className="text-[9px] text-[var(--text-muted)] font-medium">Il Companion sta esaminando il testo...</p>
-                </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-36 text-[var(--text-muted)] space-y-2">
-                {analysis?.startsWith('❌') ? (
-                  <AlertTriangle className="w-8 h-8 text-rose-500 animate-pulse" />
-                ) : (analysis?.trim().startsWith('[') || analysis?.trim().startsWith('{')) && totalSuggestionsCount > 0 ? (
-                  <CheckCircle className="w-8 h-8 text-emerald-500/50" />
-                ) : (
-                  <AlertTriangle className="w-8 h-8 opacity-20" />
-                )}
-                <p className={cn("text-xs text-center px-4", (analysis?.startsWith('❌') || (analysis?.trim().startsWith('[') && totalSuggestionsCount === 0)) ? "text-rose-400 font-bold" : "")}>
-                  {analysis?.startsWith('❌') 
-                    ? (analysis.includes('[') ? "Errore nell'analisi. Pulisci e riprova." : analysis.replace('❌', '').trim())
-                    : (analysis?.trim().startsWith('[') || analysis?.trim().startsWith('{'))
-                      ? (totalSuggestionsCount > 0 
-                          ? "Analisi completata: tutte le suggestioni sono state gestite." 
-                          : "Errore nell'analisi del testo. Riprova.")
-                      : (analysis ? "Analisi completata: nessun suggerimento trovato." : "Seleziona una scena e premi Analizza per ricevere suggerimenti.")
-                  }
+              <div className="flex flex-col items-center justify-center h-36 text-[var(--text-muted)] opacity-50">
+                <p className="text-[10px] font-bold uppercase tracking-widest">
+                  {isAnalyzing ? "Elaborazione in corso..." : "Nessun suggerimento attivo"}
                 </p>
               </div>
             )}
           </div>
         )}
 
+        {/* Grammar Tab */}
         {activeTab === 'grammar' && (
           <div className="space-y-6">
-            <div className="flex flex-col min-w-0 mb-2">
-                <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] truncate">Correzione Tecnica</span>
-            </div>
-
+            <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em]">Correzione Tecnica</span>
             <button 
               onClick={runGrammarAnalysis}
               disabled={isAnalyzing || !content || content.length < 5} 
-              className={cn(
-                "w-full py-5 rounded-[28px] border transition-all flex items-center justify-center gap-3 group px-8 shadow-xl",
-                activeSelection 
-                  ? "bg-[var(--accent)] text-[var(--bg-deep)] border-transparent" 
-                  : "bg-[var(--bg-card)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent)]/30"
-              )}
+              className="w-full py-4 bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent)]/30 rounded-[20px] text-[10px] font-black uppercase tracking-widest"
             >
-              <PenLine className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-black uppercase tracking-widest">{activeSelection ? 'Correggi Selezione' : 'Trova Errori Tecnici'}</span>
+              Correggi Errori
             </button>
-            {parsedSuggestions.length > 0 ? (
-               <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] p-6 rounded-[32px] space-y-6 shadow-premium animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.3em]">Navigazione Errori</span>
-                    <span className="text-[9px] text-[var(--text-muted)] font-bold uppercase mt-1">
-                      {suggestionIndex + 1} di {parsedSuggestions.length} correzioni
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => setSuggestionIndex(prev => Math.max(0, prev - 1))}
-                      disabled={suggestionIndex <= 0}
-                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 disabled:opacity-30 transition-all"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => setSuggestionIndex(prev => Math.min(parsedSuggestions.length - 1, prev + 1))}
-                      disabled={suggestionIndex >= parsedSuggestions.length - 1}
-                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 disabled:opacity-30 transition-all"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
 
-                <div className="flex flex-col space-y-5">
-                  <div className="space-y-2">
-                    <span className="text-[7px] font-black uppercase tracking-[0.2em] text-rose-500/50 px-1">Errore rilevato</span>
-                    <div className="p-4 bg-[var(--bg-deep)]/20 rounded-xl border border-rose-500/10 italic text-[11px] text-[var(--text-muted)] line-through decoration-rose-500/20 leading-relaxed">
+            {parsedSuggestions.length > 0 ? (
+              <div className="space-y-6">
+                <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] p-6 rounded-[32px] space-y-6 shadow-premium">
+                  <div className="flex flex-col space-y-4">
+                    <div className="p-4 bg-[var(--bg-deep)]/20 rounded-xl border border-rose-500/10 italic text-[11px] text-[var(--text-muted)] line-through">
                        "{parsedSuggestions[suggestionIndex]?.original}"
                     </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <span className="text-[7px] font-black uppercase tracking-[0.2em] text-emerald-500/50 px-1">Correzione proposta</span>
-                    <div className="p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/20 text-[13px] text-[var(--text-bright)] font-medium leading-relaxed shadow-sm">
+                    <div className="p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/20 text-[13px] text-[var(--text-bright)] font-medium">
                        {parsedSuggestions[suggestionIndex]?.suggestion}
                     </div>
                   </div>
-                </div>
 
-                  <div className="flex items-center gap-3 pt-2">
+                  <div className="flex items-center gap-3">
                     <button 
                       onClick={() => applySuggestion(parsedSuggestions[suggestionIndex])}
-                      className="flex-1 py-3 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95"
+                      className="flex-1 py-3 bg-[var(--accent)] text-[var(--bg-deep)] rounded-xl text-[10px] font-black uppercase"
                     >
                       Correggi
                     </button>
                     <button 
-                      onClick={() => {
-                        if (activeSceneId) {
-                          addIgnoredSuggestion(activeSceneId, parsedSuggestions[suggestionIndex].original);
-                          // L'indice si aggiusterà da solo grazie allo useEffect sopra che filtra i suggerimenti
-                        }
-                      }}
-                      className="p-3 text-[var(--text-muted)] hover:text-red-400 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-xl hover:border-red-400/30 transition-all"
-                      title="Ignora"
+                      onClick={() => activeSceneId && addIgnoredSuggestion(activeSceneId, parsedSuggestions[suggestionIndex].original)}
+                      className="p-3 bg-[var(--bg-deep)] border border-[var(--border-subtle)] rounded-xl"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2">
-                    <div className="h-1 flex-1 bg-[var(--bg-deep)] rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-[var(--accent)] transition-all duration-500" 
-                        style={{ width: `${((suggestionIndex + 1) / parsedSuggestions.length) * 100}%` }}
-                      />
-                    </div>
+                  <div className="h-1 bg-[var(--bg-deep)] rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-[var(--accent)] transition-all duration-500" 
+                      style={{ width: `${((suggestionIndex + 1) / parsedSuggestions.length) * 100}%` }}
+                    />
                   </div>
                 </div>
-              ) : (
-              !isAnalyzing && <div className="flex flex-col items-center justify-center h-48 text-[var(--text-muted)] space-y-4 bg-[var(--accent-soft)] rounded-[32px] border border-dashed border-[var(--border-subtle)]"><CheckCircle className="w-10 h-10 opacity-20" /><p className="text-[10px] font-bold border-t border-[var(--border-subtle)] pt-4 uppercase tracking-[0.2em]">Nessuna anomalia tecnica rilevata</p></div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-36 text-[var(--text-muted)] opacity-50">
+                <p className="text-[10px] font-bold uppercase tracking-widest">
+                  {isAnalyzing ? "Analisi in corso..." : "Nessun errore tecnico trovato"}
+                </p>
+              </div>
             )}
           </div>
         )}
 
+        {/* Other Tabs Simplified for Safety */}
         {activeTab === 'braindump' && (
           <div className="space-y-6">
-            <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-4">Sviluppo Intuizioni</span>
-                <div className="rounded-[24px] border border-[var(--border-subtle)] overflow-hidden bg-[var(--bg-card)] focus-within:border-[var(--accent)]/30 focus-within:bg-[var(--bg-surface)] transition-all shadow-inner">
-                  <textarea 
-                      className="w-full h-48 bg-transparent p-6 text-xs text-[var(--text-primary)] focus:outline-none placeholder:text-[var(--text-muted)] transition-all resize-none" 
-                      placeholder="Incolla qui pensieri sparsi, frammenti di dialogo o concetti vaghi..." 
-                      value={braindumpInput} 
-                      onChange={(e) => setBraindumpInput(e.target.value)} 
-                  />
-                </div>
-            </div>
-            <button 
-                onClick={runBraindump} 
-                disabled={isAnalyzing || !braindumpInput.trim()} 
-                className="w-full py-4 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--bg-deep)] disabled:opacity-50 rounded-[20px] text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-2xl shadow-[var(--accent-soft)] active:scale-95"
-            >
-                <Zap className="w-4 h-4" />
-                Espandi Concetti
+            <textarea 
+              className="w-full h-48 bg-[var(--bg-card)] p-6 rounded-[24px] border border-[var(--border-subtle)] text-xs focus:outline-none resize-none" 
+              placeholder="Incolla qui le tue idee..." 
+              value={braindumpInput} 
+              onChange={(e) => setBraindumpInput(e.target.value)} 
+            />
+            <button onClick={runBraindump} disabled={isAnalyzing || !braindumpInput.trim()} className="w-full py-4 bg-[var(--accent)] text-[var(--bg-deep)] rounded-[20px] text-[10px] font-black uppercase tracking-widest">
+              Espandi Concetti
             </button>
             {analysis && (
-                <div className="bg-[var(--accent-soft)] p-6 rounded-[32px] border border-[var(--accent)]/10 animate-in slide-in-from-bottom-2 max-h-[40vh] overflow-y-auto custom-scrollbar shadow-inner">
-                    <StructuredOutput text={analysis} isAnalyzing={isAnalyzing} />
-                </div>
+              <div className="bg-[var(--accent-soft)] p-6 rounded-[32px] border border-[var(--accent)]/10 max-h-[40vh] overflow-y-auto">
+                <StructuredOutput text={analysis} isAnalyzing={isAnalyzing} />
+              </div>
             )}
           </div>
         )}
 
         {activeTab === 'transformer' && (
           <div className="space-y-6">
-            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] block">Modulazione Stilistica</span>
             <div className="grid grid-cols-2 gap-4">
               {Object.keys(stylePrompts).map(key => (
-                <button 
-                    key={key} 
-                    onClick={() => runStyleTransform(key)} 
-                    disabled={isAnalyzing || plainText.length < 10} 
-                    className="bg-[var(--bg-card)] hover:bg-[var(--accent-soft)] disabled:opacity-50 p-5 rounded-[24px] text-left border border-[var(--border-subtle)] hover:border-[var(--accent)]/30 transition-all group relative overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 w-12 h-12 bg-[var(--accent-soft)] blur-xl group-hover:bg-[var(--accent)]/10 transition-all" />
-                  <div className="text-[10px] font-black text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors uppercase tracking-widest relative z-10">{key}</div>
+                <button key={key} onClick={() => runStyleTransform(key)} disabled={isAnalyzing || plainText.length < 10} className="bg-[var(--bg-card)] hover:bg-[var(--accent-soft)] p-5 rounded-[24px] border border-[var(--border-subtle)] text-[10px] font-black uppercase text-center">
+                  {key}
                 </button>
               ))}
             </div>
             {analysis && (
-                <div className="bg-[var(--accent-soft)] p-6 rounded-[32px] border border-[var(--accent)]/10 animate-in fade-in max-h-[40vh] overflow-y-auto custom-scrollbar shadow-inner">
-                    <StructuredOutput text={analysis} isAnalyzing={isAnalyzing} />
-                </div>
+              <div className="bg-[var(--accent-soft)] p-6 rounded-[32px] border border-[var(--accent)]/10 max-h-[40vh] overflow-y-auto">
+                <StructuredOutput text={analysis} isAnalyzing={isAnalyzing} />
+              </div>
             )}
           </div>
         )}
 
-
         {activeTab === 'lexicon' && (
           <div className="space-y-6">
-            <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-4">Indice Lessicale</span>
-                <div className="relative group">
-                    <Languages className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] group-focus-within:text-[var(--accent)] transition-colors" />
-                    <input 
-                        className="w-full bg-[var(--bg-surface)]/60 border border-[var(--border-subtle)] rounded-[20px] py-4 pl-14 pr-6 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]/30 focus:bg-[var(--bg-surface)] transition-all shadow-inner placeholder:text-[var(--text-muted)]" 
-                        placeholder="Concetto da analizzare..." 
-                        value={lexiconInput} 
-                        onChange={(e) => setLexiconInput(e.target.value)} 
-                    />
-                </div>
-            </div>
+            <input 
+              className="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[20px] py-4 px-6 text-sm focus:outline-none" 
+              placeholder="Cerca sinonimi o metafore..." 
+              value={lexiconInput} 
+              onChange={(e) => setLexiconInput(e.target.value)} 
+            />
             <div className="grid grid-cols-2 gap-4">
-              <button 
-                onClick={() => runLexiconTool('synonyms')} 
-                disabled={isAnalyzing || !lexiconInput.trim()} 
-                className="py-4 bg-[var(--bg-surface)]/40 hover:bg-[var(--accent-soft)] disabled:opacity-50 rounded-[20px] text-[10px] font-bold uppercase tracking-widest transition-all border border-[var(--border-subtle)] hover:border-[var(--accent)]/20 text-[var(--text-secondary)] hover:text-[var(--accent)]"
-              >
+              <button onClick={() => runLexiconTool('synonyms')} disabled={isAnalyzing || !lexiconInput.trim()} className="py-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[20px] text-[10px] font-bold uppercase">
                 Sinonimi
               </button>
-              <button 
-                onClick={() => runLexiconTool('metaphors')} 
-                disabled={isAnalyzing || !lexiconInput.trim()} 
-                className="py-4 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50 rounded-[20px] text-[10px] font-bold uppercase tracking-widest text-[var(--bg-deep)] transition-all shadow-2xl active:scale-95"
-              >
+              <button onClick={() => runLexiconTool('metaphors')} disabled={isAnalyzing || !lexiconInput.trim()} className="py-4 bg-[var(--accent)] text-[var(--bg-deep)] rounded-[20px] text-[10px] font-bold uppercase">
                 Metafore
               </button>
             </div>
             {analysis && (
-                <div className="bg-[var(--accent-soft)] p-6 rounded-[32px] border border-[var(--accent)]/10 animate-in slide-in-from-bottom-2 max-h-[40vh] overflow-y-auto custom-scrollbar shadow-inner">
-                    <StructuredOutput text={analysis} isAnalyzing={isAnalyzing} />
-                </div>
+              <div className="bg-[var(--accent-soft)] p-6 rounded-[32px] border border-[var(--accent)]/10 max-h-[40vh] overflow-y-auto">
+                <StructuredOutput text={analysis} isAnalyzing={isAnalyzing} />
+              </div>
             )}
           </div>
         )}
       </div>
 
+      {/* Footer Info */}
       <div className="p-8 border-t border-[var(--border-subtle)] flex items-center justify-between bg-white/[0.01]">
         <div className="flex items-center space-x-3 text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-[0.2em]">
-          <div className={cn("w-2 h-2 rounded-full", isAnalyzing ? "bg-[var(--accent)] animate-pulse shadow-glow-mint" : "opacity-20 bg-[var(--accent)]")}></div>
+          <div className={cn("w-2 h-2 rounded-full", isAnalyzing ? "bg-[var(--accent)] animate-pulse" : "opacity-20 bg-[var(--accent)]")}></div>
           <span>Architettura Sincronizzata</span>
         </div>
       </div>
-
     </div>
   );
 });
