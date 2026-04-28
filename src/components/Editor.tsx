@@ -27,11 +27,10 @@ import {
 } from 'lucide-react';
 
 import { useStore } from '../store/useStore';
-import { SuggestionHighlight } from '../lib/tiptap/SuggestionHighlight';
-import { findMatchesInDoc } from '../lib/tiptap/matchUtils';
-import { cn } from '../lib/utils';
-import { InTextSuggestionCard } from './InTextSuggestionCard';
+import { InlineSuggestions } from '../lib/tiptap/InlineSuggestions';
+import { InlineSuggestionCard } from './InlineSuggestionCard';
 import { useToast } from './Toast';
+import { cn } from '../lib/utils';
 import type { AISuggestion } from '../lib/aiParsing';
 
 // Custom Paragraph extension to support Drop Caps
@@ -107,13 +106,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
       Highlight.configure({ multicolor: true }),
       CharacterCount,
       CustomShortcuts,
-      SuggestionHighlight.configure({ 
-        onSuggestionClick: (index) => {
-          const store = useStore.getState();
-          store.setSuggestionIndex(index);
-          store.setSidekickOpen(true);
-        }
-      }),
+      InlineSuggestions,
       BubbleMenuExtension,
     ],
     content: initialContent,
@@ -222,7 +215,35 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
     return () => window.removeEventListener('muse-apply-suggestion', handleApply);
   }, [editor, activeSceneId]);
 
-  // Handle scroll requests
+  // Handle clicks on inline suggestions
+  React.useEffect(() => {
+    if (!editor) return;
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const highlight = target.closest('.inline-suggestion-highlight');
+      if (highlight) {
+        const id = parseInt(highlight.getAttribute('data-suggestion-id') || '-1');
+        const suggestions = useStore.getState().parsedSuggestions;
+        if (id >= 0 && suggestions[id]) {
+          const rect = highlight.getBoundingClientRect();
+          setActiveSuggestionForPopup(suggestions[id]);
+          setPopupPosition({ 
+            top: rect.top + window.scrollY, 
+            left: rect.left + rect.width / 2 + window.scrollX 
+          });
+          useStore.getState().setSuggestionIndex(id);
+        }
+      } else if (!target.closest('.inline-suggestion-card')) {
+        setActiveSuggestionForPopup(null);
+      }
+    };
+
+    window.addEventListener('click', handleClick);
+    return () => window.removeEventListener('click', handleClick);
+  }, [editor]);
+
+  // Handle scroll requests (keep from old version)
   React.useEffect(() => {
     if (editor && highlightedText && scrollRequestToken > 0) {
       setTimeout(() => {
@@ -490,34 +511,27 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
       <div className="flex-1 px-8 py-12 bg-[var(--bg-deep)] rounded-b-[inherit]">
         <div className="w-full relative">
            {activeSuggestionForPopup && (
-             <div 
-               className="absolute z-50 animate-in fade-in zoom-in-95 duration-200"
-               style={{ 
-                 top: `${popupPosition.top}px`, 
-                 left: `${popupPosition.left}px`,
-                 transform: 'translateY(-100%)'
+             <InlineSuggestionCard 
+               suggestion={activeSuggestionForPopup}
+               onApply={() => {
+                 window.dispatchEvent(new CustomEvent('muse-apply-suggestion', { 
+                   detail: { 
+                     original: activeSuggestionForPopup.original, 
+                     suggestion: activeSuggestionForPopup.suggestion, 
+                     sceneId: activeSceneId 
+                   } 
+                 }));
+                 setActiveSuggestionForPopup(null);
                }}
-             >
-               <InTextSuggestionCard 
-                 suggestion={activeSuggestionForPopup}
-                 onApply={() => {
-                   window.dispatchEvent(new CustomEvent('muse-apply-suggestion', { 
-                     detail: { 
-                       original: activeSuggestionForPopup.original, 
-                       suggestion: activeSuggestionForPopup.suggestion, 
-                       sceneId: activeSceneId 
-                     } 
-                   }));
-                   setActiveSuggestionForPopup(null);
-                 }}
-                 onIgnore={() => {
-                   if (activeSceneId) {
-                     useStore.getState().addIgnoredSuggestion(activeSceneId, activeSuggestionForPopup.original);
-                   }
-                   setActiveSuggestionForPopup(null);
-                 }}
-               />
-             </div>
+               onIgnore={() => {
+                 if (activeSceneId) {
+                   useStore.getState().addIgnoredSuggestion(activeSceneId, activeSuggestionForPopup.original);
+                 }
+                 setActiveSuggestionForPopup(null);
+               }}
+               onClose={() => setActiveSuggestionForPopup(null)}
+               position={popupPosition}
+             />
            )}
            <EditorContent editor={editor} />
         </div>

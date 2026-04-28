@@ -231,37 +231,58 @@
     border-color: transparent !important;
 }
 
-/* Suggestion Highlighting - Subtle & Contextual */
-.suggestion-highlight-pulse {
-  border-bottom: 2px solid var(--accent);
-  border-radius: 2px;
-  cursor: pointer;
+/* Inline Suggestion Highlighting - New Proactive System */
+.inline-suggestion-highlight {
+  border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
-  position: relative;
-  padding: 1px 0;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.suggestion-type-coerenza {
-  background-color: rgba(245, 158, 11, 0.25);
-  border-bottom-color: #f59e0b;
+.inline-suggestion-highlight.stile {
+  border-bottom-color: rgba(99, 102, 241, 0.4);
+  background-color: rgba(99, 102, 241, 0.05);
 }
-.suggestion-type-taglio {
-  background-color: rgba(244, 63, 94, 0.25);
-  border-bottom-color: #f43f5e;
+.inline-suggestion-highlight.grammatica {
+  border-bottom-color: rgba(16, 185, 129, 0.4);
+  background-color: rgba(16, 185, 129, 0.05);
 }
-.suggestion-type-stile {
-  background-color: rgba(99, 102, 241, 0.25);
-  border-bottom-color: #6366f1;
+.inline-suggestion-highlight.taglio {
+  border-bottom-color: rgba(244, 63, 94, 0.4);
+  background-color: rgba(244, 63, 94, 0.05);
 }
-.suggestion-type-grammatica {
-  background-color: rgba(16, 185, 129, 0.25);
-  border-bottom-color: #10b981;
+.inline-suggestion-highlight.coerenza {
+  border-bottom-color: rgba(245, 158, 11, 0.4);
+  background-color: rgba(245, 158, 11, 0.05);
 }
 
-.suggestion-highlight-pulse:hover {
-  background-color: rgba(99, 102, 241, 0.15);
+.inline-suggestion-highlight:hover,
+.inline-suggestion-highlight.active {
+  background-color: rgba(129, 140, 248, 0.15);
   border-bottom-width: 3px;
   box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.1);
+}
+
+.inline-suggestion-gutter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px transparent;
+}
+
+.inline-suggestion-gutter-dot.stile { background-color: #6366f1; box-shadow: 0 0 8px rgba(99, 102, 241, 0.4); }
+.inline-suggestion-gutter-dot.grammatica { background-color: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+.inline-suggestion-gutter-dot.taglio { background-color: #f43f5e; box-shadow: 0 0 8px rgba(244, 63, 94, 0.4); }
+.inline-suggestion-gutter-dot.coerenza { background-color: #f59e0b; box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+
+.inline-suggestion-gutter-dot:hover {
+  transform: translateY(-50%) scale(1.4);
 }
 
 
