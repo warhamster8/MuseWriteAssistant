@@ -31,6 +31,7 @@ import { SuggestionHighlight } from '../lib/tiptap/SuggestionHighlight';
 import { findMatchesInDoc } from '../lib/tiptap/matchUtils';
 import { cn } from '../lib/utils';
 import { InTextSuggestionCard } from './InTextSuggestionCard';
+import { useToast } from '../hooks/useToast';
 import type { AISuggestion } from '../lib/aiParsing';
 
 // Custom Paragraph extension to support Drop Caps
@@ -87,6 +88,7 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
   const setActiveSelection = useStore(s => s.setActiveSelection);
   const theme = useStore(s => s.theme);
   const [showDropCapMenu, setShowDropCapMenu] = React.useState(false);
+  const { addToast } = useToast();
   const [activeSuggestionForPopup, setActiveSuggestionForPopup] = React.useState<AISuggestion | null>(null);
   const [popupPosition, setPopupPosition] = React.useState({ top: 0, left: 0 });
   const dropCapRef = React.useRef<HTMLDivElement>(null);
@@ -211,6 +213,11 @@ export const Editor: React.FC<{ initialContent: string; onChange: (content: stri
           .insertContentAt({ from: match.from, to: match.to }, suggestion)
           .run();
       } else {
+        addToast({
+          title: "Impossibile applicare",
+          description: "Non ho trovato il testo originale nel documento. Potrebbe essere stato modificato.",
+          type: "error"
+        });
         console.warn('Could not find match for suggestion application:', original);
       }
     };

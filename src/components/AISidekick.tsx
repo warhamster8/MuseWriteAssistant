@@ -781,26 +781,38 @@ Rispondi in italiano. Sii concreto e originale.`;
                     </div>
                   </div>
 
-                  <div className="space-y-4 pt-2">
-                    <div className="relative">
-                      <div className="absolute -left-3 top-0 bottom-0 w-1 bg-rose-500/50 rounded-full" />
-                      <div className="text-[13px] text-[var(--text-muted)] line-through decoration-rose-500/50 opacity-90 leading-relaxed font-serif p-1">
-                        {diffWords(parsedSuggestions[suggestionIndex]?.original || '', parsedSuggestions[suggestionIndex]?.suggestion || '').map((part, i) => (
-                          <span key={i} className={part.removed ? "bg-rose-500/20 text-rose-500 dark:text-rose-400 px-0.5 rounded" : ""}>
-                            {part.value}
-                          </span>
-                        ))}
+                  <div className="flex flex-col space-y-6 pt-2">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 px-1">
+                        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-rose-500/60">Attuale</span>
+                        <div className="h-[1px] flex-1 bg-rose-500/10" />
+                      </div>
+                      <div className="relative group/original">
+                        <div className="absolute -left-3 top-0 bottom-0 w-1 bg-rose-500/20 rounded-full" />
+                        <div className="text-[13px] text-[var(--text-muted)] line-through decoration-rose-500/40 opacity-90 leading-relaxed font-serif px-2 italic">
+                          {diffWords(parsedSuggestions[suggestionIndex]?.original || '', parsedSuggestions[suggestionIndex]?.suggestion || '').map((part, i) => (
+                            <span key={i} className={part.removed ? "text-rose-500/80 bg-rose-500/5" : ""}>
+                              {part.value}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="relative">
-                      <div className="absolute -left-3 top-0 bottom-0 w-1 bg-emerald-500 rounded-full" />
-                      <div className="text-[15px] text-[var(--text-bright)] font-medium leading-relaxed bg-emerald-500/[0.07] p-5 rounded-2xl border border-emerald-500/20 shadow-sm font-serif">
-                        {diffWords(parsedSuggestions[suggestionIndex]?.original || '', parsedSuggestions[suggestionIndex]?.suggestion || '').map((part, i) => (
-                          <span key={i} className={part.added ? "bg-emerald-500/30 text-emerald-600 dark:text-emerald-300 px-0.5 rounded" : ""}>
-                            {part.value}
-                          </span>
-                        ))}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 px-1">
+                        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-emerald-500/60">Suggerimento</span>
+                        <div className="h-[1px] flex-1 bg-emerald-500/10" />
+                      </div>
+                      <div className="relative group/proposal">
+                        <div className="absolute -left-3 top-0 bottom-0 w-1 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.3)]" />
+                        <div className="text-[15px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--bg-deep)]/40 p-5 rounded-2xl border border-emerald-500/10 shadow-sm font-serif group-hover/proposal:border-emerald-500/30 transition-all">
+                          {diffWords(parsedSuggestions[suggestionIndex]?.original || '', parsedSuggestions[suggestionIndex]?.suggestion || '').map((part, i) => (
+                            <span key={i} className={part.added ? "text-emerald-500 dark:text-emerald-400 font-bold decoration-emerald-500/20 underline underline-offset-4 decoration-2" : ""}>
+                              {part.value}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -921,18 +933,21 @@ Rispondi in italiano. Sii concreto e originale.`;
                   </div>
                 </div>
 
-                {/* Anteprima Errore */}
-                <div className="space-y-4">
-                  <div className="p-4 bg-[var(--bg-deep)]/40 rounded-2xl border border-[var(--border-subtle)] space-y-3">
-                    <div className="space-y-2">
-                       <div className="text-[10px] text-[var(--text-muted)] line-through decoration-red-400/30 opacity-60 italic leading-relaxed whitespace-pre-line">
-                         "{parsedSuggestions[suggestionIndex]?.original}"
-                       </div>
-                       <div className="text-[11px] text-[var(--text-bright)] font-medium leading-relaxed bg-[var(--accent)]/5 p-3 rounded-xl border border-[var(--accent)]/10 whitespace-pre-line">
-                         {parsedSuggestions[suggestionIndex]?.suggestion}
-                       </div>
+                <div className="flex flex-col space-y-5">
+                  <div className="space-y-2">
+                    <span className="text-[7px] font-black uppercase tracking-[0.2em] text-rose-500/50 px-1">Errore rilevato</span>
+                    <div className="p-4 bg-[var(--bg-deep)]/20 rounded-xl border border-rose-500/10 italic text-[11px] text-[var(--text-muted)] line-through decoration-rose-500/20 leading-relaxed">
+                       "{parsedSuggestions[suggestionIndex]?.original}"
                     </div>
                   </div>
+
+                  <div className="space-y-2">
+                    <span className="text-[7px] font-black uppercase tracking-[0.2em] text-emerald-500/50 px-1">Correzione proposta</span>
+                    <div className="p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/20 text-[13px] text-[var(--text-bright)] font-medium leading-relaxed shadow-sm">
+                       {parsedSuggestions[suggestionIndex]?.suggestion}
+                    </div>
+                  </div>
+                </div>
 
                   <div className="flex items-center gap-3 pt-2">
                     <button 

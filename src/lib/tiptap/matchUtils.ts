@@ -15,8 +15,8 @@ const normalizeChar = (c: string): string => {
 /**
  * Finds matches of a query string within a document text using a robust index-mapping strategy
  */
-export const findMatchInText = (fullText: string, query: string): { start: number; end: number } | null => {
-  if (!query || query.trim().length < 1) return null;
+export const findMatchInText = (fullText: string, query: string): { start: number; end: number }[] => {
+  if (!query || query.trim().length < 1) return [];
 
   // 1. Create a normalized version of the text and a map back to original indices
   const normalizedChars: string[] = [];
@@ -25,52 +25,52 @@ export const findMatchInText = (fullText: string, query: string): { start: numbe
   for (let i = 0; i < fullText.length; i++) {
     const char = fullText[i];
     const norm = normalizeChar(char);
-    // We keep spaces and word characters, collapsing multiple spaces in the search phase
     normalizedChars.push(norm);
     indexMap.push(i);
   }
 
   const normalizedText = normalizedChars.join('');
-  // Preserviamo gli spazi della query (tranne il collasso di spazi multipli) senza trim() finale
   const normalizedQuery = query.split('').map(normalizeChar).join('').replace(/\s+/g, ' ');
   
-  if (!normalizedQuery.trim()) return null;
+  if (!normalizedQuery.trim()) return [];
 
-  // 2. Simple fuzzy search: ignore whitespace differences in the query
+  // 2. Build regex
+  // We allow optional punctuation and whitespace between words to handle AI cleaning
   const escapedQuery = normalizedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const words = escapedQuery.split(/\s+/).filter(w => w.length > 0);
   
-  // Robustezza: permettiamo \s+ dove c'è uno spazio nella query, 
-  // ma evitiamo di mangiare spazi dopo la punteggiatura se non presenti nella query originale.
-  const regexStr = escapedQuery
-    .split(/\s+/)
-    .join('\\s+');
-  
-  try {
-    const regex = new RegExp(regexStr, 'gi');
-    const match = regex.exec(normalizedText);
-    
-    if (match) {
-      const startIdx = match.index;
-      const endIdx = startIdx + match[0].length;
-      
-      return {
-        start: indexMap[startIdx],
-        end: indexMap[endIdx - 1] + 1
-      };
-    }
-  } catch (e) {
-    // Fallback to simple indexOf if regex fails
-    const idx = normalizedText.indexOf(normalizedQuery);
-    if (idx !== -1) {
-      const endIdx = idx + normalizedQuery.length;
-      return {
-        start: indexMap[idx],
-        end: indexMap[endIdx - 1] + 1
-      };
-    }
-  }
+  // Strategy: Try strict match first, then relaxed
+  const tryRegex = (separator: string) => {
+    const regexStr = words.join(separator);
+    const results: { start: number; end: number }[] = [];
+    try {
+      const regex = new RegExp(regexStr, 'giu');
+      let match;
+      while ((match = regex.exec(normalizedText)) !== null) {
+        const startIdx = match.index;
+        const endIdx = startIdx + match[0].length;
+        
+        results.push({
+          start: indexMap[startIdx],
+          end: indexMap[endIdx - 1] + 1
+        });
+        
+        // Prevent infinite loops with empty matches
+        if (match.index === regex.lastIndex) {
+          regex.lastIndex++;
+        }
+      }
+    } catch (e) {}
+    return results;
+  };
 
-  return null;
+  // Pass 1: Strict (only whitespace)
+  const strictMatches = tryRegex('\\s+');
+  if (strictMatches.length > 0) return strictMatches;
+
+  // Pass 2: Relaxed (allow punctuation/quotes between words)
+  // This helps when AI removes quotes or commas
+  return tryRegex('[\\s\\p{P}\\p{S}]+');
 };
 
 /**
@@ -97,16 +97,11 @@ export const findMatchesInDoc = (doc: ProsemirrorNode, suggestion: string): Matc
   });
 
   // 2. Use our robust text matcher
-  const match = findMatchInText(fullText, suggestion);
+  const matches = findMatchInText(fullText, suggestion);
   
-  if (match) {
+  return matches.map(match => {
     const startPM = posMap[match.start];
     const endPM = posMap[match.end - 1] + 1;
-    
-    if (startPM !== undefined && endPM !== undefined) {
-      return [{ from: startPM, to: endPM }];
-    }
-  }
-
-  return [];
+    return { from: startPM, to: endPM };
+  }).filter(m => m.from !== undefined && m.to !== undefined);
 };
