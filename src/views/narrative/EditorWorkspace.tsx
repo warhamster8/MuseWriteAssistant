@@ -1,10 +1,11 @@
 import React from 'react';
-import { Sparkles, Maximize2, Minimize2, LayoutList } from 'lucide-react';
+import { Sparkles, Maximize2, Minimize2, LayoutList, ChevronDown, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Editor } from '../../components/Editor';
 import type { Scene } from '../../types/narrative';
 import { useStore } from '../../store/useStore';
 import { cn } from '../../lib/utils';
 import { Skeleton } from '../../components/Skeleton';
+import { useAIAnalysis } from '../../hooks/useAIAnalysis';
 
 interface EditorWorkspaceProps {
   activeScene: Scene | undefined;
@@ -21,12 +22,27 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
   activeScene,
   onUpdateContent
 }) => {
-  const isSidekickOpen = useStore(s => s.isSidekickOpen);
-  const setSidekickOpen = useStore(s => s.setSidekickOpen);
   const isNavigatorOpen = useStore(s => s.isNavigatorOpen);
   const setNavigatorOpen = useStore(s => s.setNavigatorOpen);
   const isZenMode = useStore(s => s.isZenMode);
   const setZenMode = useStore(s => s.setZenMode);
+  const currentSceneContent = useStore(s => s.currentSceneContent);
+  const parsedSuggestions = useStore(s => s.parsedSuggestions);
+  
+  const [showAIMenu, setShowAIMenu] = React.useState(false);
+  const { runAnalysis, stopAnalysis, isAnalyzing } = useAIAnalysis();
+  const aiMenuRef = React.useRef<HTMLDivElement>(null);
+
+  // Close menu on click outside
+  React.useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (aiMenuRef.current && !aiMenuRef.current.contains(e.target as Node)) {
+        setShowAIMenu(false);
+      }
+    };
+    window.addEventListener('mousedown', handleClick);
+    return () => window.removeEventListener('mousedown', handleClick);
+  }, []);
 
   return (
     <div className="flex-1 min-w-0 flex flex-col bg-[var(--bg-surface)] relative overflow-hidden animate-in fade-in duration-500 rounded-[32px] border border-[var(--border-subtle)] shadow-sm">
@@ -58,12 +74,11 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
         <div className="flex items-center gap-4">
           <button 
             onClick={() => {
-              if (!isNavigatorOpen) setSidekickOpen(false);
               setNavigatorOpen(!isNavigatorOpen);
             }}
             className={cn(
               "p-3 rounded-2xl transition-all border active:scale-95 group",
-              isNavigatorOpen && !isSidekickOpen
+              isNavigatorOpen
                 ? "bg-[var(--accent-soft)] border-[var(--accent)]/30 text-[var(--accent)] shadow-glow-mint"
                 : "bg-[var(--bg-surface)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-bright)]"
             )}
@@ -77,7 +92,6 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
               const newZen = !isZenMode;
               setZenMode(newZen);
               if (newZen) {
-                setSidekickOpen(false);
                 setNavigatorOpen(false);
               }
             }}
@@ -92,22 +106,79 @@ export const EditorWorkspace: React.FC<EditorWorkspaceProps> = React.memo(({
             {isZenMode ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
           </button>
           
-          <div className="h-8 w-[1px] bg-[var(--border-subtle)] mx-1" />
-          <button 
-            onClick={() => {
-              if (!isSidekickOpen) setNavigatorOpen(false);
-              setSidekickOpen(!isSidekickOpen);
-            }}
-            className={cn(
-              "flex items-center gap-3 px-4 xl:px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl group",
-              isSidekickOpen 
-                ? "bg-[var(--accent)] text-[var(--bg-deep)] shadow-glow-mint" 
-                : "bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-bright)] hover:bg-[var(--accent-soft)]"
+          <div className="relative" ref={aiMenuRef}>
+            <button 
+              onClick={() => activeScene && setShowAIMenu(!showAIMenu)}
+              disabled={!activeScene}
+              className={cn(
+                "flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all border active:scale-95",
+                isAnalyzing
+                  ? "bg-rose-500/10 border-rose-500/30 text-rose-500 animate-pulse"
+                  : "bg-[var(--accent)] border-[var(--accent)]/30 text-[var(--bg-deep)] shadow-glow-mint hover:brightness-110"
+              )}
+            >
+              <Sparkles className={cn("w-4 h-4", isAnalyzing && "animate-spin")} />
+              {isAnalyzing ? 'Analyzing...' : 'Muse AI'}
+              <ChevronDown className={cn("w-3 h-3 ml-1 transition-transform", showAIMenu && "rotate-180")} />
+            </button>
+
+            {showAIMenu && (
+              <div className="absolute top-full right-0 mt-3 w-64 glass-dark rounded-[24px] border border-[var(--border-subtle)] shadow-2xl p-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="p-3 mb-2 border-b border-white/5">
+                  <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest">Azioni AI Suggerite</p>
+                </div>
+                
+                <button
+                  onClick={() => {
+                    if (activeScene) runAnalysis(activeScene.id, currentSceneContent, 'revision');
+                    setShowAIMenu(false);
+                  }}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-[var(--accent)] hover:text-[var(--bg-deep)] rounded-xl transition-all group text-left"
+                >
+                  <Sparkles className="w-4 h-4 text-[var(--accent)] group-hover:text-[var(--bg-deep)]" />
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest">Analisi Stilistica</p>
+                    <p className="text-[8px] opacity-60 uppercase mt-0.5">Revisione e Tono</p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => {
+                    if (activeScene) runAnalysis(activeScene.id, currentSceneContent, 'grammar');
+                    setShowAIMenu(false);
+                  }}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-emerald-500 hover:text-white rounded-xl transition-all group text-left"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 group-hover:text-white" />
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest">Correzione Tecnica</p>
+                    <p className="text-[8px] opacity-60 uppercase mt-0.5">Grammatica e Refusi</p>
+                  </div>
+                </button>
+
+                {isAnalyzing ? (
+                  <button
+                    onClick={() => {
+                      stopAnalysis();
+                      setShowAIMenu(false);
+                    }}
+                    className="w-full flex items-center gap-3 p-3 text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all text-left mt-2 border border-rose-500/10"
+                  >
+                    <AlertCircle className="w-4 h-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Interrompi</span>
+                  </button>
+                ) : (
+                  parsedSuggestions.length > 0 && (
+                    <div className="mt-2 p-3 bg-[var(--accent-soft)] rounded-xl border border-[var(--accent)]/10">
+                      <p className="text-[9px] font-black text-[var(--accent)] uppercase tracking-widest text-center">
+                        {parsedSuggestions.length} Suggerimenti Pronti
+                      </p>
+                    </div>
+                  )
+                )}
+              </div>
             )}
-          >
-            <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-            <span className="hidden xl:inline">AI Sidekick</span>
-          </button>
+          </div>
         </div>
       </div>
 

@@ -4,7 +4,6 @@ import { useStore } from '../store/useStore';
 import { CreationModal } from '../components/CreationModal';
 import { useToast, ToastContainer } from '../components/Toast';
 import { ManuscriptNavigator } from './narrative/ManuscriptNavigator';
-import { AISidekick } from '../components/AISidekick';
 import { EditorWorkspace } from './narrative/EditorWorkspace';
 import type { DropResult } from '@hello-pangea/dnd';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -178,44 +177,40 @@ export const NarrativeView: React.FC = React.memo(() => {
   return (
     <div className="flex h-full overflow-hidden animate-in fade-in duration-700 bg-[var(--bg-deep)] p-2 gap-4">
       {/* Mattoncino: Navigazione */}
-      {/* Mattoncino: Pannello Laterale (Navigazione o AI) */}
+      {/* Mattoncino: Pannello Laterale (Navigazione) */}
       <AnimatePresence mode="wait">
-        {(isNavigatorOpen || isSidekickOpen) && !isZenMode && (
+        {isNavigatorOpen && !isZenMode && (
           <motion.div
-            key={isSidekickOpen ? 'sidekick' : 'navigator'}
+            key="navigator"
             initial={{ width: 0, opacity: 0, x: -20 }}
             animate={{ width: 'auto', opacity: 1, x: 0 }}
             exit={{ width: 0, opacity: 0, x: -20 }}
             transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             className="h-full flex-shrink-0 origin-left"
           >
-            {isSidekickOpen ? (
-              <AISidekick />
-            ) : (
-              <ManuscriptNavigator 
-                chapters={chapters}
-                activeSceneId={activeSceneId}
-                expandedChapters={expandedChapters}
-                onToggleChapter={toggleChapter}
-                onSelectScene={setActiveSceneId}
-                onRenameChapter={renameChapter}
-                onRenameScene={renameScene}
-                onDeleteChapter={deleteChapter}
-                onDeleteScene={deleteScene}
-                onToggleSceneExclusion={(id, exclude) => updateSceneMetadata(id, { exclude_from_timeline: exclude })}
-                onCreateChapter={() => setModalType('chapter')}
-                onCreateScene={(chapterId) => {
-                  setTargetChapterId(chapterId);
-                  setModalType('scene');
-                }}
-                onReorder={handleReorder}
-                onUpdateSceneStatus={(id, status) => updateSceneMetadata(id, { status })}
-                onUpdateSceneTags={(id, tags) => updateSceneMetadata(id, { tags })}
-                onExport={handleExport}
-                isExporting={isExporting}
-                loading={loading}
-              />
-            )}
+            <ManuscriptNavigator 
+              chapters={chapters}
+              activeSceneId={activeSceneId}
+              expandedChapters={expandedChapters}
+              onToggleChapter={toggleChapter}
+              onSelectScene={setActiveSceneId}
+              onRenameChapter={renameChapter}
+              onRenameScene={renameScene}
+              onDeleteChapter={deleteChapter}
+              onDeleteScene={deleteScene}
+              onToggleSceneExclusion={(id, exclude) => updateSceneMetadata(id, { exclude_from_timeline: exclude })}
+              onCreateChapter={() => setModalType('chapter')}
+              onCreateScene={(chapterId) => {
+                setTargetChapterId(chapterId);
+                setModalType('scene');
+              }}
+              onReorder={handleReorder}
+              onUpdateSceneStatus={(id, status) => updateSceneMetadata(id, { status })}
+              onUpdateSceneTags={(id, tags) => updateSceneMetadata(id, { tags })}
+              onExport={handleExport}
+              isExporting={isExporting}
+              loading={loading}
+            />
           </motion.div>
         )}
       </AnimatePresence>
