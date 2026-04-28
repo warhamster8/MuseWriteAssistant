@@ -644,13 +644,21 @@ Rispondi in italiano. Sii concreto e originale.`;
                 )}
               </div>
               <div className="flex items-center gap-3">
-                {isAnalyzing || analysis ? (
+                {isAnalyzing ? (
                   <button 
                     onClick={handleStop}
-                    title={isAnalyzing ? "Interrompi" : "Rimuovi suggerimenti"}
-                    className="p-2.5 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
+                    title="Interrompi"
+                    className="p-2.5 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all border border-rose-500/20 animate-pulse"
                   >
-                    {isAnalyzing ? <X className="w-4 h-4" /> : <RefreshCw className="w-4 h-4" />}
+                    <X className="w-4 h-4" />
+                  </button>
+                ) : analysis ? (
+                  <button 
+                    onClick={() => setAnalysis('')}
+                    title="Rimuovi suggerimenti"
+                    className="p-2.5 text-[var(--text-muted)] hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 ) : currentLastPhrase && !activeSelection && (
                   <button 
@@ -658,7 +666,7 @@ Rispondi in italiano. Sii concreto e originale.`;
                       setLastAnalyzedPhrase(activeSceneId!, '', 'revision'); 
                       setSceneAnalysis(activeSceneId!, '', 'revision'); 
                     }} 
-                    title="Reset memory"
+                    title="Pulisci memoria"
                     className="p-2.5 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
                   >
                     <RefreshCw className="w-4 h-4" />

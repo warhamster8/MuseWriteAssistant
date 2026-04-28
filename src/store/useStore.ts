@@ -180,6 +180,7 @@ export const useStore = create<AppState>()(
         activeTab: state.activeTab,
         ignoredSuggestions: state.ignoredSuggestions || {},
         lastAnalyzedPhrase: state.lastAnalyzedPhrase || {},
+        sceneAnalysis: state.sceneAnalysis || {},
         authorName: state.authorName || '',
         isSidekickOpen: state.isSidekickOpen !== undefined ? state.isSidekickOpen : true,
         isNavigatorOpen: state.isNavigatorOpen !== undefined ? state.isNavigatorOpen : true,
