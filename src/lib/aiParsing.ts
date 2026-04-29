@@ -7,7 +7,7 @@ export interface AISuggestion {
   type: 'coerenza' | 'taglio' | 'stile' | 'grammatica';
 }
 
-export function parseAIAnalysisJSON(text: string): AISuggestion[] {
+function parseAIAnalysisJSON(text: string): AISuggestion[] {
   const suggestions: AISuggestion[] = [];
   
   let depth = 0;

@@ -1,5 +1,5 @@
 
-export const buildMapping = (html: string) => {
+const buildMapping = (html: string) => {
   const textMap: number[] = [];
   const charLens: number[] = [];
   let textStr = '';

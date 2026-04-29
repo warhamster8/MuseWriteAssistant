@@ -1,6 +1,6 @@
 import { Node as ProsemirrorNode } from '@tiptap/pm/model';
 
-export interface MatchResult {
+interface MatchResult {
   from: number;
   to: number;
 }

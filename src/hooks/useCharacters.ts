@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { storage } from '../lib/storage';
 import { useStore } from '../store/useStore';
 
-export type Character = {
+type Character = {
   id: string;
   project_id: string;
   name: string;

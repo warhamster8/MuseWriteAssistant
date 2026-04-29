@@ -5,11 +5,11 @@ import { getDocTextAndMap, findMatchInText } from './matchUtils';
 import { cn } from '../utils';
 import type { AISuggestion } from '../aiParsing';
 
-export interface SuggestionHighlightOptions {
+interface SuggestionHighlightOptions {
   onSuggestionClick: (index: number) => void;
 }
 
-export interface SuggestionHighlightStorage {
+interface SuggestionHighlightStorage {
   suggestions: AISuggestion[];
 }
 
