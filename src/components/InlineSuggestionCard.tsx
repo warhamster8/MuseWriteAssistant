@@ -20,10 +20,12 @@ export const InlineSuggestionCard: React.FC<Props> = ({ suggestion, onApply, onI
       const parentRect = cardRef.current.parentElement?.getBoundingClientRect();
       
       if (parentRect) {
-        // If the point where we are anchored (position.top) is too close to the viewport top
-        // or specifically too close to the editor header
+        // viewportTop is the absolute Y position of the anchor point in the window
         const viewportTop = parentRect.top + position.top;
-        if (viewportTop < 300) { // Increased threshold to account for card height
+        
+        // If we have less than 450px above the anchor, flip it down
+        // This is a safe margin for the header (80px) + card height (~350px)
+        if (viewportTop < 450) { 
           setIsFlipped(true);
         } else {
           setIsFlipped(false);
@@ -35,15 +37,15 @@ export const InlineSuggestionCard: React.FC<Props> = ({ suggestion, onApply, onI
   return (
     <div 
       ref={cardRef}
-      className="absolute z-[100] w-80 glass rounded-[24px] border border-[var(--accent)]/30 shadow-premium animate-in fade-in zoom-in-95 duration-300 ring-1 ring-black/5"
+      className="absolute z-[100] w-80 glass rounded-[32px] border border-[var(--accent)]/30 shadow-premium animate-in fade-in zoom-in-95 duration-500 ring-1 ring-black/5 flex flex-col max-h-[80vh] overflow-hidden"
       style={{ 
         top: `${position.top}px`, 
         left: `${position.left}px`,
-        transform: isFlipped ? 'translate(-50%, 20px)' : 'translate(-50%, -110%)',
-        transition: 'transform 0.3s ease, opacity 0.2s ease'
+        transform: isFlipped ? 'translate(-50%, 24px)' : 'translate(-50%, calc(-100% - 24px))',
+        transition: 'transform 0.4s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s ease'
       }}
     >
-      <div className="p-5 space-y-4">
+      <div className="p-6 space-y-5 overflow-y-auto custom-scrollbar flex-1">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <div className={cn(
